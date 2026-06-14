@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>International Exam Guide - Repository Home Preview</title>
+  <style>
+    /*
+      Assumptions:
+      - This is the GitHub repository home-page preview, not the student guide.
+      - Audience: open-source maintainers, tutors, international-school families.
+      - Tone: source-traceable academic tool, polished but not decorative.
+      - Current provider support: OxfordAQA only. Edexcel and CAIE are roadmap.
+    */
+    :root {
+      --ink: #111927;
+      --muted: #566273;
+      --paper: #f7f7f2;
+      --white: #ffffff;
+      --line: #d9ded9;
+      --oxford: #17324d;
+      --blue: #1e5d8f;
+      --red: #b8424f;
+      --teal: #166b63;
+      --gold: #c58a26;
+      --mint: #e8f2ee;
+      --rose: #f5e7e9;
+      --sky: #e5eef7;
+      --shadow: 0 24px 70px rgba(20, 31, 45, 0.14);
+      --mono: "Consolas", "SFMono-Regular", "Liberation Mono", monospace;
+      --body: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+      --display: "Cambria", "Georgia", "Times New Roman", "SimSun", serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(23,50,77,.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23,50,77,.04) 1px, transparent 1px),
+        var(--paper);
+      background-size: 42px 42px;
+      font: 16px/1.65 var(--body);
+    }
+    a { color: inherit; text-decoration: none; }
+    p { margin: 0; color: var(--muted); text-wrap: pretty; }
+    h1, h2, h3 { margin: 0; text-wrap: balance; letter-spacing: 0; }
+    code { font-family: var(--mono); }
+
+    .shell {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(17,25,39,.09);
+      background: color-mix(in oklch, var(--paper) 88%, white);
+      backdrop-filter: blur(18px);
+    }
+    .topbar .shell {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      color: var(--oxford);
+    }
+    .mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--oxford);
+      background: var(--white);
+      box-shadow: 4px 4px 0 var(--gold);
+      font: 900 15px/1 var(--mono);
+    }
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 750;
+    }
+    .nav a {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border: 1px solid transparent;
+      color: var(--muted);
+    }
+    .nav a:hover {
+      border-color: var(--line);
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .hero {
+      padding: 64px 0 46px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.66), rgba(255,255,255,0)),
+        linear-gradient(90deg, rgba(197,138,38,.13), transparent 34%, rgba(184,66,79,.10));
+      border-bottom: 1px solid rgba(17,25,39,.08);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(460px, 1.1fr);
+      gap: 42px;
+      align-items: center;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--teal);
+      font: 800 12px/1.2 var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+    .kicker::before {
+      content: "";
+      width: 38px;
+      height: 2px;
+      background: var(--teal);
+    }
+    h1 {
+      margin-top: 18px;
+      max-width: 720px;
+      font: 700 clamp(50px, 6.6vw, 88px)/0.96 var(--display);
+      color: var(--oxford);
+    }
+    .hero .lead {
+      margin-top: 24px;
+      max-width: 690px;
+      font-size: 19px;
+      color: #2d3747;
+    }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .button {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 16px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--white);
+      font-weight: 800;
+    }
+    .button.secondary {
+      background: var(--white);
+      color: var(--ink);
+    }
+    .button:hover { transform: translateY(-1px); box-shadow: 4px 4px 0 var(--gold); }
+
+    .proof-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 30px;
+      max-width: 680px;
+    }
+    .proof {
+      border-top: 3px solid var(--ink);
+      background: rgba(255,255,255,.72);
+      padding: 12px 12px 14px;
+    }
+    .proof strong {
+      display: block;
+      color: var(--oxford);
+      font: 900 20px/1.1 var(--display);
+    }
+    .proof span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .lab {
+      position: relative;
+      min-height: 560px;
+      padding: 22px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .lab::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-top: 10px solid var(--oxford);
+      pointer-events: none;
+    }
+    .lab-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin: 18px 0 18px;
+      font: 800 12px/1.2 var(--mono);
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 0.72fr 1fr;
+      gap: 16px;
+      min-height: 440px;
+      align-items: stretch;
+    }
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      background: #fbfcfb;
+      padding: 16px;
+      overflow: hidden;
+    }
+    .panel h3 {
+      font: 900 12px/1.2 var(--mono);
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 14px;
+    }
+    .source-lines {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .line {
+      height: 10px;
+      background: #d9e3dd;
+    }
+    .line:nth-child(1) { width: 92%; background: var(--oxford); }
+    .line:nth-child(2) { width: 72%; }
+    .line:nth-child(3) { width: 84%; }
+    .line:nth-child(4) { width: 58%; background: var(--gold); }
+    .scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 78px;
+      height: 2px;
+      background: var(--red);
+      box-shadow: 0 0 0 999px rgba(184,66,79,.04);
+      animation: scan 4.6s cubic-bezier(.16,1,.3,1) infinite;
+    }
+    @keyframes scan {
+      0%, 12% { transform: translateY(0); opacity: 0; }
+      25% { opacity: 1; }
+      72% { transform: translateY(240px); opacity: 1; }
+      100% { transform: translateY(240px); opacity: 0; }
+    }
+    .engine {
+      display: grid;
+      align-content: center;
+      gap: 12px;
+    }
+    .engine-step {
+      border: 1px solid var(--line);
+      background: var(--paper);
+      padding: 10px;
+      font: 800 12px/1.3 var(--mono);
+      color: var(--oxford);
+    }
+    .engine-step:nth-child(2) { background: var(--sky); }
+    .engine-step:nth-child(3) { background: var(--mint); }
+    .engine-step:nth-child(4) { background: var(--rose); }
+    .guide-card {
+      display: grid;
+      gap: 10px;
+    }
+    .guide-page {
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 12px;
+      box-shadow: 5px 5px 0 rgba(23,50,77,.08);
+    }
+    .guide-page strong {
+      display: block;
+      color: var(--oxford);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .tag-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 0 8px;
+      background: var(--mint);
+      color: var(--teal);
+      font: 800 11px/1 var(--mono);
+    }
+    .tag.red { background: var(--rose); color: var(--red); }
+    .tag.gold { background: #f7edd5; color: #815711; }
+
+    section.band {
+      padding: 54px 0;
+      border-bottom: 1px solid rgba(17,25,39,.08);
+      background: color-mix(in oklch, var(--white) 78%, var(--paper));
+    }
+    section.band.alt { background: var(--paper); }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, .72fr) minmax(280px, .28fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+    .section-head h2 {
+      font: 700 clamp(32px, 5vw, 58px)/1 var(--display);
+      color: var(--oxford);
+    }
+    .section-head p { font-size: 17px; }
+
+    .origin {
+      padding: 56px 0;
+      background: #fffdfa;
+      border-bottom: 1px solid rgba(17,25,39,.08);
+    }
+    .origin-card {
+      display: grid;
+      grid-template-columns: minmax(0, .42fr) minmax(0, .58fr);
+      gap: 28px;
+      align-items: stretch;
+      border: 1px solid var(--line);
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .origin-title {
+      padding: 30px;
+      background:
+        linear-gradient(180deg, rgba(23,50,77,.94), rgba(23,50,77,.98)),
+        var(--oxford);
+      color: var(--white);
+      display: grid;
+      align-content: space-between;
+      gap: 28px;
+    }
+    .origin-title h2 {
+      color: var(--white);
+      font: 700 clamp(34px, 5vw, 64px)/1 var(--display);
+    }
+    .origin-title p {
+      color: rgba(255,255,255,.72);
+      font-size: 15px;
+    }
+    .origin-copy {
+      padding: 32px;
+      display: grid;
+      gap: 20px;
+      align-content: center;
+    }
+    .origin-copy .quote {
+      color: var(--ink);
+      font: 700 clamp(24px, 3.2vw, 38px)/1.18 var(--display);
+      text-wrap: balance;
+    }
+    .origin-copy p {
+      font-size: 17px;
+      color: #354255;
+    }
+    .origin-note {
+      border-top: 2px solid var(--gold);
+      padding-top: 14px;
+      color: var(--muted) !important;
+      font-size: 15px !important;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid var(--line);
+      background: var(--white);
+    }
+    .flow-item {
+      min-height: 210px;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      display: grid;
+      align-content: space-between;
+      gap: 24px;
+    }
+    .flow-item:last-child { border-right: 0; }
+    .num {
+      font: 900 13px/1 var(--mono);
+      color: var(--red);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .flow-item h3 {
+      font: 800 22px/1.1 var(--display);
+      color: var(--ink);
+    }
+    .flow-item p { font-size: 14px; }
+
+    .scope-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .42fr) minmax(0, .58fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+    .scope-copy {
+      border: 1px solid var(--line);
+      background: var(--oxford);
+      color: var(--white);
+      padding: 26px;
+      display: grid;
+      align-content: space-between;
+      gap: 28px;
+    }
+    .scope-copy h2 {
+      color: var(--white);
+      font: 700 clamp(34px, 5vw, 60px)/1 var(--display);
+    }
+    .scope-copy p { color: rgba(255,255,255,.78); }
+    .scope-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border: 1px solid var(--line);
+    }
+    .scope-table th,
+    .scope-table td {
+      padding: 15px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    .scope-table th {
+      background: #edf2f4;
+      color: var(--oxford);
+      font: 900 12px/1.2 var(--mono);
+      text-transform: uppercase;
+    }
+    .scope-table tr:last-child td { border-bottom: 0; }
+    .status {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 0 10px;
+      font: 900 12px/1 var(--mono);
+      background: var(--mint);
+      color: var(--teal);
+    }
+    .status.plan { background: #f7edd5; color: #7c560f; }
+    .status.no { background: var(--rose); color: var(--red); }
+
+    .anatomy {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .spread {
+      min-height: 510px;
+      position: relative;
+      border: 1px solid var(--line);
+      background: #e9eef1;
+      overflow: hidden;
+      padding: 26px;
+    }
+    .sheet {
+      position: absolute;
+      width: 42%;
+      min-height: 385px;
+      top: 54px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: 14px 20px 0 rgba(17,25,39,.08);
+      padding: 22px;
+    }
+    .sheet.one { left: 58px; transform: rotate(-2.5deg); }
+    .sheet.two { right: 58px; transform: rotate(2deg); }
+    .sheet-title {
+      font: 900 20px/1.1 var(--display);
+      color: var(--oxford);
+      margin-bottom: 18px;
+    }
+    .mini-lines { display: grid; gap: 8px; margin-bottom: 16px; }
+    .mini-lines span {
+      display: block;
+      height: 8px;
+      background: #d8e2dc;
+    }
+    .mini-lines span:nth-child(1) { width: 92%; background: var(--red); }
+    .mini-lines span:nth-child(2) { width: 70%; }
+    .mini-lines span:nth-child(3) { width: 84%; }
+    .diagram {
+      height: 126px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 49%, rgba(17,25,39,.12) 50%, transparent 51%),
+        linear-gradient(0deg, transparent 49%, rgba(17,25,39,.12) 50%, transparent 51%),
+        var(--paper);
+      position: relative;
+    }
+    .dot {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--oxford);
+      background: var(--white);
+    }
+    .dot.a { left: 18%; top: 18%; }
+    .dot.b { left: 57%; top: 38%; background: var(--gold); }
+    .dot.c { left: 34%; top: 66%; background: var(--mint); }
+    .checklist {
+      display: grid;
+      gap: 12px;
+    }
+    .check {
+      border-top: 2px solid var(--oxford);
+      background: var(--white);
+      padding: 16px 0 0;
+    }
+    .check h3 {
+      color: var(--ink);
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .language {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .language article {
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 20px;
+      min-height: 190px;
+    }
+    .language h3 {
+      font: 800 20px/1.15 var(--display);
+      color: var(--oxford);
+      margin-bottom: 10px;
+    }
+    .language .sample {
+      margin-top: 16px;
+      padding: 10px;
+      background: var(--paper);
+      font: 800 12px/1.35 var(--mono);
+      color: var(--teal);
+    }
+
+    .package {
+      display: grid;
+      grid-template-columns: minmax(0, .58fr) minmax(0, .42fr);
+      gap: 22px;
+      align-items: start;
+    }
+    .file-list {
+      border: 1px solid var(--line);
+      background: #121926;
+      color: #f6f6ef;
+      padding: 22px;
+      font: 13px/1.72 var(--mono);
+      overflow-x: auto;
+    }
+    .file-list span { color: #c7d4dd; }
+    .doc-links {
+      display: grid;
+      gap: 12px;
+    }
+    .doc-link {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 16px;
+      font-weight: 800;
+    }
+    .doc-link small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .motion-band {
+      padding: 56px 0 68px;
+      background: #111927;
+      color: var(--white);
+    }
+    .motion-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .46fr) minmax(0, .54fr);
+      gap: 32px;
+      align-items: center;
+    }
+    .motion-band h2 {
+      font: 700 clamp(34px, 5vw, 62px)/1 var(--display);
+      color: var(--white);
+    }
+    .motion-band p { color: rgba(255,255,255,.72); margin-top: 16px; }
+    .motion-actions { margin-top: 26px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .motion-stage {
+      min-height: 330px;
+      position: relative;
+      border: 1px solid rgba(255,255,255,.18);
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.05) 1px, transparent 1px),
+        #172033;
+      background-size: 34px 34px;
+      overflow: hidden;
+      padding: 22px;
+    }
+    .orbit-card {
+      position: absolute;
+      width: 220px;
+      height: 122px;
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.08);
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      animation: float 7s cubic-bezier(.16,1,.3,1) infinite;
+    }
+    .orbit-card:nth-child(1) { left: 32px; top: 36px; }
+    .orbit-card:nth-child(2) { right: 54px; top: 78px; animation-delay: -1.4s; }
+    .orbit-card:nth-child(3) { left: 170px; bottom: 40px; animation-delay: -2.8s; }
+    @keyframes float {
+      0%, 100% { transform: translate3d(0,0,0) rotate(-1deg); }
+      50% { transform: translate3d(18px,-14px,0) rotate(1.5deg); }
+    }
+    .orbit-card strong {
+      display: block;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+    .orbit-card span {
+      display: block;
+      height: 8px;
+      margin-top: 7px;
+      background: rgba(255,255,255,.22);
+    }
+    .orbit-card span:nth-child(3) { width: 70%; background: var(--gold); }
+    .motion-beam {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 50%;
+      height: 2px;
+      background: var(--gold);
+      transform-origin: left center;
+      animation: beam 4s cubic-bezier(.16,1,.3,1) infinite;
+    }
+    @keyframes beam {
+      0% { transform: scaleX(.1); opacity: .2; }
+      45% { transform: scaleX(1); opacity: 1; }
+      100% { transform: scaleX(.1); opacity: .2; }
+    }
+
+    footer {
+      padding: 28px 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .section-head,
+      .origin-card,
+      .scope-grid,
+      .anatomy,
+      .package,
+      .motion-grid {
+        grid-template-columns: 1fr;
+      }
+      .lab { min-height: auto; }
+      .lab-grid,
+      .flow,
+      .language,
+      .proof-row {
+        grid-template-columns: 1fr;
+      }
+      .flow-item { border-right: 0; border-bottom: 1px solid var(--line); }
+      .flow-item:last-child { border-bottom: 0; }
+      .spread { min-height: 680px; }
+      .sheet { width: calc(100% - 52px); left: 26px !important; right: auto; min-height: 280px; }
+      .sheet.one { top: 36px; }
+      .sheet.two { top: 340px; }
+    }
+    @media (max-width: 640px) {
+      body { background-size: 28px 28px; }
+      .shell { width: min(100% - 24px, 1180px); }
+      .topbar .shell { align-items: flex-start; padding: 14px 0; }
+      .nav { justify-content: flex-start; }
+      .hero { padding-top: 40px; }
+      .lab-grid { display: block; }
+      .panel { margin-bottom: 12px; }
+      .button { width: 100%; }
+      .scope-table { font-size: 13px; }
+      .scope-table th, .scope-table td { padding: 10px 8px; }
+      .motion-stage { min-height: 420px; }
+      .orbit-card { width: 190px; }
+      .orbit-card:nth-child(2) { right: 20px; }
+      .orbit-card:nth-child(3) { left: 42px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell">
+      <a class="brand" href="#top" aria-label="International Exam Guide">
+        <span class="mark">IEG</span>
+        <span>International Exam Guide</span>
+      </a>
+      <nav class="nav" aria-label="Repository navigation">
+        <a href="#effect">看效果</a>
+        <a href="#origin">初衷</a>
+        <a href="#scope">考试局范围</a>
+        <a href="#language">语言策略</a>
+        <a href="#package">开源包</a>
+        <a href="project-intro-animation.html">介绍动画</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="kicker">OxfordAQA MVP · Pearson Edexcel / CAIE roadmap</div>
+          <h1>Source-first revision guides.</h1>
+          <p class="lead">面向 International GCSE 与 International AS/A-level：从官方 qualification 页面和 specification PDF 出发，生成带来源追溯、知识地图、例题框架、答案检查点和打印版 PDF 的复习指南。当前版本只实现 OxfordAQA，后续只按国内常用场景扩 Pearson Edexcel 与 Cambridge International / CAIE。</p>
+          <div class="action-row">
+            <a class="button" href="../README.zh-CN.md">打开中文 README</a>
+            <a class="button secondary" href="PROJECT_DETAILS.md">查看项目详情</a>
+            <a class="button secondary" href="project-intro-animation.html">播放介绍动画</a>
+          </div>
+          <div class="proof-row" aria-label="Verified progress">
+            <div class="proof">
+              <strong>48</strong>
+              <span>OxfordAQA qualification pages audited</span>
+            </div>
+            <div class="proof">
+              <strong>0</strong>
+              <span>parser errors in the live audit</span>
+            </div>
+            <div class="proof">
+              <strong>5</strong>
+              <span>sample guides generated and validated</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab" id="effect" aria-label="Source to guide visual preview">
+          <div class="lab-head">
+            <span>Repository home preview</span>
+            <span>guide.html + validation.json</span>
+          </div>
+          <div class="lab-grid">
+            <div class="panel">
+              <h3>Official Source</h3>
+              <p>OxfordAQA qualification page + public specification PDF.</p>
+              <div class="source-lines" aria-hidden="true">
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+                <span class="line"></span>
+              </div>
+              <div class="scan" aria-hidden="true"></div>
+            </div>
+            <div class="panel engine">
+              <div class="engine-step">discover()</div>
+              <div class="engine-step">parse syllabus</div>
+              <div class="engine-step">match snippets</div>
+              <div class="engine-step">validate output</div>
+            </div>
+            <div class="panel">
+              <h3>Student Guide</h3>
+              <div class="guide-card">
+                <div class="guide-page">
+                  <strong>知识地图 / Knowledge Map</strong>
+                  <div class="tag-row">
+                    <span class="tag">topic points</span>
+                    <span class="tag red">source page</span>
+                  </div>
+                </div>
+                <div class="guide-page">
+                  <strong>例题推导 / Worked Example</strong>
+                  <div class="tag-row">
+                    <span class="tag gold">command word</span>
+                    <span class="tag">answer frame</span>
+                  </div>
+                </div>
+                <div class="guide-page">
+                  <strong>质量检查 / Validation</strong>
+                  <div class="tag-row">
+                    <span class="tag">hash</span>
+                    <span class="tag red">review required</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="origin" id="origin">
+      <div class="shell origin-card">
+        <div class="origin-title">
+          <div class="kicker" style="color:#f0cf84;">Origin / 初衷</div>
+          <h2>这个项目先是为一个孩子做的。</h2>
+          <p>It began as a practical way to make a difficult school transition feel less overwhelming.</p>
+        </div>
+        <div class="origin-copy">
+          <div class="quote">不是替孩子学习，而是把学习路上的噪音降下来。</div>
+          <p>这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过转轨期。我的儿子今年要参加 International GCSE 大考；他从公办体系转到国际课程还不到一年，课堂语言几乎一下从全中文切换到全英文。知识点本身可以慢慢学，但新的语言、新的考试方式和临近大考的时间压力叠在一起，很容易让孩子觉得自己被推着走。</p>
+          <p>于是我开始把 AI 做成一个复习 Skill：让它先读官方大纲，再把知识点拆成能理解的结构、例题和检查点。这个项目的初衷很简单：利用人工智能帮助孩子更轻松、更有掌控感地面对学业。</p>
+          <p class="origin-note">That is why the project insists on official sources, bilingual scaffolding, and reviewable outputs. The technology is only useful if it makes learning calmer, clearer, and more humane.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="section-head">
+          <h2>不是题库搬运器，而是大纲驱动的生成流水线。</h2>
+          <p>参考 huashu-design README 的组织方式：先给一句定位，再给可视化效果，再解释能力边界和核心机制。这里的视觉和内容都服务于一个承诺：每个 syllabus fact 都要能回到公开来源。</p>
+        </div>
+        <div class="flow">
+          <article class="flow-item">
+            <div class="num">01 · Discover</div>
+            <div>
+              <h3>找官方 qualification 页面</h3>
+              <p>通过学科名或代码定位 OxfordAQA 公开页面，并记录蓝色 / 红色 listing 元数据。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">02 · Extract</div>
+            <div>
+              <h3>下载并解析 specification</h3>
+              <p>运行时下载 PDF，不把官方 PDF 提交到仓库；抽取 topic、assessment 和页码文本。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">03 · Compose</div>
+            <div>
+              <h3>生成学习指南结构</h3>
+              <p>组织知识地图、复习路径、例题框架、练习卡和图解规划，保持中英双语模板标签。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">04 · Validate</div>
+            <div>
+              <h3>输出前做质量检查</h3>
+              <p>检查 topic、source snippets、PDF、practice cards、diagram 和 provider listing。</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="scope">
+      <div class="shell scope-grid">
+        <div class="scope-copy">
+          <div>
+            <div class="kicker">Scope is a feature</div>
+            <h2>当前只做 OxfordAQA。</h2>
+          </div>
+          <p>开源项目最怕“看起来什么都支持”。这里反过来：把当前能力、路线图、暂不支持范围写在首页，避免用户误以为已经覆盖所有 A-level 考试局。</p>
+        </div>
+        <table class="scope-table">
+          <thead>
+            <tr>
+              <th>Provider / exam board</th>
+              <th>International GCSE</th>
+              <th>International AS/A-level</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>OxfordAQA / Oxford International AQA Examinations</td>
+              <td>Yes</td>
+              <td>Yes</td>
+              <td><span class="status">MVP</span></td>
+            </tr>
+            <tr>
+              <td>Pearson Edexcel</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td><span class="status plan">Roadmap</span></td>
+            </tr>
+            <tr>
+              <td>Cambridge International / CAIE</td>
+              <td>Planned</td>
+              <td>Planned</td>
+              <td><span class="status plan">Roadmap</span></td>
+            </tr>
+            <tr>
+              <td>OCR, WJEC/Eduqas, CCEA, other UK boards</td>
+              <td>No</td>
+              <td>No</td>
+              <td><span class="status no">Out of scope</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="shell anatomy">
+        <div class="spread" aria-label="Guide output anatomy">
+          <div class="sheet one">
+            <div class="sheet-title">International GCSE Demo Science</div>
+            <div class="mini-lines">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="diagram">
+              <span class="dot a"></span>
+              <span class="dot b"></span>
+              <span class="dot c"></span>
+            </div>
+          </div>
+          <div class="sheet two">
+            <div class="sheet-title">Practice Card / 练习卡</div>
+            <div class="mini-lines">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div class="tag-row">
+              <span class="tag">Answer frame</span>
+              <span class="tag red">Checkpoints</span>
+              <span class="tag gold">Source points</span>
+            </div>
+          </div>
+        </div>
+        <div class="checklist">
+          <div class="section-head" style="display:block;margin-bottom:10px;">
+            <h2>生成物长什么样。</h2>
+            <p>学生看到的是漂亮的学习指南；维护者看到的是可追溯数据和校验报告。</p>
+          </div>
+          <article class="check">
+            <h3>HTML / PDF guide</h3>
+            <p>可打印、可直接交给学生预览，但仍保留 review required 的安全边界。</p>
+          </article>
+          <article class="check">
+            <h3>guide-plan.json</h3>
+            <p>结构化保存 topic guide blocks、practice cards、diagram briefs 和 source points。</p>
+          </article>
+          <article class="check">
+            <h3>validation.json</h3>
+            <p>把 topic、assessment、source snippets、listing metadata 和输出完整性放进质量门槛。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band alt" id="language">
+      <div class="shell">
+        <div class="section-head">
+          <h2>中英双语不是随便混排。</h2>
+          <p>模板标签可以双语；官方 syllabus terms 不自动翻译。这样看起来少一点“顺滑”，但更稳。</p>
+        </div>
+        <div class="language">
+          <article>
+            <h3>官方内容保留英文</h3>
+            <p>qualification titles、topic titles、paper titles、syllabus points 和 source snippets 都保留 OxfordAQA 原文。</p>
+            <div class="sample">Atomic structure and the periodic table</div>
+          </article>
+          <article>
+            <h3>模板标签统一双语</h3>
+            <p>导航和结构性标题采用中文在前、英文在后的形式，帮助国内学生和家长快速扫读。</p>
+            <div class="sample">知识地图 / Knowledge Map</div>
+          </article>
+          <article>
+            <h3>中文 topic 需要审核词表</h3>
+            <p>如果未来要显示中文 topic 名，必须来自 reviewed glossary 或学科老师复核。</p>
+            <div class="sample">reviewed glossary required</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band" id="package">
+      <div class="shell package">
+        <div>
+          <div class="section-head" style="display:block;margin-bottom:18px;">
+            <h2>GitHub 开源包已经按 README-first 组织。</h2>
+            <p>首页介绍、双语 README、accuracy policy、examples、skill 解释、issue templates 和 CI 都放进了源码包。</p>
+          </div>
+          <pre class="file-list"><code>international-exam-guide/
+  README.md
+  README.zh-CN.md
+  docs/
+    PROJECT_DETAILS.md
+    SKILL_EXPLAINED.md
+    ACCURACY_POLICY.md
+    EXAMPLES.md
+    README_RESEARCH.md
+  skill/
+    SKILL.md
+    references/oxfordaqa.md
+  src/intl_exam_guide/
+    providers/oxfordaqa.py
+    rendering/html.py
+    validation/checks.py</code></pre>
+        </div>
+        <div class="doc-links">
+          <a class="doc-link" href="../README.md">
+            <span>English README<small>GitHub 首页说明、安装方式与 CLI 示例。</small></span>
+            <span>MD</span>
+          </a>
+          <a class="doc-link" href="PROJECT_DETAILS.md">
+            <span>Project details<small>架构、数据来源、provider scope 与 roadmap。</small></span>
+            <span>MD</span>
+          </a>
+          <a class="doc-link" href="SKILL_EXPLAINED.md">
+            <span>Skill explained<small>Skill 工作流、输入输出和来源追溯机制。</small></span>
+            <span>MD</span>
+          </a>
+          <a class="doc-link" href="RELEASE_CHECKLIST.md">
+            <span>Release checklist<small>发布前检查清单与开源维护流程。</small></span>
+            <span>MD</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="motion-band">
+      <div class="shell motion-grid">
+        <div>
+          <div class="kicker" style="color:#f0cf84;">Motion companion</div>
+          <h2>加了一支 24 秒介绍动画。</h2>
+          <p>动画用同一套产品边界讲清楚：OxfordAQA source -> parser -> bilingual guide -> validation -> Edexcel / CAIE roadmap。HTML 可直接打开，后续可以导 MP4 放进 GitHub README 或演示文档。</p>
+          <div class="motion-actions">
+            <a class="button" href="project-intro-animation.html">打开动画 HTML</a>
+            <a class="button secondary" href="project-intro-animation.mp4">查看 MP4</a>
+          </div>
+        </div>
+        <div class="motion-stage" aria-label="Animated introduction preview">
+          <div class="motion-beam"></div>
+          <div class="orbit-card"><strong>OxfordAQA</strong><span></span><span></span><span></span></div>
+          <div class="orbit-card"><strong>Specification PDF</strong><span></span><span></span><span></span></div>
+          <div class="orbit-card"><strong>Guide + validation</strong><span></span><span></span><span></span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      Repository homepage preview. Student-facing pages are generated separately as <code>guide.html</code>.
+    </div>
+  </footer>
+</body>
+</html>

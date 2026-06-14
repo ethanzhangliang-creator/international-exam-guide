@@ -1,0 +1,3 @@
+display_name: International Exam Guide
+short_description: Build source-traceable OxfordAQA International GCSE and International AS/A-level revision guides.
+default_prompt: Generate a source-traceable OxfordAQA revision guide for this subject and check the validation report.

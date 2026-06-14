@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>International Exam Guide - 24s Intro Animation</title>
+  <style>
+    :root {
+      --ink: #111927;
+      --paper: #f7f7f2;
+      --white: #fffdfa;
+      --oxford: #17324d;
+      --red: #b8424f;
+      --teal: #166b63;
+      --gold: #c58a26;
+      --line: rgba(255,255,255,.18);
+      --body: "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+      --display: "Cambria", "Georgia", "Times New Roman", "SimSun", serif;
+      --mono: "Consolas", "SFMono-Regular", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #111927;
+      color: var(--white);
+      font-family: var(--body);
+    }
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-width: 960px;
+      min-height: 540px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.045) 1px, transparent 1px),
+        radial-gradient(circle at 72% 18%, rgba(197,138,38,.16), transparent 30%),
+        radial-gradient(circle at 18% 82%, rgba(22,107,99,.18), transparent 32%),
+        #111927;
+      background-size: 44px 44px, 44px 44px, 100% 100%, 100% 100%, 100% 100%;
+      overflow: hidden;
+    }
+    .vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 180px rgba(0,0,0,.34);
+    }
+    .scene {
+      position: absolute;
+      inset: 0;
+      padding: 7vh 7vw;
+    }
+    .kicker {
+      font: 800 clamp(12px, 1.1vw, 18px)/1.2 var(--mono);
+      color: #f0cf84;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1, h2, p { margin: 0; }
+    h1 {
+      max-width: 1120px;
+      margin-top: 2.2vh;
+      font: 700 clamp(70px, 8vw, 150px)/.92 var(--display);
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+    h2 {
+      max-width: 920px;
+      font: 700 clamp(54px, 6vw, 116px)/.96 var(--display);
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+    .lead {
+      max-width: 790px;
+      margin-top: 2.6vh;
+      color: rgba(255,255,255,.72);
+      font-size: clamp(20px, 1.55vw, 30px);
+      line-height: 1.55;
+    }
+    .small {
+      color: rgba(255,255,255,.62);
+      font: 700 clamp(13px, 1vw, 16px)/1.5 var(--mono);
+      letter-spacing: .02em;
+    }
+    .title-lockup {
+      position: absolute;
+      left: 7vw;
+      bottom: 7vh;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .mark {
+      width: clamp(58px, 5vw, 86px);
+      height: clamp(58px, 5vw, 86px);
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--white);
+      box-shadow: 8px 8px 0 var(--gold);
+      background: rgba(255,255,255,.08);
+      font: 900 clamp(18px, 1.6vw, 28px)/1 var(--mono);
+    }
+
+    .bridge {
+      position: absolute;
+      left: 7vw;
+      right: 7vw;
+      bottom: 8vh;
+      display: grid;
+      grid-template-columns: 1fr 120px 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    .language-box {
+      min-height: 230px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      padding: 28px;
+    }
+    .language-box strong {
+      display: block;
+      font: 800 clamp(28px, 3vw, 54px)/1.1 var(--display);
+      margin-bottom: 16px;
+    }
+    .language-box span {
+      display: block;
+      height: 14px;
+      margin-top: 12px;
+      background: rgba(255,255,255,.18);
+    }
+    .language-box span:nth-child(3) { width: 72%; background: rgba(197,138,38,.55); }
+    .arrow {
+      height: 2px;
+      background: var(--gold);
+      position: relative;
+    }
+    .arrow::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -7px;
+      width: 16px;
+      height: 16px;
+      border-right: 2px solid var(--gold);
+      border-top: 2px solid var(--gold);
+      transform: rotate(45deg);
+    }
+
+    .source-wall {
+      position: absolute;
+      right: 7vw;
+      top: 12vh;
+      width: min(560px, 35vw);
+      min-height: 660px;
+      border: 1px solid rgba(255,255,255,.20);
+      background: rgba(255,255,255,.92);
+      color: var(--ink);
+      padding: 30px;
+      box-shadow: 18px 26px 0 rgba(0,0,0,.2);
+    }
+    .source-wall h3 {
+      margin: 0 0 22px;
+      color: var(--oxford);
+      font: 900 26px/1.05 var(--display);
+    }
+    .line {
+      display: block;
+      height: 13px;
+      margin: 13px 0;
+      background: #d7dfdc;
+    }
+    .line:nth-child(2) { width: 96%; background: var(--oxford); }
+    .line:nth-child(4) { width: 78%; background: var(--gold); }
+    .line:nth-child(7) { width: 88%; background: var(--red); }
+    .scan {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 120px;
+      height: 3px;
+      background: var(--red);
+      box-shadow: 0 0 0 999px rgba(184,66,79,.04);
+    }
+
+    .pipeline {
+      position: absolute;
+      left: 7vw;
+      bottom: 9vh;
+      right: 7vw;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .pipe-card {
+      min-height: 220px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.08);
+      padding: 24px;
+      display: grid;
+      align-content: space-between;
+    }
+    .pipe-card b {
+      color: #f0cf84;
+      font: 900 14px/1 var(--mono);
+      letter-spacing: .1em;
+    }
+    .pipe-card strong {
+      display: block;
+      margin-top: 18px;
+      font: 700 clamp(24px, 2.2vw, 42px)/1.04 var(--display);
+    }
+    .pipe-card p {
+      color: rgba(255,255,255,.65);
+      font-size: clamp(14px, 1vw, 17px);
+      line-height: 1.5;
+    }
+
+    .guide-spread {
+      position: absolute;
+      inset: 18vh 7vw 10vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      perspective: 1800px;
+    }
+    .guide-page {
+      background: var(--white);
+      color: var(--ink);
+      border: 1px solid rgba(255,255,255,.4);
+      padding: 34px;
+      box-shadow: 22px 32px 0 rgba(0,0,0,.23);
+    }
+    .guide-page.left { transform: rotateY(8deg) rotateZ(-1deg); }
+    .guide-page.right { transform: rotateY(-8deg) rotateZ(1deg); }
+    .guide-page h3 {
+      margin: 0 0 18px;
+      color: var(--oxford);
+      font: 800 clamp(30px, 3vw, 58px)/1.05 var(--display);
+    }
+    .guide-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 10px;
+      margin: 0 8px 10px 0;
+      background: #e8f2ee;
+      color: var(--teal);
+      font: 900 13px/1 var(--mono);
+    }
+    .guide-tag.red { background: #f5e7e9; color: var(--red); }
+    .guide-tag.gold { background: #f7edd5; color: #7c560f; }
+    .diagram {
+      height: 190px;
+      margin-top: 18px;
+      border: 1px solid #d9ded9;
+      background:
+        linear-gradient(90deg, transparent 49%, rgba(17,25,39,.12) 50%, transparent 51%),
+        linear-gradient(0deg, transparent 49%, rgba(17,25,39,.12) 50%, transparent 51%),
+        var(--paper);
+      position: relative;
+    }
+    .dot {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      border: 2px solid var(--oxford);
+      background: var(--white);
+    }
+    .dot.a { left: 15%; top: 20%; }
+    .dot.b { left: 58%; top: 38%; background: #f7edd5; }
+    .dot.c { left: 34%; top: 64%; background: #e8f2ee; }
+
+    .scope-row {
+      position: absolute;
+      left: 7vw;
+      right: 7vw;
+      bottom: 12vh;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .scope-card {
+      min-height: 170px;
+      border: 1px solid var(--line);
+      padding: 22px;
+      background: rgba(255,255,255,.08);
+    }
+    .scope-card strong {
+      display: block;
+      font: 800 clamp(24px, 2vw, 38px)/1 var(--display);
+      margin-bottom: 14px;
+    }
+    .scope-card span {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 10px;
+      background: rgba(255,255,255,.12);
+      color: #f0cf84;
+      font: 900 12px/1 var(--mono);
+    }
+
+    .final-lock {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 8vw;
+    }
+    .final-lock h2 {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+    .final-lock p {
+      max-width: 760px;
+      margin: 26px auto 0;
+      color: rgba(255,255,255,.72);
+      font-size: clamp(20px, 1.6vw, 30px);
+      line-height: 1.5;
+    }
+
+    .watermark {
+      position: absolute;
+      right: 36px;
+      bottom: 28px;
+      color: rgba(255,255,255,.38);
+      font: 700 12px/1 var(--mono);
+      letter-spacing: .08em;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" id="stage">
+    <section class="scene" id="scene-title">
+      <div class="kicker">International Exam Guide</div>
+      <h1>Source-first revision guides.</h1>
+      <p class="lead">A practical AI skill for International GCSE and International AS/A-level revision, built around official specifications and calmer learning.</p>
+      <div class="title-lockup">
+        <div class="mark">IEG</div>
+        <div class="small">OxfordAQA MVP<br>Pearson Edexcel / CAIE roadmap</div>
+      </div>
+    </section>
+
+    <section class="scene" id="scene-origin">
+      <div class="kicker">Origin / 初衷</div>
+      <h2>从全中文课堂，到全英文考试。</h2>
+      <p class="lead">不到一年就要面对 International GCSE 大考。AI 不替孩子学习，它把大纲、语言和复习路径整理得更清楚。</p>
+      <div class="bridge">
+        <div class="language-box">
+          <strong>中文教学</strong>
+          <span></span><span></span><span></span>
+        </div>
+        <div class="arrow"></div>
+        <div class="language-box">
+          <strong>English-medium exams</strong>
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" id="scene-source">
+      <div class="kicker">Official source first</div>
+      <h2>先读官方大纲，再生成复习指南。</h2>
+      <p class="lead">The tool finds the OxfordAQA qualification page, downloads the public specification at runtime, and keeps source URLs and hashes.</p>
+      <div class="source-wall">
+        <h3>Specification PDF</h3>
+        <span class="line"></span><span class="line"></span><span class="line"></span>
+        <span class="line"></span><span class="line"></span><span class="line"></span>
+        <span class="line"></span><span class="line"></span><span class="line"></span>
+        <div class="scan" id="scan"></div>
+      </div>
+    </section>
+
+    <section class="scene" id="scene-pipeline">
+      <div class="kicker">AI as scaffolding</div>
+      <h2>把压力拆成可以复习的结构。</h2>
+      <p class="lead">知识地图、例题框架、答案检查点和质量报告，都从 specification 提取内容出发。</p>
+      <div class="pipeline">
+        <article class="pipe-card"><b>01</b><strong>discover</strong><p>Find the public qualification page.</p></article>
+        <article class="pipe-card"><b>02</b><strong>extract</strong><p>Parse syllabus and assessment structure.</p></article>
+        <article class="pipe-card"><b>03</b><strong>compose</strong><p>Build topic maps and practice cards.</p></article>
+        <article class="pipe-card"><b>04</b><strong>validate</strong><p>Check sources before release.</p></article>
+      </div>
+    </section>
+
+    <section class="scene" id="scene-guide">
+      <div class="kicker">Guide output</div>
+      <h2>学生看到的是学习指南，维护者看到的是可追溯数据。</h2>
+      <div class="guide-spread">
+        <div class="guide-page left">
+          <h3>知识地图 / Knowledge Map</h3>
+          <span class="guide-tag">Topic points</span>
+          <span class="guide-tag red">Source page</span>
+          <div class="diagram"><span class="dot a"></span><span class="dot b"></span><span class="dot c"></span></div>
+        </div>
+        <div class="guide-page right">
+          <h3>Practice Card / 练习卡</h3>
+          <span class="guide-tag gold">Command word</span>
+          <span class="guide-tag">Answer frame</span>
+          <span class="guide-tag red">Checkpoints</span>
+          <p style="margin-top:24px;color:#4c5868;font-size:24px;line-height:1.45;">Official topic titles stay in English. Template labels use bilingual wording. Chinese topic names require a reviewed glossary.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="scene" id="scene-scope">
+      <div class="kicker">Provider scope</div>
+      <h2>开源范围要诚实。</h2>
+      <p class="lead">Current release is OxfordAQA only. Pearson Edexcel and Cambridge International / CAIE are roadmap providers for the China-market version.</p>
+      <div class="scope-row">
+        <div class="scope-card"><strong>OxfordAQA</strong><span>MVP implemented</span></div>
+        <div class="scope-card"><strong>Pearson Edexcel</strong><span>planned</span></div>
+        <div class="scope-card"><strong>Cambridge / CAIE</strong><span>planned</span></div>
+        <div class="scope-card"><strong>Other UK boards</strong><span>out of scope</span></div>
+      </div>
+    </section>
+
+    <section class="scene final-lock" id="scene-final">
+      <div>
+        <div class="kicker" style="justify-content:center;">International Exam Guide</div>
+        <h2>AI should make learning calmer, clearer, and more humane.</h2>
+        <p>Built for a real International GCSE transition, open-sourced for families, tutors, and schools who need source-traceable revision materials.</p>
+      </div>
+    </section>
+
+    <div class="watermark no-record">Created by Huashu-Design</div>
+    <div class="vignette"></div>
+  </div>
+
+  <script>
+    const DURATION = 24;
+    const ids = ["scene-title", "scene-origin", "scene-source", "scene-pipeline", "scene-guide", "scene-scope", "scene-final"];
+    const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const scan = document.getElementById("scan");
+
+    const clamp = (v, min = 0, max = 1) => Math.max(min, Math.min(max, v));
+    const expoOut = t => t >= 1 ? 1 : 1 - Math.pow(2, -10 * t);
+    const easeIn = t => t * t * t;
+    const mix = (a, b, t) => a + (b - a) * t;
+    const fade = (t, start, end, outStart, outEnd) => {
+      const inn = expoOut(clamp((t - start) / (end - start)));
+      const out = 1 - easeIn(clamp((t - outStart) / (outEnd - outStart)));
+      return clamp(Math.min(inn, out));
+    };
+    const setScene = (node, opacity, y = 0, scale = 1) => {
+      node.style.opacity = opacity.toFixed(3);
+      node.style.transform = `translate3d(0, ${y}px, 0) scale(${scale})`;
+      node.style.pointerEvents = opacity > .1 ? "auto" : "none";
+    };
+
+    function render(t) {
+      const title = fade(t, 0, 1.1, 3.0, 3.6);
+      setScene(el["scene-title"], title, mix(36, 0, title), mix(.98, 1, title));
+
+      const origin = fade(t, 3.1, 4.0, 7.2, 7.9);
+      setScene(el["scene-origin"], origin, mix(42, 0, origin));
+      const bridgeMove = expoOut(clamp((t - 4.2) / 1.4));
+      el["scene-origin"].style.setProperty("--bridge", bridgeMove);
+
+      const source = fade(t, 7.1, 8.0, 11.2, 12.0);
+      setScene(el["scene-source"], source, mix(44, 0, source));
+      const scanY = mix(0, 430, clamp((t - 8.2) / 2.6));
+      scan.style.transform = `translateY(${scanY}px)`;
+
+      const pipeline = fade(t, 11.0, 12.0, 15.1, 15.9);
+      setScene(el["scene-pipeline"], pipeline, mix(44, 0, pipeline));
+      document.querySelectorAll(".pipe-card").forEach((card, i) => {
+        const p = expoOut(clamp((t - 12.1 - i * .18) / .8));
+        card.style.opacity = p;
+        card.style.transform = `translateY(${mix(38, 0, p)}px)`;
+      });
+
+      const guide = fade(t, 15.0, 16.0, 19.1, 19.8);
+      setScene(el["scene-guide"], guide, mix(42, 0, guide));
+      document.querySelectorAll(".guide-page").forEach((page, i) => {
+        const p = expoOut(clamp((t - 16.0 - i * .25) / 1.0));
+        page.style.opacity = p;
+        page.style.transform = `${i === 0 ? "rotateY(8deg) rotateZ(-1deg)" : "rotateY(-8deg) rotateZ(1deg)"} translateY(${mix(70, 0, p)}px)`;
+      });
+
+      const scope = fade(t, 19.0, 20.0, 22.1, 22.8);
+      setScene(el["scene-scope"], scope, mix(42, 0, scope));
+      document.querySelectorAll(".scope-card").forEach((card, i) => {
+        const p = expoOut(clamp((t - 20.1 - i * .13) / .75));
+        card.style.opacity = p;
+        card.style.transform = `translateY(${mix(34, 0, p)}px)`;
+      });
+
+      const final = expoOut(clamp((t - 22.0) / 1.0));
+      setScene(el["scene-final"], final, mix(36, 0, final), mix(.98, 1, final));
+    }
+
+    let time = 0;
+    let playing = false;
+    let lastTick = null;
+
+    function tick(now) {
+      if (lastTick === null) {
+        lastTick = now;
+        render(0);
+        window.__ready = true;
+        requestAnimationFrame(tick);
+        return;
+      }
+      const dt = (now - lastTick) / 1000;
+      lastTick = now;
+      if (playing) {
+        time += dt;
+        if (time >= DURATION) {
+          time = window.__recording ? DURATION - 0.001 : 0;
+        }
+        render(time);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    window.__seek = (t) => {
+      time = clamp(t, 0, DURATION - 0.001);
+      lastTick = null;
+      render(time);
+    };
+
+    document.fonts.ready.then(() => {
+      render(0);
+      playing = true;
+      requestAnimationFrame(tick);
+    });
+  </script>
+</body>
+</html>

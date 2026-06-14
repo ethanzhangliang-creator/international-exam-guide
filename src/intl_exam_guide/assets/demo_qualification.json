@@ -1,0 +1,109 @@
+{
+  "title": "International GCSE Demo Science (9000)",
+  "code": "9000",
+  "qualification_type": "international_gcse",
+  "subject_area": "Demo Science",
+  "page_url": "https://example.test/qualifications/international-gcse-demo-science/",
+  "summary": [
+    "This synthetic qualification is included for offline demonstration only.",
+    "It is designed to show the guide layout, validation gates, and source-traceable workflow without downloading copyrighted specification files.",
+    "International GCSEs are linear qualifications, so the demo guide models end-of-course revision."
+  ],
+  "topics": [
+    {
+      "title": "Measurement and data",
+      "points": [
+        "Use SI units and standard prefixes",
+        "Record measurements to an appropriate precision",
+        "Calculate mean values and identify anomalous results",
+        "Represent data in tables and graphs"
+      ],
+      "level_tags": ["demo"],
+      "source_snippets": [
+        {
+          "page": 4,
+          "text": "Demo specification page 4: students should use SI units, record measurements with suitable precision, calculate mean values, and represent data clearly in tables and graphs.",
+          "matched_term": "Measurement and data"
+        }
+      ]
+    },
+    {
+      "title": "Forces and motion",
+      "points": [
+        "Describe speed as distance travelled per unit time",
+        "Interpret distance-time graphs",
+        "Explain balanced and unbalanced forces",
+        "Apply simple force and motion relationships"
+      ],
+      "level_tags": ["demo"],
+      "source_snippets": [
+        {
+          "page": 7,
+          "text": "Demo specification page 7: students should describe speed, interpret distance-time graphs, explain balanced and unbalanced forces, and apply simple force and motion relationships.",
+          "matched_term": "Forces and motion"
+        }
+      ]
+    },
+    {
+      "title": "Materials and change",
+      "points": [
+        "Classify materials by observable properties",
+        "Distinguish physical changes from chemical changes",
+        "Describe conservation of mass in closed systems",
+        "Use particle models to explain changes of state"
+      ],
+      "level_tags": ["demo"],
+      "source_snippets": [
+        {
+          "page": 10,
+          "text": "Demo specification page 10: students should classify materials, distinguish physical and chemical changes, describe conservation of mass, and use particle models for changes of state.",
+          "matched_term": "Materials and change"
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "title": "Paper 1",
+      "details": [
+        "1 hour 30 minutes",
+        "90 marks",
+        "50% of qualification",
+        "Questions cover any part of the demo specification"
+      ],
+      "source_snippets": [
+        {
+          "page": 14,
+          "text": "Demo specification page 14: Paper 1 is 1 hour 30 minutes, has 90 marks, and contributes 50% of the qualification.",
+          "matched_term": "Paper 1"
+        }
+      ]
+    },
+    {
+      "title": "Paper 2",
+      "details": [
+        "1 hour 30 minutes",
+        "90 marks",
+        "50% of qualification",
+        "Questions include data handling and application"
+      ],
+      "source_snippets": [
+        {
+          "page": 15,
+          "text": "Demo specification page 15: Paper 2 is 1 hour 30 minutes, has 90 marks, and contributes 50% of the qualification.",
+          "matched_term": "Paper 2"
+        }
+      ]
+    }
+  ],
+  "source": {
+    "provider": "synthetic-demo",
+    "page_url": "https://example.test/qualifications/international-gcse-demo-science/",
+    "specification_url": "https://example.test/specifications/demo-science.pdf",
+    "specification_sha256": "demo-not-a-real-specification",
+    "specification_path": null,
+    "extracted_text_path": null,
+    "downloaded_at": "offline-demo"
+  },
+  "audience_note": "This offline demo models an OxfordAQA-style International GCSE guide for international students following a British curriculum outside the UK. It is a synthetic sample, not an official qualification."
+}

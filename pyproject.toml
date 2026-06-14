@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "international-exam-guide"
+version = "0.1.0"
+description = "Generate source-traceable International GCSE and International AS/A-level revision guides from public specification pages."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Ethan" }]
+dependencies = [
+  "pypdf>=4.0",
+]
+
+[project.optional-dependencies]
+pdf = ["playwright>=1.45"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
+
+[project.scripts]
+intl-exam-guide = "intl_exam_guide.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+intl_exam_guide = ["assets/*.json"]
+
+[tool.ruff]
+line-length = 100

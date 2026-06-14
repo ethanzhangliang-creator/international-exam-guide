@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
+  <title id="title">Codex skill system</title>
+  <desc id="desc">How the Codex skill delegates deterministic work to scripts and references.</desc>
+  <rect width="1100" height="500" rx="24" fill="#ffffff"/>
+  <rect x="28" y="28" width="1044" height="444" rx="22" fill="#f7f9fc" stroke="#d9e2ef"/>
+  <text x="64" y="80" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="800" fill="#172033">Skill wrapper design</text>
+  <text x="64" y="110" font-family="Segoe UI, Arial, sans-serif" font-size="15" fill="#5b677a">Small prompt surface. Deterministic package. Clear quality gates.</text>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <rect x="64" y="156" width="245" height="210" rx="18" fill="#124f9b"/>
+    <text x="92" y="204" font-size="22" font-weight="800" fill="#fff">skill/SKILL.md</text>
+    <text x="92" y="242" font-size="14" fill="#dceaff">when to trigger</text>
+    <text x="92" y="272" font-size="14" fill="#dceaff">workflow commands</text>
+    <text x="92" y="302" font-size="14" fill="#dceaff">safety rules</text>
+    <rect x="418" y="156" width="245" height="210" rx="18" fill="#fffaf1" stroke="#efd7a0"/>
+    <text x="446" y="204" font-size="22" font-weight="800" fill="#172033">references/</text>
+    <text x="446" y="242" font-size="14" fill="#5b677a">OxfordAQA notes</text>
+    <text x="446" y="272" font-size="14" fill="#5b677a">quality gates</text>
+    <text x="446" y="302" font-size="14" fill="#5b677a">review rules</text>
+    <rect x="772" y="156" width="245" height="210" rx="18" fill="#b83246"/>
+    <text x="800" y="204" font-size="22" font-weight="800" fill="#fff">Python package</text>
+    <text x="800" y="242" font-size="14" fill="#ffe4ea">discover + download</text>
+    <text x="800" y="272" font-size="14" fill="#ffe4ea">parse + plan</text>
+    <text x="800" y="302" font-size="14" fill="#ffe4ea">render + validate</text>
+    <path d="M322 260 H394" stroke="#d99a24" stroke-width="5" stroke-linecap="round"/>
+    <path d="M676 260 H748" stroke="#d99a24" stroke-width="5" stroke-linecap="round"/>
+    <text x="292" y="424" font-size="16" font-weight="700" fill="#1f7a5b">Agent-readable instructions stay concise; brittle operations live in tested code.</text>
+  </g>
+</svg>

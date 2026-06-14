@@ -333,6 +333,31 @@
       font: 700 12px/1 var(--mono);
       letter-spacing: .08em;
     }
+
+    .controls {
+      position: absolute;
+      z-index: 20;
+      right: 28px;
+      top: 26px;
+      display: flex;
+      gap: 10px;
+    }
+    .controls button {
+      border: 1px solid rgba(255,255,255,.28);
+      background: rgba(7,11,18,.52);
+      color: #fff;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: 800 12px/1 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+    }
+    .controls button:hover {
+      border-color: rgba(255,255,255,.58);
+      background: rgba(255,255,255,.12);
+    }
   </style>
 </head>
 <body>
@@ -350,7 +375,7 @@
     <section class="scene" id="scene-origin">
       <div class="kicker">Origin / 初衷</div>
       <h2>从全中文课堂，到全英文考试。</h2>
-      <p class="lead">不到一年就要面对 International GCSE 大考。AI 不替孩子学习，它把大纲、语言和复习路径整理得更清楚。</p>
+      <p class="lead">不到一年就要面对 International GCSE 大考。我用 Codex 做了一个学习、复习用的 Skill，把大纲、语言和复习路径整理得更清楚。</p>
       <div class="bridge">
         <div class="language-box">
           <strong>中文教学</strong>
@@ -432,6 +457,10 @@
     <div class="watermark no-record">Created by Huashu-Design</div>
     <div class="vignette"></div>
   </div>
+  <div class="controls no-record" aria-label="Animation controls">
+    <button type="button" id="play-toggle">Pause</button>
+    <button type="button" id="replay">Replay</button>
+  </div>
 
   <script>
     const DURATION = 24;
@@ -499,6 +528,13 @@
     let time = 0;
     let playing = false;
     let lastTick = null;
+    const playToggle = document.getElementById("play-toggle");
+    const replay = document.getElementById("replay");
+
+    function setPlaying(next) {
+      playing = next;
+      playToggle.textContent = playing ? "Pause" : "Play";
+    }
 
     function tick(now) {
       if (lastTick === null) {
@@ -528,8 +564,19 @@
 
     document.fonts.ready.then(() => {
       render(0);
-      playing = true;
+      setPlaying(true);
       requestAnimationFrame(tick);
+    });
+
+    playToggle.addEventListener("click", () => {
+      setPlaying(!playing);
+    });
+
+    replay.addEventListener("click", () => {
+      time = 0;
+      lastTick = null;
+      render(0);
+      setPlaying(true);
     });
   </script>
 </body>

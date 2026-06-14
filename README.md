@@ -7,9 +7,9 @@
 <p align="center">
   <a href="README.zh-CN.md">中文 README</a>
   ·
-  <a href="docs/index.html">Project site</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/">Project site</a>
   ·
-  <a href="docs/project-intro-animation.html">Intro video</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.html">Intro video</a>
   ·
   <a href="docs/PROJECT_DETAILS.md">Project details</a>
   ·
@@ -74,17 +74,17 @@ roadmap.
 ## 24-Second Intro
 
 <p align="center">
-  <a href="docs/project-intro-animation.html">
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.html">
     <img src="docs/assets/intro-animation-preview.png" alt="International Exam Guide intro animation preview" width="100%">
   </a>
 </p>
 
 <p align="center">
-  <a href="docs/project-intro-animation.html">Open the HTML intro</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.html">Open the live HTML intro</a>
   ·
-  <a href="docs/project-intro-animation.mp4">Play or download the MP4</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.mp4">Play or download the MP4</a>
   ·
-  <a href="docs/index.html">Open the project home page</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/">Open the project home page</a>
 </p>
 
 ## Why This Exists

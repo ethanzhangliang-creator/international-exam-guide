@@ -7,9 +7,9 @@
 <p align="center">
   <a href="README.md">English README</a>
   ·
-  <a href="docs/index.html">项目主页</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/">项目主页</a>
   ·
-  <a href="docs/project-intro-animation.html">介绍动画</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.html">介绍动画</a>
   ·
   <a href="docs/PROJECT_DETAILS.md">项目详情</a>
   ·
@@ -70,17 +70,17 @@ Pearson Edexcel 与 Cambridge International / CAIE。
 ## 24 秒介绍动画
 
 <p align="center">
-  <a href="docs/project-intro-animation.html">
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.html">
     <img src="docs/assets/intro-animation-preview.png" alt="International Exam Guide 介绍动画预览" width="100%">
   </a>
 </p>
 
 <p align="center">
-  <a href="docs/project-intro-animation.html">打开 HTML 介绍动画</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.html">打开可播放 HTML 介绍动画</a>
   ·
-  <a href="docs/project-intro-animation.mp4">播放或下载 MP4</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/project-intro-animation.mp4">播放或下载 MP4</a>
   ·
-  <a href="docs/index.html">打开项目主页</a>
+  <a href="https://ethanzhangliang-creator.github.io/international-exam-guide/">打开项目主页</a>
 </p>
 
 ## 为什么要做这个工具
@@ -91,7 +91,7 @@ Pearson Edexcel 与 Cambridge International / CAIE。
 学，但新的语言、新的考试方式和临近大考的时间压力叠在一起，很容易让孩子
 觉得自己被推着走。
 
-于是我开始把 AI 做成一个复习 Skill：让它先读官方大纲，再把知识点拆成能
+我用 Codex 做了一个学习、复习用的 Skill：让它先读官方大纲，再把知识点拆成能
 理解的结构、例题和检查点。这个项目的初衷很简单：不是替孩子学习，而是把
 学习路上的噪音降下来，利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
 

@@ -749,7 +749,10 @@ def render_number_svg(index: int) -> str:
   {''.join(ticks)}
   {''.join(labels)}
   <circle cx="328" cy="178" r="10" fill="#b83246"/>
-  <text x="92" y="246" font-size="16" fill="#5b677a">position helps compare negative numbers, decimals, and bounds</text>
+  <text x="92" y="238" font-size="15" fill="#5b677a">
+    <tspan x="92" dy="0">compare positions</tspan>
+    <tspan x="92" dy="20">then check decimals and bounds</tspan>
+  </text>
   <text x="454" y="94" font-size="19" font-weight="800" fill="#b83246">3 / 4</text>
   {''.join(fraction_segments)}
   <text x="454" y="198" font-size="16" fill="#5b677a">fraction bar: part-whole</text>
@@ -758,7 +761,7 @@ def render_number_svg(index: int) -> str:
   <rect x="596" y="238" width="58" height="40" rx="8" fill="#fff1f3" stroke="#b83246" stroke-width="3"/>
   <text x="462" y="304" font-size="18" font-weight="800" fill="#1f7a5b">2</text>
   <text x="598" y="304" font-size="18" font-weight="800" fill="#b83246">1</text>
-  <text x="508" y="304" font-size="16" fill="#5b677a">ratio blocks</text>
+  <text x="504" y="314" font-size="15" fill="#5b677a">ratio blocks</text>
 </svg>
 """
 

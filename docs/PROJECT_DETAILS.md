@@ -3,15 +3,15 @@
 ## English
 
 IGCSE & A-Level AI Revision Guide Skill is an open-source Skill and Python pipeline for
-generating image-rich study/revision handbooks for OxfordAQA International GCSE
-and International AS-A-level subjects.
+generating image-rich study/revision handbooks from official International GCSE
+and International AS-A-level syllabus/specification sources.
 
 It is intentionally narrower than a generic AI education platform. The core
 principle is stable across subjects: confirm how the user wants the handbook,
 then turn the official syllabus into a reusable revision-handbook framework.
 
-1. confirm the user's subject, output language, image route, and explanation style;
-2. retrieve the relevant OxfordAQA syllabus source;
+1. confirm the user's subject/provider, required exam year, output language, and explanation style;
+2. retrieve the relevant official syllabus/specification source;
 3. keep official PDFs out of the repository;
 4. extract detailed syllabus units and assessment structure;
 5. keep review metadata beside each knowledge unit;
@@ -35,8 +35,9 @@ then turn the official syllabus into a reusable revision-handbook framework.
 - **Visual learning layer**: the generator first builds source-bound knowledge
   points and practice examples, then analyzes which items need visual
   explanation. Simple visuals use deterministic SVG; complex lab, geometry,
-  circuit, economics, or text-heavy infographic assets are routed to a
-  user-selected image model with recorded prompt/source metadata.
+  circuit, economics, or text-heavy infographic needs are routed to source-bound
+  visual briefs and prompt queues unless a callable image route or imported
+  asset directory is available.
 - **Narrative explanation modes**: topic blocks can be explained as life
   scenes, detective reasoning, or anime-quest style study missions while
   avoiding protected-IP copying by default.
@@ -50,8 +51,10 @@ then turn the official syllabus into a reusable revision-handbook framework.
 
 ### Current MVP
 
-The current MVP can generate guides for OxfordAQA International GCSE and
-International AS-A-level qualification pages. It has been verified on:
+The current MVP can generate guides for AQA International GCSE and
+International AS-A-level qualification pages, plus Pearson Edexcel and
+Cambridge International / CAIE candidate discovery with official URL/PDF
+fallbacks. It has been verified on:
 
 The entries below are validation samples, not a subject support matrix. The
 provider/parser pipeline is designed to work across discovered OxfordAQA
@@ -98,15 +101,16 @@ components.
 
 ### Provider Scope
 
-The current product is OxfordAQA-only. Do not describe it as covering all
-International GCSE or International AS-A-level providers. The China-market
-roadmap is:
+The current product covers the three China-market provider families in staged
+form. Do not describe it as covering all International GCSE or International
+AS-A-level providers, and do not claim full Pearson/Cambridge catalogue
+crawling yet.
 
 | Provider / exam board | Status | Notes |
 |---|---|---|
-| OxfordAQA / Oxford International AQA Examinations | implemented | Current parser, renderer, samples, and validation are built around this site. |
-| Pearson Edexcel | planned | Add only after OxfordAQA fixtures and quality gates are stable. |
-| Cambridge International / CAIE | planned | Add as a separate provider with its own source model and qualification structure. |
+| AQA / Oxford International AQA Examinations | implemented | Catalogue discovery plus qualification parsing. |
+| Pearson Edexcel | implemented MVP | Subject-name candidate discovery for common official page patterns; official URL/PDF fallback. |
+| Cambridge International / CAIE | implemented MVP | Official subject-index candidate discovery; official URL/PDF fallback; `exam_year` required for multi-range pages. |
 | OCR, WJEC/Eduqas, CCEA, and other UK boards | out of scope | Do not promise support in README or generated examples. |
 
 Market comments about relative exam difficulty, vocabulary load, or scoring
@@ -124,8 +128,8 @@ They are useful positioning context, but they are not official provider facts.
 6. Add an optional image-provider adapter for reviewed educational
    illustrations, with model/prompt/source metadata recorded for every asset.
 7. Add visual regression snapshots for generated HTML.
-8. Add Pearson Edexcel, then Cambridge International / CAIE, only after
-   OxfordAQA is stable.
+8. Expand Pearson Edexcel and Cambridge International / CAIE beyond candidate
+   discovery MVP only after provider fixtures and quality gates are stable.
 
 ## 中文
 

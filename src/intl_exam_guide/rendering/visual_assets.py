@@ -14,7 +14,39 @@ GENERATED_ASSET_STATUSES = {
     "manual-generated",
     "codex-router-generated",
 }
+PENDING_ASSET_STATUSES = {
+    "external-generation-required",
+    "provider-selected-pending-generation",
+    "infographic-provider-required",
+    "svg-fallback-needs-review",
+}
 RASTER_EXTENSIONS = {".png", ".jpg", ".jpeg", ".webp"}
+SVG_EXTENSIONS = {".svg"}
+
+SCIENTIFIC_VECTOR_TERMS = {
+    "axis",
+    "bar",
+    "chart",
+    "curve",
+    "data",
+    "distance-time",
+    "energy",
+    "equation",
+    "fraction",
+    "function",
+    "graph",
+    "line",
+    "motion",
+    "number",
+    "ph",
+    "probability",
+    "rate",
+    "ratio",
+    "scatter",
+    "statistics",
+    "table",
+    "triangle",
+}
 
 
 def visual_asset_key(
@@ -81,11 +113,34 @@ def is_raster_asset(filename: str | None) -> bool:
     return Path(filename).suffix.lower() in RASTER_EXTENSIONS
 
 
+def is_svg_asset(filename: str | None) -> bool:
+    if not filename:
+        return False
+    return Path(filename).suffix.lower() in SVG_EXTENSIONS
+
+
 def has_renderable_infographic(entry: dict[str, Any], images_dir: Path | None = None) -> bool:
     filename = str(entry.get("file") or "")
     if not is_generated_asset(entry) or not is_raster_asset(filename):
         return False
     return images_dir is None or (images_dir / filename).exists()
+
+
+def has_renderable_svg_fallback(entry: dict[str, Any], images_dir: Path | None = None) -> bool:
+    filename = str(entry.get("file") or "")
+    if str(entry.get("asset_status", "")).lower() != "svg-fallback-needs-review":
+        return False
+    if not is_svg_asset(filename):
+        return False
+    return images_dir is None or (images_dir / filename).exists()
+
+
+def scientific_vector_route(visual_type: str) -> str:
+    """Classify SVG fallbacks that should follow scientific plotting rules."""
+    tokens = set(re.findall(r"[a-z0-9-]+", visual_type.lower()))
+    if tokens & SCIENTIFIC_VECTOR_TERMS:
+        return "scripted-scientific-vector"
+    return "hand-authored-svg"
 
 
 def normalize_key_part(value: str) -> str:

@@ -9,3 +9,5 @@ build/
 outputs/
 source/*.pdf
 source/*.txt
+docs/preview-*.png
+designs/

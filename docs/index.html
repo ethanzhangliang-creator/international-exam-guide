@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>IGCSE & A-Level AI Revision Guide Skill - Repository Home Preview</title>
+  <title>IGCSE & A-Level AI 复习手册 Skill</title>
   <style>
     /*
       Assumptions:
       - This is the GitHub repository home-page preview, not the student guide.
       - Audience: open-source maintainers, tutors, international-school families.
       - Tone: practical study-skill project, visual, warm, and clear.
-      - Current provider support: OxfordAQA only. Edexcel and CAIE are roadmap.
+      - Current exam-board support: OxfordAQA, Edexcel, and CAIE.
     */
     :root {
       --ink: #111927;
@@ -139,8 +139,8 @@
     }
     h1 {
       margin-top: 18px;
-      max-width: 720px;
-      font: 700 clamp(50px, 6.6vw, 88px)/0.96 var(--display);
+      max-width: 780px;
+      font: 700 clamp(42px, 5.2vw, 72px)/1.04 var(--display);
       color: var(--oxford);
     }
     .hero .lead {
@@ -759,19 +759,19 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">OxfordAQA MVP · Pearson Edexcel / CAIE roadmap</div>
-          <h1>给 agent 一个科目，拿回一份图文复习手册。</h1>
-          <p class="lead">把 Skill 链接交给 Codex 或其他 agent，说一句“帮我生成某个科目的复习手册”。确认科目、输出语言、生图模型和讲解风格后，它会为 OxfordAQA International GCSE / International AS-A-level 生成知识点讲解、例题、信息图和可打印 PDF。</p>
+          <div class="kicker">三大考试局支持 · v0.2.0</div>
+          <h1>三大考试局复习手册，一句话生成。</h1>
+          <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给 Codex 或其他 agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
             <a class="button" href="https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill">安装 Skill</a>
-            <a class="button secondary" href="../README.zh-CN.md">中文使用说明</a>
+            <a class="button secondary" href="../README.md">English</a>
             <a class="button secondary" href="PROJECT_DETAILS.md">查看项目详情</a>
             <a class="button secondary" href="project-intro-animation.html">播放介绍动画</a>
           </div>
           <div class="proof-row" aria-label="Verified progress">
             <div class="proof">
               <strong>3</strong>
-              <span>国内常用考试局路线：OxfordAQA, Edexcel, CAIE</span>
+              <span>国内常用考试局路线：AQA、Edexcel、CAIE</span>
             </div>
             <div class="proof">
               <strong>95</strong>
@@ -784,10 +784,10 @@
           </div>
         </div>
 
-        <div class="lab" id="effect" aria-label="Skill to guide visual preview">
+        <div class="lab" id="effect" aria-label="Skill 使用效果预览">
           <div class="lab-head">
-            <span>Skill usage preview</span>
-            <span>HTML + PDF guide</span>
+            <span>Skill 使用预览</span>
+            <span>HTML + PDF 手册</span>
           </div>
           <div class="lab-grid">
             <div class="panel">
@@ -806,22 +806,22 @@
             <div class="panel engine">
               <div class="engine-step">确认科目</div>
               <div class="engine-step">选择语言</div>
-              <div class="engine-step">选择生图模型</div>
+              <div class="engine-step">图文路线</div>
               <div class="engine-step">选择讲解风格</div>
             </div>
             <div class="panel">
-              <h3>Student Guide</h3>
-              <div class="sample-strip" aria-label="Sample guide screenshots">
+              <h3>手册样例</h3>
+              <div class="sample-strip" aria-label="复习手册样例截图">
                 <figure class="sample-shot">
-                  <img src="assets/sample-math-guide.png?v=2" alt="Mathematics guide screenshot">
+                  <img src="assets/sample-math-guide.png?v=2" alt="数学复习手册截图">
                   <figcaption>Mathematics 9260</figcaption>
                 </figure>
                 <figure class="sample-shot">
-                  <img src="assets/sample-economics-guide.png?v=2" alt="Economics guide screenshot">
+                  <img src="assets/sample-economics-guide.png?v=2" alt="经济学复习手册截图">
                   <figcaption>Economics 9214</figcaption>
                 </figure>
                 <figure class="sample-shot">
-                  <img src="assets/sample-chemistry-guide.png?v=2" alt="Chemistry guide screenshot">
+                  <img src="assets/sample-chemistry-guide.png?v=2" alt="化学复习手册截图">
                   <figcaption>Chemistry 9202</figcaption>
                 </figure>
               </div>
@@ -836,13 +836,35 @@
         <div class="origin-title">
           <div class="kicker" style="color:#f0cf84;">项目初衷</div>
           <h2>这个项目先是为一个孩子做的。</h2>
-          <p>It began as a practical way to make a difficult school transition feel less overwhelming.</p>
+          <p>它最早是为了帮一个正在转轨的孩子，把复习压力拆成能看懂、能练习、能复盘的一页页手册。</p>
         </div>
         <div class="origin-copy">
           <div class="quote">不是替孩子学习，而是把学习路上的噪音降下来。</div>
           <p>这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过转轨期。我的儿子今年要参加 International GCSE 大考；他从公办体系转到国际课程还不到一年，课堂语言几乎一下从全中文切换到全英文。知识点本身可以慢慢学，但新的语言、新的考试方式和临近大考的时间压力叠在一起，很容易让孩子觉得自己被推着走。</p>
           <p>我用 Codex 做了一个学习、复习用的 Skill：让它围绕对应课程要求，把知识点拆成能理解的结构、例题、图解和检查点。这个项目的初衷很简单：利用人工智能帮助孩子更轻松、更有掌控感地面对学业。</p>
           <p class="origin-note">所以这个项目的重点不是炫技，而是把“看不懂、记不住、不会用”的复习压力，拆成孩子能读、能练、能看图理解的一页页手册。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="motion-band">
+      <div class="shell motion-grid">
+        <div>
+          <div class="kicker" style="color:#f0cf84;">介绍动画</div>
+          <h2>24 秒看懂这个 Skill 怎么用。</h2>
+          <p>动画放在项目初衷后面：先知道为什么做，再看它如何支持 AQA、Edexcel、CAIE 三大考试局生成复习手册。</p>
+          <div class="motion-actions">
+            <a class="button" href="project-intro-animation.html">打开动画 HTML</a>
+          </div>
+        </div>
+        <div class="motion-stage" aria-label="介绍动画预览">
+          <a class="motion-preview" href="project-intro-animation.html" aria-label="打开介绍动画">
+            <iframe title="HTML 介绍动画预览" src="assets/three-board-support-video/index.html" loading="lazy"></iframe>
+          </a>
+          <div class="motion-caption">
+            <span>可播放 HTML 动画</span>
+            <span>可放到 GitHub Pages</span>
+          </div>
         </div>
       </div>
     </section>
@@ -855,28 +877,28 @@
         </div>
         <div class="flow">
           <article class="flow-item">
-            <div class="num">01 · Choose</div>
+            <div class="num">01 · 选择</div>
             <div>
               <h3>选择科目和语言</h3>
               <p>用户先确认考试局、科目、代码，以及手册输出中文还是英文；未确认前不开始生成。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">02 · Style</div>
+            <div class="num">02 · 风格</div>
             <div>
               <h3>选择讲解风格</h3>
               <p>可以走严肃备考、轻松愉快、生活化场景、侦探推理、闯关式讲解等不同语气。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">03 · Visuals</div>
+            <div class="num">03 · 图文</div>
             <div>
-              <h3>选择生图模型</h3>
-              <p>简单结构图用 SVG；复杂知识点和例题需要信息图时，使用用户提供的 GPT Image、Qwen Image、SenseNova U1 Fast 或自定义 API。</p>
+              <h3>规划图文路线</h3>
+              <p>简单结构图用 SVG；复杂知识点和例题需要信息图时，先生成配图需求清单，有可调用生图能力时再生成或导入。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">04 · Deliver</div>
+            <div class="num">04 · 交付</div>
             <div>
               <h3>生成 HTML/PDF 手册</h3>
               <p>输出包含知识点讲解、例题、复习题、图文学习单元和最终可打印 PDF。</p>
@@ -890,44 +912,44 @@
       <div class="shell scope-grid">
         <div class="scope-copy">
           <div>
-            <div class="kicker">Provider scope</div>
-            <h2>当前先把 OxfordAQA 做稳。</h2>
+            <div class="kicker">考试局范围</div>
+            <h2>三大常用国际考试局，分阶段支持。</h2>
           </div>
-          <p>国内常用方向是 OxfordAQA、Pearson Edexcel 和 Cambridge International / CAIE。当前版本先支持 OxfordAQA，后续版本再按同一套流程扩展 Edexcel 和 CAIE。</p>
+          <p>当前版本围绕国内常用的 AQA、Edexcel、CAIE 设计。AQA 可从官网目录发现课程；Edexcel 会按官方页面规则尝试匹配候选；CAIE 会从官方科目索引匹配候选。无法唯一确认时，返回候选让用户自己选定。</p>
         </div>
         <table class="scope-table">
           <thead>
             <tr>
-              <th>Provider / exam board</th>
+              <th>考试局</th>
               <th>International GCSE</th>
               <th>International AS-A-level</th>
-              <th>Status</th>
+              <th>当前说明</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>OxfordAQA / Oxford International AQA Examinations</td>
-              <td>Yes</td>
-              <td>Yes</td>
-              <td><span class="status">MVP</span></td>
+              <td>AQA</td>
+              <td>支持</td>
+              <td>支持</td>
+              <td><span class="status">官网目录发现</span></td>
             </tr>
             <tr>
-              <td>Pearson Edexcel</td>
-              <td>Planned</td>
-              <td>Planned</td>
-              <td><span class="status plan">Roadmap</span></td>
+              <td>Edexcel</td>
+              <td>支持</td>
+              <td>支持</td>
+              <td><span class="status">候选发现 + URL/PDF</span></td>
             </tr>
             <tr>
-              <td>Cambridge International / CAIE</td>
-              <td>Planned</td>
-              <td>Planned</td>
-              <td><span class="status plan">Roadmap</span></td>
+              <td>CAIE</td>
+              <td>支持</td>
+              <td>支持</td>
+              <td><span class="status">科目索引 + 年份确认</span></td>
             </tr>
             <tr>
-              <td>OCR, WJEC/Eduqas, CCEA, other UK boards</td>
-              <td>No</td>
-              <td>No</td>
-              <td><span class="status no">Out of scope</span></td>
+              <td>OCR、WJEC/Eduqas、CCEA 等其他英国考试局</td>
+              <td>暂不支持</td>
+              <td>暂不支持</td>
+              <td><span class="status no">当前不覆盖</span></td>
             </tr>
           </tbody>
         </table>
@@ -936,17 +958,17 @@
 
     <section class="band">
       <div class="shell anatomy">
-        <div class="spread real-samples" aria-label="Actual sample guide screenshots">
+        <div class="spread real-samples" aria-label="真实复习手册样例截图">
           <figure class="sample-shot">
-            <img src="assets/sample-math-guide.png?v=2" alt="Mathematics sample guide page with visual worked example">
+            <img src="assets/sample-math-guide.png?v=2" alt="数学复习手册图形例题截图">
             <figcaption>Mathematics 9260 · 图形例题</figcaption>
           </figure>
           <figure class="sample-shot">
-            <img src="assets/sample-economics-guide.png?v=2" alt="Economics sample guide page with infographic">
+            <img src="assets/sample-economics-guide.png?v=2" alt="经济学复习手册信息图截图">
             <figcaption>Economics 9214 · 概念信息图</figcaption>
           </figure>
           <figure class="sample-shot">
-            <img src="assets/sample-chemistry-guide.png?v=2" alt="Chemistry sample guide page with infographic">
+            <img src="assets/sample-chemistry-guide.png?v=2" alt="化学复习手册信息图截图">
             <figcaption>Chemistry 9202 · 实验与模型图</figcaption>
           </figure>
         </div>
@@ -965,7 +987,7 @@
           </article>
           <article class="check">
             <h3>例题与复习题</h3>
-            <p>每个 topic 都要能落到讲解、练习、答案检查点和最终备考复习题。</p>
+            <p>每个知识点都要能落到讲解、练习、答案检查点和最终备考复习题。</p>
           </article>
         </div>
       </div>
@@ -975,23 +997,23 @@
       <div class="shell">
         <div class="section-head">
           <h2>孩子愿意看的手册，不能只有文字。</h2>
-          <p>流程是：先根据大纲生成基础知识点和例题；再由 AI 判断哪些知识点或例题需要图文结合；简单图走 SVG，复杂信息图再让用户选择生图模型。</p>
+          <p>流程是：先根据大纲生成基础知识点和例题；再由 AI 判断哪些知识点或例题需要图文结合；简单图走 SVG，复杂信息图默认进入待外部生成队列。</p>
         </div>
         <div class="language">
           <article>
             <h3>不是文字模板</h3>
-            <p>被 AI 判断为需要图的 topic，必须有图文学习单元：图/信息图、情境问题、讲解风格、答题步骤和复习检查点。</p>
-            <div class="sample">Visual Worked Example</div>
+            <p>被 AI 判断为需要图的知识点，必须有图文学习单元：图/信息图、情境问题、讲解风格、答题步骤和复习检查点。</p>
+            <div class="sample">图文例题</div>
           </article>
           <article>
-            <h3>模型由用户选择</h3>
-            <p>只有 AI 判断需要复杂信息图时，才询问用户选择 GPT Image、Qwen Image、SenseNova U1 Fast 或自定义模型。</p>
-            <div class="sample">visual_brief + image provider</div>
+            <h3>模型只是建议</h3>
+            <p>GPT Image 2.0、Qwen Image 2.0 Pro、SenseNova U1 Fast 是推荐外部选项；没有可调用能力时只交付配图需求清单和 SVG 草图。</p>
+            <div class="sample">配图需求清单 + SVG 草图</div>
           </article>
           <article>
             <h3>讲解模板更生动</h3>
             <p>同一知识点可以用生活场景、侦探推理、动漫闯关感等方式讲，但默认不复刻具体受保护 IP。</p>
-            <div class="sample">Life Scene, Detective, Adventure</div>
+            <div class="sample">生活化、侦探推理、闯关式</div>
           </article>
         </div>
       </div>
@@ -1006,18 +1028,57 @@
         <div class="language">
           <article>
             <h3>输出语言先锁定</h3>
-            <p>英文模式给学生看英文；中文模式给学生看简体中文。不要出现一半中文、一半英文的 topic 正文。</p>
-            <div class="sample">Atomic structure and the periodic table</div>
+            <p>英文模式给学生看英文；中文模式给学生看简体中文。不要出现一半中文、一半英文的知识点正文。</p>
+            <div class="sample">原子结构与周期表</div>
           </article>
           <article>
             <h3>模板标签不混排</h3>
-            <p>英文模式显示 Study Roadmap、Worked Example；中文模式显示复习路线、例题，不做中英拼接。</p>
-            <div class="sample">Study Roadmap</div>
+            <p>英文模式显示英文标签；中文模式显示复习路线、例题，不做中英拼接。</p>
+            <div class="sample">复习路线</div>
           </article>
           <article>
-            <h3>中文 topic 需要审核词表</h3>
-            <p>如果未来要显示中文 topic 名，必须来自 reviewed glossary 或学科老师复核。</p>
-            <div class="sample">reviewed glossary required</div>
+            <h3>中文知识点需要复核词表</h3>
+            <p>如果未来要显示中文知识点名称，必须来自复核词表或学科老师复核。</p>
+            <div class="sample">需要复核词表</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="shell">
+        <div class="section-head">
+          <h2>v0.2.0：从 AQA 单线，升级到三大考试局。</h2>
+          <p>相对 v0.1.0，这一版主要补齐三大考试局、语言锁、生图路线和跨科目检查。</p>
+        </div>
+        <div class="flow">
+          <article class="flow-item">
+            <div class="num">01 · 考试局</div>
+            <div>
+              <h3>新增 Edexcel 与 CAIE</h3>
+              <p>0.1 主要围绕 AQA；0.2 加入 Edexcel 与 CAIE 的官方候选发现，并保留官方 URL/PDF 精确输入。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">02 · 语言</div>
+            <div>
+              <h3>加强语言锁</h3>
+              <p>生成前先选择中文或英文，学生正文、例题和配图提示保持单一语言。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">03 · 图文</div>
+            <div>
+              <h3>生图逻辑后移</h3>
+              <p>不再开头询问模型；先生成基础手册，再统计复杂信息图数量和配图需求。</p>
+            </div>
+          </article>
+          <article class="flow-item">
+            <div class="num">04 · 质量</div>
+            <div>
+              <h3>增加回归样例</h3>
+              <p>用不同学科验证大纲解析、知识点展开、例题生成、图文路线和输出完整性。</p>
+            </div>
           </article>
         </div>
       </div>
@@ -1027,8 +1088,8 @@
       <div class="shell package">
         <div>
           <div class="section-head" style="display:block;margin-bottom:18px;">
-            <h2>GitHub 首页按“先会用，再看机制”组织。</h2>
-            <p>先告诉用户怎么安装 Skill、怎么让 agent 生成手册，再展示样例、能力边界、图文生成逻辑和开发文档。</p>
+            <h2>开源仓库里有什么。</h2>
+            <p>普通用户看 README 和项目主页；其他 agent 接手时先读接手说明和 Skill；开发者再看 Python 引擎、测试和验证脚本。</p>
           </div>
           <pre class="file-list"><code>igcse-a-level-revision-guide/
   README.md
@@ -1045,63 +1106,40 @@
     references/oxfordaqa.md
   src/intl_exam_guide/
     providers/oxfordaqa.py
+    providers/pearson.py
+    providers/cambridge.py
     rendering/html.py
     validation/checks.py</code></pre>
         </div>
         <div class="doc-links">
           <a class="doc-link" href="HANDOFF.md">
-            <span>Agent handoff<small>Project entry, current state, validation commands, and next priorities.</small></span>
+            <span>接手说明<small>项目入口、当前状态、检查命令和后续任务。</small></span>
             <span>MD</span>
           </a>          <a class="doc-link" href="../README.md">
-            <span>English README<small>GitHub 首页说明、安装方式与 agent 使用示例。</small></span>
+            <span>英文 README<small>英文首页说明、安装方式与 agent 使用示例。</small></span>
             <span>MD</span>
           </a>
           <a class="doc-link" href="PROJECT_DETAILS.md">
-            <span>Project details<small>架构、数据来源、provider scope 与 roadmap。</small></span>
+            <span>项目详情<small>架构、数据来源、考试局范围与后续计划。</small></span>
             <span>MD</span>
           </a>
           <a class="doc-link" href="SKILL_EXPLAINED.md">
-            <span>Skill explained<small>Skill 工作流、输入输出和生成步骤。</small></span>
+            <span>Skill 图解<small>Skill 工作流、输入输出和生成步骤。</small></span>
             <span>MD</span>
           </a>
           <a class="doc-link" href="IMAGE_MODEL_GUIDE.md">
-            <span>Image model guide<small>可选生图模型与插图安全边界。</small></span>
+            <span>生图建议<small>可选生图模型与插图安全边界。</small></span>
             <span>MD</span>
           </a>
         </div>
       </div>
     </section>
 
-    <section class="motion-band">
-      <div class="shell motion-grid">
-        <div>
-          <div class="kicker" style="color:#f0cf84;">Motion companion</div>
-          <h2>加了一支 24 秒介绍动画。</h2>
-          <p>动画展示真实使用路径：给 agent 一个 Skill 链接，确认科目、语言、生图模型和讲解风格，然后生成图文手册并导出 PDF。</p>
-          <div class="motion-actions">
-            <a class="button" href="project-intro-animation.html">打开动画 HTML</a>
-            <a class="button secondary" href="project-intro-animation.mp4">查看 MP4</a>
-          </div>
-        </div>
-        <div class="motion-stage" aria-label="Animated introduction preview">
-          <a class="motion-preview" href="project-intro-animation.html" aria-label="Open intro animation">
-            <video muted loop playsinline preload="metadata" poster="assets/sample-math-guide.png?v=5" data-autoplay-preview>
-              <source src="project-intro-animation.mp4?v=5" type="video/mp4">
-              <img src="assets/intro-animation-preview.gif?v=5" alt="Animated introduction preview with guide screenshots">
-            </video>
-          </a>
-          <div class="motion-caption">
-            <span>Autoplay video preview</span>
-            <span>HTML / MP4</span>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer>
     <div class="shell">
-      Repository homepage preview. Student-facing pages are generated separately as <code>guide.html</code>.
+      项目主页预览。真正交付给学生的复习手册会单独生成为 <code>guide.html</code>。
     </div>
   </footer>
   <script>

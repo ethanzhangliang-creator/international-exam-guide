@@ -7,7 +7,7 @@ from typing import Literal
 from intl_exam_guide.models import Topic
 
 
-ExampleDomain = Literal["mathematics", "chemistry", "economics", "accounting", "generic"]
+ExampleDomain = Literal["mathematics", "biology", "chemistry", "economics", "accounting", "generic"]
 
 AMBIGUOUS_SUBJECT_AREAS = {
     "combined science",
@@ -41,6 +41,12 @@ CHEMISTRY = SubjectProfile(
     family="science",
     example_domain="chemistry",
     description="Chemistry-specific particle, bonding, reaction, laboratory, and calculation topics.",
+)
+BIOLOGY = SubjectProfile(
+    name="biology",
+    family="science",
+    example_domain="biology",
+    description="Biology-specific cells, molecules, enzymes, DNA, transport, ecology, and practical topics.",
 )
 ECONOMICS = SubjectProfile(
     name="economics-business",
@@ -78,6 +84,8 @@ def resolve_subject_profile(
         return ACCOUNTING
     if has_terms(declared, ["chemistry"]):
         return CHEMISTRY
+    if has_terms(declared, ["biology"]):
+        return BIOLOGY
     if declared and declared not in AMBIGUOUS_SUBJECT_AREAS:
         return GENERIC
 
@@ -92,6 +100,8 @@ def resolve_subject_profile(
         return ACCOUNTING
     if looks_like_chemistry(text):
         return CHEMISTRY
+    if looks_like_biology(text):
+        return BIOLOGY
     return GENERIC
 
 
@@ -184,6 +194,35 @@ def looks_like_chemistry(text: str) -> bool:
             "solute",
             "substance",
             "substances",
+        ],
+    )
+
+
+def looks_like_biology(text: str) -> bool:
+    return has_terms(
+        text,
+        [
+            "amino acid",
+            "biology",
+            "cell",
+            "cells",
+            "cell membrane",
+            "chromosome",
+            "dna",
+            "enzyme",
+            "enzymes",
+            "genetic",
+            "glucose",
+            "lipid",
+            "membrane",
+            "osmosis",
+            "photosynthesis",
+            "protein",
+            "respiration",
+            "rna",
+            "starch",
+            "transport",
+            "triglyceride",
         ],
     )
 

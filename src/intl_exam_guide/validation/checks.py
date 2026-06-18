@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import os
 from pathlib import Path
 import re
 
@@ -70,9 +71,6 @@ def validate_plan(
     if options.image_provider not in {
         "prompt-queue",
         "deterministic-svg",
-        "gpt-image-2",
-        "qwen-image-pro",
-        "sensenova-u1-fast",
         "custom",
     }:
         issues.append(ValidationIssue("error", "Missing or unsupported image-provider selection."))
@@ -83,15 +81,28 @@ def validate_plan(
             issues.append(ValidationIssue("error", "Custom image provider is missing an endpoint URL."))
         if not options.image_api_key_env:
             issues.append(ValidationIssue("error", "Custom image provider is missing an API-key environment variable name."))
+        elif not os.environ.get(options.image_api_key_env):
+            issues.append(ValidationIssue("error", f"Custom image provider environment variable is not set: {options.image_api_key_env}"))
 
     if not qualification.source.page_url:
         issues.append(ValidationIssue("error", "Missing source qualification page URL."))
+    if not qualification.source.provider:
+        issues.append(ValidationIssue("error", "Missing source provider name."))
     if not qualification.source.specification_url:
         issues.append(ValidationIssue("error", "Missing specification PDF URL."))
     if not qualification.source.specification_sha256:
         issues.append(ValidationIssue("warning", "Specification PDF hash was not recorded."))
     if not qualification.topics:
         issues.append(ValidationIssue("error", "No syllabus topics were extracted."))
+    if qualification.source.specification_path and len(qualification.topics) < 6:
+        issues.append(
+            ValidationIssue(
+                "error",
+                f"Only {len(qualification.topics)} syllabus topics were extracted from a downloaded specification PDF.",
+            )
+        )
+    if (qualification.source.provider == "cambridge" or qualification.provider == "cambridge") and qualification.source.syllabus_year_range and not qualification.source.selected_exam_year:
+        issues.append(ValidationIssue("error", "Cambridge syllabus range is present but selected exam year was not recorded."))
     if not qualification.assessments:
         issues.append(ValidationIssue("warning", "No assessment papers were extracted."))
     if len(plan.practice_items) < len(qualification.topics):
@@ -187,7 +198,7 @@ def validate_plan(
     if qualification.qualification_type == "international_as_a_level":
         if qualification.source.listing_qualification_type and qualification.source.listing_qualification_type != "international_as_a_level":
             issues.append(ValidationIssue("error", "Source listing metadata conflicts with AS-A-level type."))
-        if "modular" not in " ".join([qualification.audience_note, *qualification.summary]).lower():
+        if (qualification.provider or qualification.source.provider) != "cambridge" and "modular" not in " ".join([qualification.audience_note, *qualification.summary]).lower():
             issues.append(ValidationIssue("warning", "AS-A-level guide does not mention the modular qualification structure."))
 
     if html_path:
@@ -247,9 +258,14 @@ def validate_plan(
                     issues.append(ValidationIssue("error", f"HTML missing required section phrase: {phrase}"))
             if plan.visual_briefs:
                 visual_markers = (
-                    ["Visual Worked Example", "Infographic Queue", "Generated Infographic"]
+                    [
+                        "Visual Worked Example",
+                        "Infographic Queue",
+                        "Generated Infographic",
+                        "SVG Fallback - Review Needed",
+                    ]
                     if options.output_language == "en"
-                    else ["图形例题", "信息图生成队列", "已生成信息图"]
+                    else ["图形例题", "信息图生成队列", "已生成信息图", "SVG 兜底图 - 需要复核"]
                 )
                 if not any(marker in html for marker in visual_markers):
                     issues.append(ValidationIssue("error", "HTML missing required visual explanation block."))
@@ -315,33 +331,26 @@ def validate_plan(
                     if entry.get("complexity") == "infographic"
                     and has_renderable_infographic(entry, images_dir)
                 )
-                pending_user_choice = sum(
+                pending_external_generation = sum(
                     1
                     for entry in manifest_entries
                     if entry.get("complexity") == "infographic"
-                    and entry.get("asset_status") == "infographic-provider-required"
+                    and entry.get("asset_status")
+                    in {
+                        "external-generation-required",
+                        "infographic-provider-required",
+                        "provider-selected-pending-generation",
+                        "svg-fallback-needs-review",
+                    }
                 )
-                selected_pending = sum(
-                    1
-                    for entry in manifest_entries
-                    if entry.get("complexity") == "infographic"
-                    and entry.get("asset_status") == "provider-selected-pending-generation"
-                )
-                if pending_user_choice:
+                if pending_external_generation:
                     issues.append(
                         ValidationIssue(
                             "warning",
-                            f"{pending_user_choice} infographic briefs need a user-selected image model before final visual delivery.",
+                            f"{pending_external_generation} infographic briefs are queued for external image generation or review.",
                         )
                     )
-                if selected_pending:
-                    issues.append(
-                        ValidationIssue(
-                            "warning",
-                            f"{selected_pending} infographic briefs have a provider selected but still need reviewed generated assets.",
-                        )
-                    )
-                selected_or_generated = len(infographic_briefs) - pending_user_choice
+                selected_or_generated = len(infographic_briefs) - pending_external_generation
                 if generated < selected_or_generated:
                     issues.append(
                         ValidationIssue(
@@ -360,8 +369,9 @@ def validate_plan(
 def is_placeholder_practice_question(question: str) -> bool:
     text = question.lower()
     return (
-        "how the syllabus idea" in text
-        and "could be used in an exam question" in text
+        ("how the syllabus idea" in text and "could be used in an exam question" in text)
+        or "answer an original short exam-style question" in text
+        or "identify the relevant evidence, choose the correct method or definition" in text
     )
 
 
@@ -475,6 +485,12 @@ def review_summary(
         has_package_manifest = (output_dir / "handbook-package.json").exists()
     return {
         "requested_subject": plan.run_options.requested_subject,
+        "provider": qualification.provider or qualification.source.provider,
+        "source_provider": qualification.source.provider,
+        "qualification_family": qualification.qualification_family or qualification.source.qualification_family,
+        "specification_sha256": qualification.source.specification_sha256,
+        "syllabus_year_range": qualification.source.syllabus_year_range,
+        "selected_exam_year": qualification.selected_exam_year or qualification.source.selected_exam_year,
         "image_provider": plan.run_options.image_provider,
         "explanation_style": plan.run_options.explanation_style,
         "output_language": plan.run_options.output_language,

@@ -9,35 +9,44 @@ this repository.
 
 - GitHub repository: `https://github.com/mianbaofang/igcse-a-level-revision-guide`
 - GitHub Pages: `https://mianbaofang.github.io/igcse-a-level-revision-guide/`
-- Local repository in Ethan's Codex workspace:
-  `C:\Users\Ethan\Documents\Codex\2026-06-14\igcse-skill-skill-github-skill-igcse\work\igcse-a-level-revision-guide`
-- Local generated outputs:
-  `C:\Users\Ethan\Documents\Codex\2026-06-14\igcse-skill-skill-github-skill-igcse\outputs`
+- Current handoff working repository:
+  `C:\Users\Ethan\Desktop\igcse-a-level-revision-guide-handoff\igcse-a-level-revision-guide`
+- Current handoff task notes:
+  `C:\Users\Ethan\Desktop\igcse-a-level-revision-guide-handoff\START_HERE_FOR_AGENT.md`
+  and
+  `C:\Users\Ethan\Desktop\igcse-a-level-revision-guide-handoff\NEXT_AGENT_UPGRADE_PLAN.md`
+- Local generated outputs for this handoff should stay under this working copy's
+  `outputs\goal-check-*` directories unless Ethan asks for a release package.
 - Installed local Skill:
   `C:\Users\Ethan\.agents\skills\igcse-a-level-revision-guide`
-- Deprecated compatibility Skill:
-  `C:\Users\Ethan\.agents\skills\igcse-revision-guide`
-
-The compatibility Skill should remain a thin redirect only. Do not restore the
-old `REFERENCES/` or `EXAMPLES/` workflow under `igcse-revision-guide`.
 
 ## What This Project Is
 
 This is an open-source Codex Skill and Python pipeline for generating
-student-friendly, image-rich revision handbooks for OxfordAQA International GCSE
-and International AS-A-level subjects.
+student-friendly, image-rich revision handbooks from official International
+GCSE and International AS-A-level syllabus/specification sources.
 
 The user-facing promise is simple:
 
 1. give an agent the Skill link;
 2. ask for a subject revision/study handbook;
-3. confirm subject, output language, image route, and explanation style;
-4. let the agent fetch the OxfordAQA syllabus, plan the handbook, generate
-   examples and visuals, render HTML, export PDF, and validate the result.
+3. confirm subject/provider, any required exam year, output language, and
+   explanation style;
+4. let the agent fetch the official syllabus/specification, plan the handbook,
+   generate examples and visual briefs, render HTML, export PDF, and validate
+   the result.
 
-Current provider support is OxfordAQA only. Pearson Edexcel and Cambridge
-International / CAIE are roadmap providers for the China-market version. Do not
-claim support for all UK exam boards.
+Current provider support:
+
+- OxfordAQA: implemented with catalogue discovery.
+- Pearson Edexcel: subject-name candidate discovery for common official page
+  patterns, with official subject-page URL or direct specification PDF fallback.
+- Cambridge International / CAIE: official subject-index candidate discovery,
+  with official subject-page URL or direct syllabus PDF fallback and `exam_year`
+  required when a page lists multiple syllabus ranges.
+
+Do not claim support for all UK exam boards or full Pearson/Cambridge catalogue
+crawling.
 
 ## Current State
 
@@ -115,12 +124,13 @@ python scripts/scan_for_raw_keys.py . ..\..\outputs
 
 ## Image Generation Rules
 
-- Ask the user before starting a real guide run if the image route is not
-  confirmed.
+- Do not require an image model before starting the base guide run. The default
+  complex-visual route is source-bound `visual_brief` plus prompt queue.
 - Use deterministic SVG only for simple structure diagrams and source-bound
   concept maps.
-- Use user-selected image providers for complex infographics, for example
-  `gpt-image-2`, `qwen-image-pro`, `sensenova-u1-fast`, or `custom`.
+- Recommend GPT Image 2.0, Qwen Image 2.0 Pro, and SenseNova U1 Fast for
+  complex text+diagram infographics, but treat them as external options unless
+  the user supplies a callable skill/API/script/asset directory/custom provider.
 - If the provider is custom, record model name, endpoint URL, and environment
   variable name for the key. Do not record the raw key.
 - Every generated image should keep provider/model, prompt, source topic,
@@ -136,13 +146,13 @@ python scripts/scan_for_raw_keys.py . ..\..\outputs
    review gates.
 4. Add richer SVG templates for common Maths, Science, Economics, and Business
    diagram types.
-5. Implement proper image-provider adapter interfaces rather than treating
-   provider images as external/imported assets.
+5. Improve real image-provider adapter interfaces beyond the current
+   prompt-queue/import workflow.
 6. Add visual regression checks for generated HTML and public homepage assets.
-7. Add Pearson Edexcel provider after OxfordAQA fixtures and validation are
-   stable.
-8. Add Cambridge International / CAIE provider after Edexcel or as a separate
-   provider module with its own source model.
+7. Expand Pearson Edexcel beyond candidate discovery MVP after fixtures and
+   validation are stable.
+8. Expand Cambridge International / CAIE beyond candidate discovery MVP with its
+   own provider fixtures and source model.
 
 ## Do Not Do
 
@@ -183,5 +193,6 @@ https://mianbaofang.github.io/igcse-a-level-revision-guide/
 -> agent 先确认科目、语言、生图方式、讲解风格 -> 自动生成 HTML/PDF。
 ```
 
-核心逻辑不能变：先根据 OxfordAQA 官方大纲生成知识点和例题，再二次判断哪些内容
-需要图文结合；简单图用 SVG，复杂信息图用用户选择的生图模型。
+核心逻辑不能变：先根据官方 syllabus/specification 生成知识点和例题，再二次判断哪些内容
+需要图文结合；简单图用 SVG，复杂信息图默认进入 visual brief / prompt queue，
+只有用户提供可调用生图能力或图片资产时才真实生成或导入。

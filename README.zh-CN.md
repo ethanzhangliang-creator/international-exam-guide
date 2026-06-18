@@ -1,11 +1,22 @@
 # IGCSE & A-Level AI Revision Guide Skill
 
 <p align="center">
-  <img src="docs/assets/hero.svg" alt="IGCSE & A-Level AI Revision Guide Skill 封面" width="100%">
+  <img src="docs/assets/hero.svg" alt="IGCSE 与 A-Level AI 复习手册 Skill 封面" width="100%">
 </p>
 
+## 为什么要做这个 Skill
+
+这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过转轨期。
+我的儿子今年要参加 International GCSE 大考；他从公办体系转到国际课程还不到一年，
+课堂语言几乎一下从全中文切换到全英文。知识点本身可以慢慢学，但新的语言、新的考试方式
+和临近大考的时间压力叠在一起，很容易让孩子觉得自己被推着走。
+
+我用 Codex 做了一个学习、复习用的 Skill：让它围绕对应课程要求，把知识点拆成能理解的结构、
+例题、图解和检查点。这个项目的初衷很简单：不是替孩子学习，而是把学习路上的噪音降下来，
+利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
+
 <p align="center">
-  <a href="README.md">English README</a>
+  <a href="README.md">英文 README</a>
   ·
   <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">项目主页</a>
   ·
@@ -15,115 +26,81 @@
   ·
   <a href="docs/PROJECT_DETAILS.md">项目详情</a>
   ·
-  <a href="docs/SKILL_EXPLAINED.md">Skill 图解</a>
-  ·
-  <a href="docs/IMAGE_MODEL_GUIDE.md">生图模型</a>
-  ·
-  <a href="docs/EXAMPLES.md">示例</a>
-  ·
-  <a href="docs/ACCURACY_POLICY.md">准确性政策</a>
-  ·
-  <a href="docs/RELEASE_CHECKLIST.md">发布清单</a>
+  <a href="docs/IMAGE_MODEL_GUIDE.md">生图建议</a>
 </p>
 
-<p align="center">
-  <img alt="Python" src="https://img.shields.io/badge/python-3.11%2B-1454A5">
-  <img alt="License" src="https://img.shields.io/badge/license-MIT-B83246">
-  <img alt="PDF ready" src="https://img.shields.io/badge/PDF-ready-1F7A5B">
-  <img alt="OxfordAQA" src="https://img.shields.io/badge/provider-OxfordAQA-D99A24">
-</p>
+一个给 AI agent 使用的复习手册 Skill：输入国内常用三大国际考试局的科目要求，
+生成图文并茂、可打印的 International GCSE / International AS-A-level 学习复习手册。
 
-IGCSE & A-Level AI Revision Guide Skill 是一个 Codex Skill，用来把 OxfordAQA
-International GCSE 或 International AS-A-level 科目变成图文并茂、可打印的
-学习/复习手册。
+当前版本以三大考试局为基础设计：
 
-如果你是家长、学生、老师或辅导老师，不需要自己安装 Python，也不需要看懂代码。
-把下面的 Skill 链接发给 Codex/Agent，让它安装；之后你只要用普通中文说
-“帮我生成某个科目的复习手册”。确认科目、输出语言、生图模型和讲解风格后，
-Agent 会返回包含知识点讲解、例题、信息图、复习题的 HTML/PDF 手册。
+| 考试局 | 当前支持方式 |
+|---|---|
+| AQA | 支持从官网科目目录发现课程，并读取公开大纲 PDF。 |
+| Edexcel | 会先根据科目名尝试匹配官方候选页面；无法唯一确认时列出候选，也支持用户直接提供官方科目页或大纲 PDF。 |
+| CAIE / Cambridge International | 会从官方科目索引匹配候选；无法唯一确认时列出候选，也支持官方科目页或大纲 PDF；遇到多个考试年份时会先确认年份。 |
 
-## 普通用户从这里开始
+这套流程面向三大考试局统一设计：先读取官方大纲，再生成知识点讲解、例题、图文学习单元、复习题和 PDF。
 
-把这个链接发给你的 Codex/Agent：
+## 快速使用
+
+普通用户不需要安装 Python，也不需要看懂代码。把下面这个 Skill 链接发给 Codex
+或其他支持 Skill 的 agent：
 
 ```text
 https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 ```
 
-然后说：
+然后直接说：
 
 ```text
-请安装这个 Skill，然后帮我生成 OxfordAQA Chemistry International GCSE 复习手册，并导出 PDF。
+请安装这个 Skill，然后帮我生成 AQA Chemistry International GCSE 中文复习手册，并导出 PDF。
 ```
 
-安装好以后，直接这样提需求就可以：
+也可以这样说：
 
 ```text
-帮我生成 OxfordAQA Biology International GCSE 学习手册。
-帮我生成 Chemistry 9202 复习手册，并导出 PDF。
-帮我生成 OxfordAQA Business International AS-A-level revision guide。
+帮我生成 Edexcel Accounting International GCSE 复习手册。
+帮我生成 Cambridge IGCSE Economics 2027 考试用的中文学习手册。
+帮我生成 AQA Mathematics 9260 复习手册，需要图文例题和最终复习题。
 ```
 
-真正开始生成前，Agent 会先让你确认四件事：
+开始生成前，agent 应先确认四件事：
 
-1. **科目**：考试局、阶段、科目、代码，例如 OxfordAQA International GCSE Chemistry 9202。
-2. **输出语言**：选择英文 `en` 或简体中文 `zh-CN`。手册自己的标题、讲解、
-   图片提示词和例题外框会使用一种语言，不再做 `中文 / English` 双语标签。
-3. **信息图生图方式**：选择 `gpt-image-2`、`qwen-image-pro`、
-   `sensenova-u1-fast`、`custom`，或者明确选择只做 `prompt-queue` dry run。
-   如果用自己的模型/API，只需要提供模型名、接口 URL、API key 所在的环境变量名；
-   不要把真实 key 发到聊天或提交到仓库。
-4. **讲解风格**：`formal` 正经严谨、`friendly` 轻松愉快、`life` 生活场景、
-   `story` 故事性强、`detective` 侦探推理、`adventure` 原创闯关感。
+1. 考试局、课程阶段、科目和代码，必要时确认官方链接。
+2. 考试年份，尤其是 Cambridge 页面同时列出多个年份范围时。
+3. 输出语言：中文或英文。手册正文、标签、例题和配图提示只使用一种语言。
+4. 讲解风格：严谨、轻松、生活化、故事性、侦探推理、闯关式等。
 
-这四项确认完以后，Agent 才会根据 Skill 开始真正生成：围绕所选 OxfordAQA
-课程要求整理知识点和例题，判断哪些内容需要图文结合讲解，选择 SVG 或信息图模型生成图片，
-最后输出带知识地图、例题、练习卡、答案检查点和复习题的 HTML/PDF 学习指南。
+注意：不需要在一开始选择生图模型。基础手册先生成，之后 agent 会告诉你有多少张复杂信息图需要外部生成。
+如果你有可调用的生图 API、Skill、脚本或已经生成好的图片目录，再让 agent 导入或生成；如果没有，就使用 SVG 草图兜底，并提示复杂图需要复核。
 
-当前范围故意保持清楚：现在只实现 OxfordAQA。后续路线图只优先扩国内常用场景中的
-Pearson Edexcel 与 Cambridge International / CAIE。
+## 会生成什么
 
-## 24 秒介绍动画
+每次生成会输出一个完整手册包：
 
-<p align="center">
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">
-    <img src="docs/assets/intro-animation-preview.gif" alt="IGCSE & A-Level AI Revision Guide Skill 介绍动画预览" width="100%">
-  </a>
-</p>
+```text
+outputs/chemistry-9202/
+  guide.html                 可预览、可打印的学习手册
+  guide.pdf                  PDF 文件
+  sections/                  分章节手册内容，便于 agent 复查
+  images/                    SVG 草图、信息图资产和配图清单
+  run-options.json           本次确认的科目、语言和讲解风格
+  guide-plan.json            知识点、例题和复习任务规划
+  qualification.json         课程与来源信息
+  validation.json            完整性检查结果
+  handbook-package.json      最终交付清单
+```
 
-<p align="center">
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">打开可播放 HTML 介绍动画</a>
-  ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.mp4">播放或下载 MP4</a>
-  ·
-  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">打开项目主页</a>
-</p>
+手册内容包括：
 
-## 为什么要做这个工具
-
-这个项目最早不是为了做一个“工具”，而是为了帮一个真实的孩子轻一点地走过
-转轨期。我的儿子今年要参加 International GCSE 大考；他从公办体系转到国际
-课程还不到一年，课堂语言几乎一下从全中文切换到全英文。知识点本身可以慢慢
-学，但新的语言、新的考试方式和临近大考的时间压力叠在一起，很容易让孩子
-觉得自己被推着走。
-
-我用 Codex 做了一个学习、复习用的 Skill：让它围绕对应课程要求，把知识点拆成能
-理解的结构、例题、图解和检查点。这个项目的初衷很简单：不是替孩子学习，而是把
-学习路上的噪音降下来，利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
-
-这个项目的承诺很简单：让复习变得更好读、更有画面、更容易检查。官方大纲和校验
-机制放在后台作为安全栏，避免手册为了“看起来丰富”而跑偏。
-
-## 适合谁
-
-OxfordAQA International GCSE 面向在英国以外、跟随 British curriculum 的
-international students 和 international schools。OxfordAQA 网站也提示，
-不同地区、学校、考点可能存在科目可用性和报名路径差异，所以生成的指南会提示
-家庭向学校或 exam centre 确认本地考试安排。
-
-International GCSE 通常是 linear qualification，也就是课程结束时同一考季完成考试。
-International AS-A-level 通常是 modular qualification，也就是按 unit 组织。
-本工具会区分这两种结构。
+- 官方大纲整理出的知识点结构；
+- 学生能读懂的讲解；
+- 原创例题、步骤和答案检查点；
+- 适合图文讲解的知识点与例题；
+- 简单 SVG 图和复杂信息图需求清单；
+- 最终备考复习题；
+- 可打印 HTML/PDF。
 
 ## 效果预览
 
@@ -131,202 +108,88 @@ International AS-A-level 通常是 modular qualification，也就是按 unit 组
 |---|---|---|
 | <img src="docs/assets/sample-math-guide.png" alt="数学复习手册图文例题截图" width="100%"> | <img src="docs/assets/sample-economics-guide.png" alt="经济学复习手册信息图截图" width="100%"> | <img src="docs/assets/sample-chemistry-guide.png" alt="化学复习手册信息图截图" width="100%"> |
 
+这些截图只是展示最终手册长什么样，不代表项目只支持这三门课。
+
+## 三大考试局支持范围
+
+| 考试局 | International GCSE | International AS-A-level | 当前说明 |
+|---|---:|---:|---|
+| AQA | 支持 | 支持 | 可从官网科目目录发现课程。 |
+| Edexcel | 支持 | 支持 | 根据科目名匹配官方候选；多个候选时让用户选择；官方 URL/PDF 可作为精确输入。 |
+| CAIE | 支持 | 支持 | 从官方科目索引匹配候选；多个候选时让用户选择；官方 URL/PDF 可作为精确输入；多年份页面会先确认考试年份。 |
+| OCR、WJEC/Eduqas、CCEA 等其他英国考试局 | 暂不支持 | 暂不支持 | 不在当前版本范围内。 |
+
+项目当前聚焦国内常用的 AQA、Edexcel 和 CAIE。
+以后可以继续扩展，但不会把未支持的考试局写成已经支持。
+
 ## 图文与讲解风格
 
-手册不能像 syllabus 摘录一样催眠。现在的渲染层分三层：
+孩子愿意看的手册不能只有文字。生成流程会做两次判断：
 
-- **确定性 SVG 基础图**：概念地图、粒子模型、pH 标尺、能量曲线等可复现图形。
-- **用户选择的信息图生图模型**：复杂几何、实验装置、电路、经济学图表、
-  以及按所选输出语言生成的文字信息图。
-- **叙事讲解模板**：生活场景、侦探推理、动漫闯关感等讲法。默认使用原创表达，
-  不直接复刻受保护角色或世界观。
+1. 先根据官方大纲生成知识点、讲解和例题。
+2. 再判断哪些知识点或例题需要图文结合讲解。
 
-AI 会分析哪些知识点和例题需要图文结合讲解。被选中的条目会生成 `visual_brief`：
-需要什么图、SVG 是否足够、如果需要信息图则
-用户选择哪个生图模型，以及用于生成图表的 prompt queue。
+简单、可复现的结构图使用 SVG，例如概念地图、基础几何图、粒子示意图、流程图。
+复杂内容先生成配图需求清单，例如实验装置、复杂几何、电路、经济学图表、带大量文字的信息图。
 
-## 可选生图能力
+如果用户没有可调用的生图模型，图表、坐标轴、曲线、概率树、简单几何等可精确表达的内容会走脚本化科学矢量图 fallback：输出可编辑 SVG，并记录来源、标签和复核风险。它不替代复杂信息图；复杂信息图仍然等待外部模型或人工审核后的图片资产。
 
-当前 MVP 对简单视觉需求使用确定性 SVG 草图。如果 AI 判断某个知识点需要实验装置图、
-结构示意图、流程图、单语言信息图或复杂视觉解释，agent 应先让用户选择 image
-provider，再生成复杂图表。
+推荐的外部生图模型包括：
 
-推荐起点：
+- OpenAI GPT Image 2.0；
+- Qwen Image 2.0 Pro；
+- SenseNova U1 Fast。
 
-- **OpenAI `gpt-image-2`**：有 OpenAI / Codex 环境时作为高质量选项。
-- **Qwen-Image-2.0 / Qwen Image 2.0 Pro**：适合中文/英文文字较多的信息图实验。
-- **SenseNova U1 Fast**：适合快速信息图草稿、本地或自定义 provider 实验。
+这些只是推荐选项，不代表每个用户都能直接调用。用户需要自己提供可用的 API、Skill、脚本或图片目录。
+生图只负责解释已经选中的知识点，不能编造大纲里没有的考试结论。
 
-详见 [生图模型建议](docs/IMAGE_MODEL_GUIDE.md)。生图只负责解释选中的知识点，
-不能额外编出考试结论或不受支持的事实。
+讲解风格也可以选择：严谨备考、轻松愉快、生活场景、故事化、侦探推理、闯关式等。
+默认使用原创表达，不复刻受保护角色或世界观。
+
+## 语言策略
+
+生成前必须选择一种输出语言：
+
+- 选择中文，学生看到的正文、标签、例题和配图提示都用中文。
+- 选择英文，学生看到的正文、标签、例题和配图提示都用英文。
+- 不做中英拼接标签。
+- 官方英文术语可以保留在来源文件或复核附录里，学生正文尽量保持单一语言。
+
+## v0.2.0 相比 v0.1.0 更新了什么
+
+v0.1.0 主要围绕 AQA 的复习手册生成流程。v0.2.0 的重点是把项目升级成面向三大考试局的开源版本：
+
+- 新增 Edexcel 官方候选发现，并保留官方 URL/PDF 精确输入。
+- 新增 CAIE 官方科目索引候选发现，并保留官方 URL/PDF 输入与考试年份确认。
+- 强化语言锁，避免生成内容一会儿中文、一会儿英文。
+- 调整生图逻辑：不再开头询问具体模型，而是在基础手册生成后给出复杂信息图数量和配图需求。
+- 增加 SVG 兜底和复杂图复核提示，避免把草图当成最终信息图。
+- 补充跨科目回归样例，避免用某一门课的结构影响全部学科。
+- 更新 GitHub 说明页、介绍动画和样例截图，让普通用户先看懂怎么用。
 
 ## 开发者快速开始
 
-这一节只给想修改 Python 引擎或二次开发的人看。普通 Skill 用户可以跳过。
-
-先运行离线 synthetic demo：
+普通用户可以跳过这一节。只有想修改 Python 引擎或本地调试时才需要看。
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-python -m intl_exam_guide demo --out ./outputs/demo-science --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf
+python -m intl_exam_guide generate --query chemistry --level igcse --language zh-CN --explanation-style friendly --out ./outputs/chemistry-9202
 ```
 
-再运行真实 OxfordAQA 公开 qualification：
-
-```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --image-provider qwen-image-pro --explanation-style friendly --out ./outputs/chemistry-9202
-```
-
-Windows PowerShell:
+Windows PowerShell：
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e .
-python -m intl_exam_guide demo --out .\outputs\demo-science --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --image-provider qwen-image-pro --explanation-style friendly --out .\outputs\chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --language zh-CN --explanation-style friendly --out .\outputs\chemistry-9202
 ```
 
-不安装，直接从源码运行：
+常用检查：
 
 ```bash
-PYTHONPATH=src python -m intl_exam_guide generate --query chemistry --level a-level --language en --image-provider prompt-queue --explanation-style detective --out ./outputs/chemistry-9620
-```
-
-## 会生成什么
-
-```text
-outputs/chemistry-9202/
-  guide.html                 可打印学习指南
-  guide.pdf                  PDF 导出
-  sections/                  模块化手册源码片段，便于 agent 复查和重组
-  images/                    SVG 草图、信息图资产和 visual_manifest.json
-  run-options.json           用户确认的科目、生图路线、讲解风格
-  guide-plan.json            结构化学习计划与练习卡片
-  qualification.json         抽取出的 qualification 元数据
-  validation.json            质量检查报告
-  handbook-package.json      sections 与 images 的交付清单
-  source/                    本地参考缓存，不应提交到仓库
-```
-
-## 当前能力
-
-| Provider / exam board | International GCSE | International AS-A-level | 状态 |
-|---|---:|---:|---|
-| OxfordAQA / Oxford International AQA Examinations | 支持 | 支持 | MVP 已实现 |
-| Pearson Edexcel | 计划支持 | 计划支持 | 国内市场路线图 |
-| Cambridge International / CAIE | 计划支持 | 计划支持 | 国内市场路线图 |
-| 其他英国考试局，包括 OCR、WJEC/Eduqas、CCEA | 不支持 | 不支持 | 不在当前范围内 |
-
-也就是说，当前代码是 OxfordAQA provider，不是泛称 AQA 全部英国本土体系，
-也不是一次性覆盖所有 A-level awarding organisations。开源版本先把
-OxfordAQA 做稳，再按国内可用场景扩 Pearson Edexcel 和 Cambridge
-International / CAIE。
-
-在 OxfordAQA 内部，不需要为几十门课逐门写死配置。只要能从官网发现
-International GCSE 或 International AS-A-level qualification page，就应走同一套
-provider/parser 流程。专门 subject profile 只是提升例题和图文判断质量；暂未做
-profile 的科目会回退到基于课程要求的通用例题，不会借用其他学科模板。
-
-在 OxfordAQA subject 页面里，工具也会记录网站分组来源：
-`btn--type-8` 视为蓝色 International GCSE listing，
-`btn--type-7` 视为红色 International AS-A-level listing。这个信息会写入
-`qualification.json`，并显示在生成指南的来源说明中。
-
-当前 discovery audit 已发现 17 个 subject pages、48 个 qualification links：
-31 个 International GCSE listings、17 个 International AS-A-level listings，
-没有 unknown 类型。
-
-解析器审计也打开了全部 48 个 qualification pages：没有缺 topic、没有缺
-assessment structure、没有缺 specification link，也没有蓝色/红色 listing 与
-qualification type 的冲突。
-
-当前范围参考的官方入口：
-
-- [OxfordAQA](https://www.oxfordaqa.com/)：当前已实现 provider，来源为其
-  International GCSE / International AS-A-level 公开页面。
-- [Pearson Edexcel International Advanced Levels](https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels.html)：
-  后续 Pearson provider 的官方入口之一。
-- [Cambridge International facts and figures](https://www.cambridgeinternational.org/about-us/facts-and-figures/)：
-  后续 Cambridge International / CAIE provider 的官方背景入口之一。
-
-## 语言策略
-
-生成指南会按用户生成前选择的输出语言来排版：
-
-- 选择 `en`，学生看到的正文、标签、例题和生图提示词都用英文。
-- 选择 `zh-CN`，学生看到的正文、标签、例题和生图提示词都用简体中文。
-- 不再做 `中文 / English` 这种双语拼接标签。
-- 选择 `zh-CN` 时，官方英文 topic 标题和 syllabus bullet points 留在结构化文件
-  或单独复核附录里；复习路线和学生正文保持中文。
-
-这样做是为了避免手册读起来一半中文一半英文。
-
-## 手册生成模型
-
-工具分成六层：
-
-1. **课程读取**：找到所选 OxfordAQA 课程，并读取当前课程要求。
-2. **知识规划**：整理 topic block、讲解重点、例题和复习任务。
-3. **图文判断**：判断每个知识点和例题是否不需要图、适合 SVG，还是需要复杂信息图模型。
-4. **学生化写作**：按用户选择的语言和讲解风格生成正文，避免中英文混搭。
-5. **交付渲染**：生成可阅读 HTML 和可打印 PDF。
-6. **完整性检查**：检查 topic、例题、图文资源和输出文件是否完整。
-
-当前的 worked examples 是原创练习，不复制真题。每张卡片会记录指令词、难度、
-聚焦知识点、解题步骤和答案检查点。
-
-## Agent 使用方式
-
-普通用户不需要看命令行。把 Skill 链接给 AI agent，然后用自然语言提出需求即可，例如：
-
-```text
-请安装这个 Skill，帮我生成一份中文 OxfordAQA International GCSE
-Mathematics 9260 复习手册，需要图文例题，并导出 PDF。
-```
-
-真正开始前，agent 应先确认四件事：
-
-- 科目和考试阶段；
-- 输出语言；
-- 复杂信息图使用哪种生图方式；
-- 知识点和例题的讲解风格。
-
-确认后，agent 负责官网大纲获取、知识点整理、例题讲解、图文生成、HTML 排版、
-PDF 导出和最终检查。
-
-## 公开展示样板
-
-首页展示的数学、经济、化学截图只是为了让用户直观看到最终手册长什么样，
-不是一套需要用户理解的发布流程，也不是项目只支持这三门课。只要是当前版本
-支持的 OxfordAQA qualification，都应该走同一套“官网大纲 -> 学习手册 ->
-图文补充 -> PDF 交付”的流程。
-
-## Codex Skill
-
-仓库内置 `skill/` 目录，可以作为 Codex skill 使用。
-
-<p align="center">
-  <img src="docs/assets/skill-system.svg" alt="Skill 系统图" width="100%">
-</p>
-
-Skill 保持简洁，只描述 agent 什么时候使用、需要确认哪些选项、如何检查输出；
-稳定、容易出错的步骤交给 Python 包执行。详见
-[Skill 图解说明](docs/SKILL_EXPLAINED.md)。
-
-## 版权与来源政策
-
-不要把下载的 OxfordAQA PDFs、past papers、mark schemes 或复制来的题目内容提交到仓库。
-公开样例应使用原创讲解、原创练习卡，以及最低限度的复核元数据，方便后续检查手册来源。
-
-给孩子正式使用前，应由学科老师或熟悉大纲的人复核深度例题和答案。
-
-## 开发
-
-```bash
-pip install -e ".[dev]"
 python -m pytest
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py .
@@ -336,15 +199,22 @@ python scripts/scan_for_raw_keys.py .
 
 ```text
 src/intl_exam_guide/
-  providers/      网站发现与页面解析
+  providers/      各考试局官方页面读取与解析
   parsing/        PDF 文本抽取
-  planning/       来源安全的学习指南规划
+  planning/       知识点、例题和配图需求规划
   rendering/      HTML 与 PDF 渲染
-  validation/     完整性与安全性检查
-skill/            Codex skill wrapper
-docs/             接手说明、项目详情、skill 图解、准确性政策、调研记录
-tests/            parser 与 pipeline 测试
+  validation/     完整性检查
+skill/            Agent 使用的 Skill 说明
+docs/             项目详情、接手说明、准确性政策和展示页面
+tests/            测试与回归样例
 ```
+
+## 版权与来源
+
+不要把下载的官方 PDF、past papers、mark schemes 或复制来的真题内容提交到仓库。
+公开样例应使用原创讲解、原创练习卡和必要的来源信息。
+
+给孩子正式备考使用前，建议由老师或熟悉大纲的人复核深度例题和答案。
 
 ## License
 

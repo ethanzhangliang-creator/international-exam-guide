@@ -52,7 +52,7 @@ The science page should show International GCSE rows tagged as
 rows tagged as `international_as_a_level` with the red listing group.
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --image-provider gpt-image-2 --explanation-style friendly --out ./outputs/chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
 ```
 
 ## OxfordAQA International AS-A-level Example
@@ -64,17 +64,41 @@ python -m intl_exam_guide generate --query chemistry --level a-level --language 
 ## OxfordAQA Non-Science International GCSE Example
 
 ```bash
-python -m intl_exam_guide generate --query economics --level igcse --language en --image-provider gpt-image-2 --explanation-style life --out ./outputs/economics-9214
+python -m intl_exam_guide generate --query economics --level igcse --language en --explanation-style life --out ./outputs/economics-9214
 ```
 
 ## OxfordAQA Revised Non-Science AS-A-level Example
 
 ```bash
-python -m intl_exam_guide generate --query 9725 --level a-level --language en --image-provider qwen-image-pro --explanation-style story --out ./outputs/business-9725
+python -m intl_exam_guide generate --query 9725 --level a-level --language en --explanation-style story --out ./outputs/business-9725
 ```
 
 This covers a revised qualification page where the subject listing text does
 not include the code, but the qualification detail page does.
+
+## Pearson Edexcel Examples
+
+Pearson support first tries official subject-page candidates from the subject
+name. If several routes match, the CLI returns the choices for the user to pick.
+Official subject-page URLs or direct specification PDF URLs still work as exact
+inputs:
+
+```bash
+python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-gcses/international-gcse-mathematics-a-2016.html" --level igcse --language en --explanation-style friendly --out ./outputs/pearson-igcse-maths --skip-pdf
+python -m intl_exam_guide generate --provider pearson --query "https://qualifications.pearson.com/en/qualifications/edexcel-international-advanced-levels/mathematics-2018.html" --level a-level --language en --explanation-style friendly --out ./outputs/pearson-ial-maths --skip-pdf
+```
+
+## Cambridge International / CAIE Examples
+
+Cambridge support searches the official subject indexes by subject name or code.
+If several routes match, the CLI returns the choices for the user to pick.
+Cambridge subject pages often list several syllabus year ranges, so provide
+`--exam-year` when the selected page has multiple syllabus PDFs:
+
+```bash
+python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-igcse-chemistry-0620/" --level igcse --exam-year 2027 --language en --explanation-style friendly --out ./outputs/cambridge-igcse-chemistry-2027 --skip-pdf
+python -m intl_exam_guide generate --provider cambridge --query "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-international-as-and-a-level-chemistry-9701/" --level a-level --exam-year 2029 --language en --explanation-style friendly --out ./outputs/cambridge-ial-chemistry-2029 --skip-pdf
+```
 
 ## Release Sample Verification
 

@@ -214,7 +214,9 @@ class OxfordAQAProvider(ExamBoardProvider):
             seen[link.href] = link
         return list(seen.values())
 
-    def find_qualification(self, query: str, level: str | None = None) -> Link:
+    def find_qualification(
+        self, query: str, level: str | None = None, exam_year: str | None = None
+    ) -> Link:
         if query.startswith("http://") or query.startswith("https://"):
             return Link(
                 text=query.rstrip("/").split("/")[-1],
@@ -297,7 +299,9 @@ class OxfordAQAProvider(ExamBoardProvider):
                     )
         return None
 
-    def parse_qualification(self, page_url: str) -> Qualification:
+    def parse_qualification(
+        self, page_url: str, level: str | None = None, exam_year: str | None = None
+    ) -> Qualification:
         parser = parse_page(page_url)
         title = first_node_text(parser.nodes, "h1") or title_from_links(parser.links, page_url)
         code = code_from_title(title)
@@ -339,7 +343,12 @@ class OxfordAQAProvider(ExamBoardProvider):
             qualification.source.listing_style_class = link.style_class
         return qualification
 
-    def download_specification(self, qualification: Qualification, output_dir: Path) -> Qualification:
+    def download_specification(
+        self,
+        qualification: Qualification,
+        output_dir: Path,
+        exam_year: str | None = None,
+    ) -> Qualification:
         if not qualification.source.specification_url:
             raise ValueError("No specification PDF URL found on qualification page.")
 

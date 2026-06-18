@@ -37,6 +37,7 @@ GENERATED_STATUSES = {
     "codex-router-generated",
 }
 PENDING_STATUSES = {
+    "external-generation-required",
     "provider-selected-pending-generation",
     "infographic-provider-required",
 }

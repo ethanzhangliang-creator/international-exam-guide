@@ -26,7 +26,7 @@ before reporting success.
 ```mermaid
 flowchart LR
   A["User asks for an International GCSE or International AS-A-level guide"] --> B["Codex loads skill/SKILL.md"]
-  B --> C["Confirm subject, output language, image route, and explanation style"]
+  B --> C["Confirm subject/provider, required exam year, output language, and explanation style"]
   C --> D["Read handbook spec and provider reference"]
   D --> E["Run intl_exam_guide generate"]
   E --> F["Inspect run-options.json, handbook-package.json, and validation.json"]
@@ -47,8 +47,8 @@ The skill treats a guide as incomplete unless all of these are true:
 6. Every topic has practice cards with command words, solution steps, and answer checkpoints.
 7. HTML exists and contains required guide sections.
 8. `sections/` and `images/` exist.
-9. `run-options.json` records the confirmed subject, output language, image
-   route, and explanation style.
+9. `run-options.json` records the confirmed subject, output language, optional
+   image route, and explanation style.
 10. PDF exists unless `--skip-pdf` was intentionally used.
 11. `validation.json.review_summary` shows topic, diagram, practice-card, and
    source-snippet coverage.

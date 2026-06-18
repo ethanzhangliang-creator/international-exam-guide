@@ -71,8 +71,8 @@ def test_import_infographic_assets_updates_manifest(tmp_path):
     (images_dir / "visual_manifest.json").write_text(
         json.dumps(
             [
-                {"id": "visual_001", "complexity": "infographic", "asset_status": "provider-selected-pending-generation", "file": None},
-                {"id": "visual_002", "complexity": "infographic", "asset_status": "provider-selected-pending-generation", "file": None},
+                {"id": "visual_001", "complexity": "infographic", "asset_status": "external-generation-required", "file": None},
+                {"id": "visual_002", "complexity": "infographic", "asset_status": "external-generation-required", "file": None},
             ],
             indent=2,
         ),
@@ -99,8 +99,8 @@ def test_import_infographic_assets_fails_when_required_asset_missing(tmp_path):
     (images_dir / "visual_manifest.json").write_text(
         json.dumps(
             [
-                {"id": "visual_001", "complexity": "infographic", "asset_status": "provider-selected-pending-generation", "file": None},
-                {"id": "visual_002", "complexity": "infographic", "asset_status": "provider-selected-pending-generation", "file": None},
+                {"id": "visual_001", "complexity": "infographic", "asset_status": "external-generation-required", "file": None},
+                {"id": "visual_002", "complexity": "infographic", "asset_status": "external-generation-required", "file": None},
             ],
             indent=2,
         ),
@@ -124,7 +124,7 @@ def test_generate_pending_infographics_router_dry_run_plans_pending_assets(tmp_p
                     "id": "visual_001",
                     "topic_title": "Example infographic",
                     "complexity": "infographic",
-                    "asset_status": "provider-selected-pending-generation",
+                    "asset_status": "external-generation-required",
                     "file": None,
                     "prompt": "Create a clean learning infographic.",
                 },
@@ -192,8 +192,11 @@ def test_skill_instructions_include_required_preflight_choices():
     assert "description:" in text
     assert "Subject choice" in text
     assert "Output language" in text
-    assert "Infographic/image route" in text
+    assert "Exam year when needed" in text
     assert "Explanation style" in text
+    assert "Do not ask the user to choose an image model before the base guide is generated" in text
+    assert "how many complex infographic" in text
+    assert "SVG fallback" in text
     assert "This is a required language lock, not a bilingual mode" in text
     assert "Do not offer a" in text
     assert "combined bilingual output" in text
@@ -318,7 +321,7 @@ def write_sample_outputs(outputs: Path, completed: bool) -> None:
                 html_images.append(f'<img src="images/{filename}" alt="visual {index}">')
             else:
                 filename = None
-                status = "provider-selected-pending-generation"
+                status = "external-generation-required"
             manifest.append(
                 {
                     "id": f"visual_{index:03d}",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 
 from intl_exam_guide.models import (
@@ -28,10 +29,12 @@ STYLE_LABELS = {
 IMAGE_PROVIDERS = {
     "prompt-queue",
     "deterministic-svg",
+    "custom",
+}
+RECOMMENDED_IMAGE_MODEL_LABELS = {
     "gpt-image-2",
     "qwen-image-pro",
     "sensenova-u1-fast",
-    "custom",
 }
 
 LANGUAGE_CHOICES = {"en", "zh-CN"}
@@ -59,6 +62,7 @@ def build_guide_plan(
     explanation_style: str = "friendly",
     output_language: str = "en",
     requested_subject: str | None = None,
+    exam_year: str | None = None,
     image_model: str | None = None,
     image_endpoint_url: str | None = None,
     image_api_key_env: str | None = None,
@@ -69,6 +73,7 @@ def build_guide_plan(
         image_provider=image_provider,
         explanation_style=explanation_style,
         output_language=output_language,
+        exam_year=exam_year,
         image_model=image_model,
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,
@@ -127,13 +132,12 @@ def build_run_options(
     image_provider: str | None,
     explanation_style: str,
     output_language: str,
+    exam_year: str | None,
     image_model: str | None,
     image_endpoint_url: str | None,
     image_api_key_env: str | None,
 ) -> GuideRunOptions:
-    provider = image_provider or "prompt-queue"
-    if provider not in IMAGE_PROVIDERS:
-        provider = "custom"
+    provider = normalize_image_provider(image_provider, image_model, image_endpoint_url, image_api_key_env)
     style = explanation_style if explanation_style in STYLE_LABELS else "friendly"
     language = output_language if output_language in LANGUAGE_CHOICES else "en"
     return GuideRunOptions(
@@ -141,10 +145,36 @@ def build_run_options(
         image_provider=provider,
         explanation_style=style,
         output_language=language,
+        exam_year=exam_year or qualification.selected_exam_year,
         image_model=image_model,
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,
     )
+
+
+def normalize_image_provider(
+    image_provider: str | None,
+    image_model: str | None,
+    image_endpoint_url: str | None,
+    image_api_key_env: str | None,
+) -> str:
+    provider = (image_provider or "prompt-queue").strip()
+    if provider in RECOMMENDED_IMAGE_MODEL_LABELS:
+        # Recommended model names are not proof of a callable provider. Keep the
+        # base handbook honest and queue complex visuals for external generation.
+        return "prompt-queue"
+    if provider == "custom":
+        if (
+            image_model
+            and image_endpoint_url
+            and image_api_key_env
+            and os.environ.get(image_api_key_env)
+        ):
+            return "custom"
+        return "prompt-queue"
+    if provider in IMAGE_PROVIDERS:
+        return provider
+    return "prompt-queue"
 
 
 def build_topic_guide(
@@ -392,6 +422,8 @@ def concrete_example(
     profile = resolve_subject_profile(subject_area, topic, text)
     if profile.example_domain == "chemistry":
         return chemistry_example(text, focus, number)
+    if profile.example_domain == "biology":
+        return biology_example(text, focus, number)
     if profile.example_domain == "economics":
         return economics_example(text, focus, number)
     if profile.example_domain == "accounting":
@@ -626,12 +658,56 @@ def concrete_example_zh(
     return generic_example_zh(visible_focus)
 
 
+def biology_example(text: str, focus: str, number: int) -> tuple[str, list[str], list[str], list[str]]:
+    if any(word in text for word in ["water", "solvent", "dipole", "transport"]):
+        return (
+            "A red dye dissolves in water and is carried through a plant stem. Explain one property of water that makes this transport possible.",
+            ["Identify the useful property of water.", "Link the property to dissolving or movement.", "Finish with the transport role."],
+            ["Water is a polar solvent.", "Many substances can dissolve in it because water molecules interact with charged or polar particles.", "Once dissolved, the substance can be carried in solution through the plant.", "So water helps transport dissolved substances such as the dye."],
+            ["Names a property of water.", "Connects the property to dissolving.", "Links dissolving to transport, not just storage."],
+        )
+    if any(word in text for word in ["carbohydrate", "monosaccharide", "disaccharide", "polysaccharide", "starch", "glycogen", "glucose"]):
+        return (
+            "A student says starch and glucose are both carbohydrates, so they must be the same size molecule. Explain why this is wrong.",
+            ["State what glucose is.", "State what starch is.", "Compare the molecule size or structure."],
+            ["Glucose is a monosaccharide, a single sugar unit.", "Starch is a polysaccharide made from many glucose units joined together.", "They are both carbohydrates but they are not the same size.", "Therefore the student's statement is wrong."],
+            ["Uses mono- and polysaccharide correctly.", "Explains the structural difference.", "Does not say all carbohydrates are identical."],
+        )
+    if any(word in text for word in ["lipid", "triglyceride", "ester", "fatty acid", "glycerol"]):
+        return (
+            "A diagram shows glycerol joining to three fatty acids. Name the biological molecule formed and the type of bond made.",
+            ["Identify the product.", "Name the bond.", "Link the bond to the joining reaction."],
+            ["The molecule formed is a triglyceride.", "The bonds formed are ester bonds.", "Each fatty acid joins to glycerol by a condensation reaction.", "A triglyceride therefore contains glycerol joined to three fatty acids."],
+            ["Names triglyceride.", "Names ester bonds.", "Links the answer to the glycerol and fatty acids in the question."],
+        )
+    if any(word in text for word in ["dna", "rna", "replication", "nucleotide", "gene", "genetic"]):
+        return (
+            "During DNA replication, one original strand is used to build a new complementary strand. Explain why this helps copy genetic information accurately.",
+            ["Mention complementary base pairing.", "Explain how the new strand is built.", "Link the process to accurate copying."],
+            ["Each base on the original strand pairs with a complementary base.", "This pairing guides the order of bases in the new strand.", "The base sequence is therefore copied into a new DNA molecule.", "This helps preserve the genetic information."],
+            ["Uses complementary pairing.", "Explains the copying mechanism.", "Connects base order to genetic information."],
+        )
+    if any(word in text for word in ["cell", "membrane", "osmosis", "diffusion", "transport"]):
+        return (
+            "A cell is placed in a solution with a lower water concentration than the cytoplasm. Predict the direction of water movement and explain why.",
+            ["Compare water concentrations.", "State the direction of movement.", "Name the process if relevant."],
+            ["The solution has a lower water concentration than the cytoplasm.", "Water moves out of the cell down the water concentration gradient.", "This movement across the partially permeable membrane is osmosis.", "The cell may lose water and shrink."],
+            ["Compares water concentration correctly.", "States water moves out.", "Uses osmosis only for water across a membrane."],
+        )
+    return (
+        f"A student is revising '{focus}'. Write one cause-and-effect explanation that links the biological structure or process to its function.",
+        ["Identify the structure or process.", "State the function or result.", "Link them with because/therefore."],
+        [f"The focus point is {focus}.", "First identify the biological structure, molecule, or process named in the question.", "Then explain how its feature causes the observed function or result.", "Finish with a direct answer to the command word."],
+        ["Uses biology cause-and-effect language.", "Links structure/process to function.", "Keeps the answer inside the syllabus point."],
+    )
+
+
 def generic_example(focus: str) -> tuple[str, list[str], list[str], list[str]]:
     return (
-        f"Using '{focus}', answer an original short exam-style question: identify the relevant evidence, choose the correct method or definition, and give a checkable answer.",
-        ["Circle the data or key words in the question.", "Choose the matching syllabus idea.", "Apply it directly to the context."],
-        [f"The focus point is {focus}.", "First turn the question information into usable conditions.", "Then apply the definition, rule, calculation, or judgement required by the command word.", "Finish with a sentence that directly answers the question."],
-        ["Uses the named syllabus point.", "Links the answer to the question context.", "Does not borrow facts from another subject."],
+        f"A student revises the syllabus point '{focus}' but writes only a memorised phrase. Improve the answer by adding a clear command-word action and one piece of evidence from the question.",
+        ["Identify the command word.", "Choose one relevant evidence phrase.", "Connect the evidence to the syllabus point."],
+        [f"The answer must use the syllabus point: {focus}.", "A memorised phrase is not enough because exam answers must respond to the question context.", "Add the evidence or condition given in the question.", "Finish with a sentence that directly answers the command word."],
+        ["Mentions the syllabus point.", "Adds evidence from the question.", "Answers the command word instead of copying notes."],
     )
 
 
@@ -1356,7 +1432,7 @@ def choose_provider_for_visual(complexity: str, run_options: GuideRunOptions) ->
     if complexity == "svg-basic":
         return "deterministic-svg"
     if run_options.image_provider in {"prompt-queue", "deterministic-svg"}:
-        return "ask-user: image-model-required"
+        return "external-generation-required"
     if run_options.image_provider == "custom":
         return f"custom:{run_options.image_model or 'model-not-set'}"
     return run_options.image_provider

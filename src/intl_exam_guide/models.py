@@ -132,6 +132,7 @@ class GuideRunOptions:
     image_provider: str
     explanation_style: str
     output_language: str
+    exam_year: str | None = None
     image_model: str | None = None
     image_endpoint_url: str | None = None
     image_api_key_env: str | None = None

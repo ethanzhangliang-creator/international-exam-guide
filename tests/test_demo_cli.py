@@ -11,7 +11,43 @@ from intl_exam_guide.planning.guide_plan import (
 from intl_exam_guide.planning.subject_profiles import resolve_subject_profile
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_html
+from intl_exam_guide.rendering.visual_assets import scientific_vector_route
 from intl_exam_guide.validation.checks import review_summary, validate_plan
+
+
+def sample_qualification() -> Qualification:
+    return Qualification(
+        title="International GCSE Chemistry Example (9202)",
+        code="9202",
+        qualification_type="international_gcse",
+        subject_area="Chemistry",
+        page_url="https://example.test/chemistry/",
+        summary=["International GCSE linear qualification for international students."],
+        topics=[
+            Topic(
+                title="Bonding and structure",
+                points=[
+                    "Describe ionic, covalent and metallic bonding",
+                    "Explain how bonding affects properties",
+                ],
+                source_snippets=[
+                    SourceSnippet(
+                        page=12,
+                        text="Students should describe ionic, covalent and metallic bonding.",
+                        matched_term="Bonding and structure",
+                    )
+                ],
+            )
+        ],
+        assessments=[AssessmentPaper(title="Paper 1", details=["1 hour 30 minutes"])],
+        source=SourceRecord(
+            provider="test",
+            page_url="https://example.test/chemistry/",
+            specification_url="https://example.test/chemistry-spec.pdf",
+            specification_sha256="abc",
+        ),
+        audience_note="International GCSE linear qualification for international students outside the UK.",
+    )
 
 
 def test_demo_cli_generates_offline_guide(tmp_path):
@@ -156,6 +192,7 @@ def test_generated_infographic_assets_are_preserved_and_rendered(tmp_path):
         output_language="en",
         requested_subject="chemistry",
     )
+    assert plan.run_options.image_provider == "prompt-queue"
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "run-options.json").write_text(
         json.dumps(plan.run_options.__dict__, ensure_ascii=False, indent=2),
@@ -166,7 +203,12 @@ def test_generated_infographic_assets_are_preserved_and_rendered(tmp_path):
     images_dir = output_dir / "images"
     manifest_path = images_dir / "visual_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert manifest[0]["asset_status"] == "provider-selected-pending-generation"
+    assert manifest[0]["asset_status"] == "svg-fallback-needs-review"
+    assert manifest[0]["file"].endswith("-svg-fallback.svg")
+
+    render_html(plan, output_dir / "guide.html", manifest_path)
+    fallback_html = (output_dir / "guide.html").read_text(encoding="utf-8")
+    assert "SVG Fallback - Review Needed" in fallback_html
 
     image_name = "visual_001_bonding-infographic.png"
     (images_dir / image_name).write_bytes(b"fake-png")
@@ -183,6 +225,64 @@ def test_generated_infographic_assets_are_preserved_and_rendered(tmp_path):
     assert "Infographic Queue" not in html
     assert review_summary(plan, output_dir=output_dir)["generated_infographic_assets"] == 1
     assert not [issue for issue in validate_plan(plan, output_dir=output_dir) if issue.severity == "error"]
+
+
+def test_recommended_image_labels_are_not_treated_as_callable_providers():
+    qualification = sample_qualification()
+
+    for label in ["gpt-image-2", "qwen-image-pro", "sensenova-u1-fast"]:
+        plan = build_guide_plan(
+            qualification,
+            image_provider=label,
+            explanation_style="friendly",
+            output_language="en",
+            requested_subject="chemistry",
+        )
+
+        assert plan.run_options.image_provider == "prompt-queue"
+        assert all(
+            brief.image_provider in {"deterministic-svg", "external-generation-required"}
+            for brief in plan.visual_briefs
+        )
+
+
+def test_svg_safe_charts_are_marked_as_scientific_vector_fallbacks():
+    assert scientific_vector_route("statistics chart and probability visual") == "scripted-scientific-vector"
+    assert scientific_vector_route("reaction energy profile diagram") == "scripted-scientific-vector"
+    assert scientific_vector_route("text explanation with concept map only") == "hand-authored-svg"
+
+
+def test_custom_image_provider_requires_set_environment_variable(monkeypatch):
+    qualification = sample_qualification()
+    monkeypatch.delenv("CUSTOM_IMAGE_KEY", raising=False)
+
+    plan = build_guide_plan(
+        qualification,
+        image_provider="custom",
+        image_model="school-image-model",
+        image_endpoint_url="https://images.example.test/v1/images/generations",
+        image_api_key_env="CUSTOM_IMAGE_KEY",
+        explanation_style="friendly",
+        output_language="en",
+        requested_subject="chemistry",
+    )
+
+    assert plan.run_options.image_provider == "prompt-queue"
+
+    monkeypatch.setenv("CUSTOM_IMAGE_KEY", "test-key")
+    plan = build_guide_plan(
+        qualification,
+        image_provider="custom",
+        image_model="school-image-model",
+        image_endpoint_url="https://images.example.test/v1/images/generations",
+        image_api_key_env="CUSTOM_IMAGE_KEY",
+        explanation_style="friendly",
+        output_language="en",
+        requested_subject="chemistry",
+    )
+
+    assert plan.run_options.image_provider == "custom"
+    assert not [issue for issue in validate_plan(plan) if issue.severity == "error"]
 
 
 def test_chinese_mode_keeps_raw_english_source_snippets_out_of_topic_body(tmp_path):
@@ -446,7 +546,8 @@ def test_unknown_subject_uses_generic_fallback_instead_of_cross_subject_template
     assert "neutralisation" not in combined
     assert "demand" not in combined
     assert "supply" not in combined
-    assert "short exam-style question" in combined
+    assert "memorised phrase" in combined
+    assert "command word" in combined
 
     visual_type, complexity, _ = choose_visual_type(
         Topic(

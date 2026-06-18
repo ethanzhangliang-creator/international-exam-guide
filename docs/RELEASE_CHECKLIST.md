@@ -37,7 +37,7 @@ python -m intl_exam_guide discover --subject-url https://www.oxfordaqa.com/subje
 - [ ] OxfordAQA International GCSE sample works:
 
 ```bash
-python -m intl_exam_guide generate --query chemistry --level igcse --language en --image-provider gpt-image-2 --explanation-style friendly --out ./outputs/chemistry-9202
+python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
 ```
 
 - [ ] OxfordAQA International AS-A-level sample works:
@@ -49,13 +49,37 @@ python -m intl_exam_guide generate --query chemistry --level a-level --language 
 - [ ] OxfordAQA non-Science International GCSE sample works:
 
 ```bash
-python -m intl_exam_guide generate --query economics --level igcse --language en --image-provider gpt-image-2 --explanation-style life --out ./outputs/economics-9214
+python -m intl_exam_guide generate --query economics --level igcse --language en --explanation-style life --out ./outputs/economics-9214
 ```
 
 - [ ] OxfordAQA revised non-Science International AS-A-level code lookup sample works:
 
 ```bash
-python -m intl_exam_guide generate --query 9725 --level a-level --language en --image-provider qwen-image-pro --explanation-style story --out ./outputs/business-9725
+python -m intl_exam_guide generate --query 9725 --level a-level --language en --explanation-style story --out ./outputs/business-9725
+```
+
+- [ ] Pearson Edexcel International GCSE candidate-discovery sample works:
+
+```bash
+python -m intl_exam_guide generate --provider pearson --query "Mathematics B" --level igcse --language en --explanation-style friendly --out ./outputs/pearson-igcse-maths-b --skip-pdf
+```
+
+- [ ] Pearson Edexcel International AS/A Level candidate-discovery sample works:
+
+```bash
+python -m intl_exam_guide generate --provider pearson --query "Biology" --level a-level --language en --explanation-style friendly --out ./outputs/pearson-ial-biology --skip-pdf
+```
+
+- [ ] Cambridge IGCSE candidate-discovery sample works with `--exam-year`:
+
+```bash
+python -m intl_exam_guide generate --provider cambridge --query "Accounting 0452" --level igcse --exam-year 2027 --language en --explanation-style friendly --out ./outputs/cambridge-igcse-accounting-2027 --skip-pdf
+```
+
+- [ ] Cambridge AS/A Level candidate-discovery sample works with `--exam-year`:
+
+```bash
+python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701" --level a-level --exam-year 2029 --language en --explanation-style friendly --out ./outputs/cambridge-ial-chemistry-2029 --skip-pdf
 ```
 
 ## Validation
@@ -70,8 +94,10 @@ python -m intl_exam_guide generate --query 9725 --level a-level --language en --
 python scripts/scan_for_raw_keys.py . ./outputs
 ```
 
-- [ ] After the user confirms the image route and parameters, generated
-  infographic assets exist for all pending showcase visual briefs:
+- [ ] Pending complex infographics are marked as prompt-queue/external
+  generation work, not as generated assets.
+- [ ] Only after the user confirms a callable image route and parameters,
+  generated infographic assets exist for all pending showcase visual briefs:
 
 ```bash
 python scripts/generate_pending_infographics_router.py ./outputs/mathematics-9260-sample ./outputs/economics-9214-sample ./outputs/chemistry-9202-sample --size 1536x1024 --quality high --output-format png

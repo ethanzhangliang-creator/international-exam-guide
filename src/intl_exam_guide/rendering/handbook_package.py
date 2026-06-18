@@ -19,6 +19,7 @@ from intl_exam_guide.rendering.visual_assets import (
     build_visual_asset_lookup,
     has_renderable_infographic,
     load_visual_manifest,
+    scientific_vector_route,
     visual_asset_key_from_brief,
 )
 
@@ -114,7 +115,7 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
         key = visual_asset_key_from_brief(brief)
         previous = existing_by_key.get(key, {})
         filename = None
-        asset_status = "infographic-provider-required"
+        asset_status = "external-generation-required"
         if brief.complexity == "svg-basic":
             filename = f"visual_{index:03d}_{slugify(brief.topic_title)}.svg"
             path = images_dir / filename
@@ -128,8 +129,15 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
             filename = str(previous.get("file"))
             asset_status = str(previous.get("asset_status") or "generated")
             written.append(images_dir / filename)
-        elif not brief.image_provider.startswith("ask-user"):
-            asset_status = "provider-selected-pending-generation"
+        else:
+            filename = f"visual_{index:03d}_{slugify(brief.topic_title)}-svg-fallback.svg"
+            path = images_dir / filename
+            path.write_text(
+                render_topic_visual_svg(brief, index, plan.run_options.output_language).strip(),
+                encoding="utf-8",
+            )
+            written.append(path)
+            asset_status = "svg-fallback-needs-review"
         entry = {
             **previous,
             **{
@@ -142,6 +150,11 @@ def write_visual_assets(plan: GuidePlan, images_dir: Path) -> list[Path]:
                 "visual_type": brief.visual_type,
                 "complexity": brief.complexity,
                 "image_provider": brief.image_provider,
+                "fallback_route": (
+                    scientific_vector_route(brief.visual_type)
+                    if brief.complexity == "svg-basic"
+                    else "review-required-svg-fallback"
+                ),
                 "prompt": brief.prompt,
                 "source_points": brief.source_points,
                 "source_pages": [snippet.page for snippet in brief.source_snippets],

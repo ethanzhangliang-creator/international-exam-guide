@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.0 - 2026-06-19
+
+### Added
+
+- Added URL-first MVP providers for Pearson Edexcel and Cambridge International / CAIE while keeping OxfordAQA generation working.
+- Added `--exam-year` support so Cambridge subject pages with multiple syllabus year ranges can select the correct syllabus or fail with a clear request for the exam year.
+- Added provider/source metadata fields for provider name, qualification family, specification URL, PDF hash, syllabus year range, selected exam year, route tags, command words, assessment objectives, and paper/unit/component details.
+- Added live smoke coverage for OxfordAQA, Pearson International GCSE, Pearson International AS/A Level, Cambridge IGCSE, and Cambridge International AS/A Level.
+
+### Changed
+
+- Complex infographic routing now defaults to source-bound `visual_brief` / prompt queue output. GPT Image 2.0, Qwen Image 2.0 Pro, and SenseNova U1 Fast are documented as recommended external options, not guaranteed built-in capabilities for every user.
+- `--image-provider` is optional and defaults to `prompt-queue`. Real image generation or import only happens when the user supplies a callable skill, API, script, asset directory, or custom provider configuration.
+- Validation now treats missing complex infographic files as pending external-generation work instead of claiming provider-selected images were generated.
+
+### Fixed
+
+- Cambridge missing `exam_year` on multi-range syllabus pages now stops clearly instead of silently choosing a syllabus.
+- Provider validation no longer applies OxfordAQA modular assumptions to Cambridge AS/A Level outputs.
+- Topic-count sanity checks now catch obviously thin extraction from downloaded specification/syllabus PDFs.
+
 ## 0.1.1 - 2026-06-18
 
 ### Fixed
@@ -15,7 +36,7 @@
 ### Added
 
 - Added the first multi-provider foundation: a common `ExamBoardProvider` contract, provider registry, URL-based provider inference, and model fields for Cambridge syllabus year ranges and Edexcel modular/unit structures.
-- Added explicit guardrails for Pearson Edexcel and Cambridge International / CAIE URLs. They are recognised as roadmap providers, but generation is still blocked with a clear "planned but not implemented" message in this release.
+- Added explicit guardrails for Pearson Edexcel and Cambridge International / CAIE URLs. In this release they were recognised as roadmap providers and stopped with a clear roadmap message.
 
 ### Verified
 
@@ -27,7 +48,7 @@
 
 ### Notes
 
-- `prompt-queue` remains a dry-run image route. Complex infographic briefs still require a user-selected image model/API before final raster assets are generated.
+- `prompt-queue` remains the safe no-API image route. Complex infographic briefs require a callable external skill/API/script, generated asset directory, or custom provider before final raster assets are added.
 - Official specification PDFs and extracted official text are generated at runtime and are not committed to the repository.
 
 ## 0.1.0 - Initial public architecture draft

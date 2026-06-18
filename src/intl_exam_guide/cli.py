@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from importlib import resources
 from pathlib import Path
@@ -44,6 +45,10 @@ def main(argv: list[str] | None = None) -> int:
         choices=["gcse", "igcse", "a-level", "alevel", "as-a-level"],
         help="Qualification level.",
     )
+    generate.add_argument(
+        "--exam-year",
+        help="Exam year used by year-ranged syllabuses, especially Cambridge subject pages.",
+    )
     generate.add_argument("--out", required=True, help="Output directory.")
     generate.add_argument("--questions-per-topic", type=int, default=2)
     add_generation_choice_args(generate)
@@ -84,10 +89,14 @@ def main(argv: list[str] | None = None) -> int:
         source_dir = out_dir / "source"
         out_dir.mkdir(parents=True, exist_ok=True)
 
-        link = provider.find_qualification(args.query, args.level)
-        qualification = provider.parse_qualification(link.href)
-        qualification = provider.apply_listing_metadata(qualification, link)
-        qualification = provider.download_specification(qualification, source_dir)
+        try:
+            link = provider.find_qualification(args.query, args.level, args.exam_year)
+            qualification = provider.parse_qualification(link.href, args.level, args.exam_year)
+            qualification = provider.apply_listing_metadata(qualification, link)
+            qualification = provider.download_specification(qualification, source_dir, args.exam_year)
+        except (ValueError, NotImplementedError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 2
         return write_guide_outputs(
             qualification,
             out_dir,
@@ -97,6 +106,7 @@ def main(argv: list[str] | None = None) -> int:
             args.explanation_style,
             args.language,
             args.query,
+            args.exam_year,
             args.image_model,
             args.image_endpoint_url,
             args.image_api_key_env,
@@ -116,6 +126,7 @@ def main(argv: list[str] | None = None) -> int:
             args.explanation_style,
             args.language,
             "demo science",
+            None,
             args.image_model,
             args.image_endpoint_url,
             args.image_api_key_env,
@@ -127,11 +138,12 @@ def main(argv: list[str] | None = None) -> int:
 def add_generation_choice_args(command: argparse.ArgumentParser) -> None:
     command.add_argument(
         "--image-provider",
-        required=True,
+        default="prompt-queue",
         choices=sorted(IMAGE_PROVIDERS),
         help=(
-            "User-selected visual route. Use prompt-queue only for a deliberate dry run; "
-            "final complex infographics need gpt-image-2, qwen-image-pro, sensenova-u1-fast, or custom."
+            "Optional visual route. Defaults to prompt-queue, which writes source-bound "
+            "visual briefs for complex infographics. Real image generation/import requires "
+            "a callable external skill, API, script, asset directory, or custom provider."
         ),
     )
     command.add_argument(
@@ -168,6 +180,20 @@ def validate_generation_choices(parser: argparse.ArgumentParser, args: argparse.
     ]
     if missing:
         parser.error("--image-provider custom requires " + ", ".join(missing))
+    if not os.environ.get(args.image_api_key_env):
+        parser.error(
+            "--image-provider custom requires environment variable "
+            f"{args.image_api_key_env} to be set"
+        )
+
+
+def resolve_provider(provider: str | None, query: str) -> str:
+    """Return provider name: explicit choice, URL inference, or OxfordAQA default."""
+    if provider:
+        return provider
+    if query.lower().startswith(("http://", "https://")):
+        return infer_provider_from_url(query) or "oxfordaqa"
+    return "oxfordaqa"
 
 
 def resolve_provider(provider: str | None, query: str) -> str:
@@ -197,6 +223,7 @@ def write_guide_outputs(
     explanation_style: str,
     output_language: str,
     requested_subject: str,
+    exam_year: str | None,
     image_model: str | None,
     image_endpoint_url: str | None,
     image_api_key_env: str | None,
@@ -208,6 +235,7 @@ def write_guide_outputs(
         explanation_style=explanation_style,
         output_language=output_language,
         requested_subject=requested_subject,
+        exam_year=exam_year,
         image_model=image_model,
         image_endpoint_url=image_endpoint_url,
         image_api_key_env=image_api_key_env,

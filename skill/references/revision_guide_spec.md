@@ -22,18 +22,40 @@ not be committed to the repository.
 
 ## Required Preflight
 
-Do not start the handbook pipeline until the user has confirmed:
+Do not start syllabus download or handbook writing until the user has confirmed:
 
-1. subject selection: board, qualification level, subject, and code if known;
-2. output language: `en` or `zh-CN`;
-3. infographic/image route: a named provider or a custom API connection;
+1. subject selection: board, qualification level, subject, and code if known.
+   If the user only gives an exam board and subject, resolve official
+   candidates first. If several official candidates match, return those choices
+   and wait for the user to choose one instead of guessing;
+2. exam year when the provider needs it, especially Cambridge pages with
+   multiple syllabus year ranges;
+3. output language: `en` or `zh-CN`;
 4. writing style: `formal`, `friendly`, `life`, `story`, `detective`, or
    `adventure`.
 
-For custom image providers, record the model name, endpoint URL, and the API-key
-environment variable name. Do not collect or store the raw API key. If the user
-chooses `prompt-queue`, treat it as a dry run: create source-bound prompts and
-SVG-safe drafts, but do not present the result as a final image-rich handbook.
+Do not ask for an image model during preflight. The base handbook should run
+first, then the visual pass should count how many complex infographic briefs are
+needed. Tell the user that count after generation. The user may then provide an
+image model, API, Skill, script, designer workflow, or generated asset directory.
+If they provide none, deliver SVG fallback images and clearly warn that complex
+information SVG fallbacks can be less accurate and need review.
+
+Recommended external models for complex text+diagram infographics include GPT
+Image 2.0, Qwen Image 2.0 Pro, and SenseNova U1 Fast. They are recommendations,
+not guaranteed built-in capabilities. For custom image providers, record the
+model name, endpoint URL, and the API-key environment variable name. Do not
+collect or store the raw API key.
+
+Before any real image provider is used after the base guide run, verify at least
+one concrete capability:
+a named image-generation Skill installed for this run, an existing generation or
+import script path, an asset directory with files matching visual IDs, or a
+`custom` provider with model name, endpoint URL, API-key environment variable
+name, and the environment variable actually set. If this gate is not satisfied,
+do not ask the user to pick from model names and do not pass recommended model
+labels to the base generator. Use `prompt-queue`, include SVG fallbacks for
+complex visuals, and mark them as needing review.
 
 ## Handbook Structure
 
@@ -87,24 +109,35 @@ to decide which items need visuals:
 
 - `text-ok`: no image needed;
 - `svg-basic`: deterministic SVG is enough;
-- `infographic`: ask the user to choose an image model before generation.
+- `infographic`: create a source-bound visual brief, prompt queue entry, and
+  SVG fallback marked as needing review unless a reviewed raster asset exists.
 
 Good SVG cases include number lines, simple graphs, pH scales, particle models,
 energy profiles, and basic geometry. Good infographic cases include lab
 apparatus, complex geometry, circuits, economics diagrams, business workflows,
 and text-heavy single-language charts.
 
+For SVG-safe chart, axis, curve, table, and simple geometry cases, use the
+scientific-vector fallback in `references/scientific_vector_fallback.md`. This
+adapts the `nature-figure` idea of a figure contract to revision guides: state
+the learning claim, evidence/label requirements, and review risk before drawing.
+Keep SVG text editable and record `fallback_route:
+scripted-scientific-vector` in `images/visual_manifest.json`. Do not use this
+route for dense educational posters or rich infographics that need a real image
+model or reviewed imported asset.
+
 If a richer infographic is needed, keep a prompt queue with:
 
 - topic title;
 - focus point;
 - source syllabus points;
-- image provider;
+- asset route/status: `deterministic-svg`, `svg-fallback-needs-review`, or a
+  reviewed generated/imported asset;
 - prompt;
 - review status.
 
-Do not claim that an infographic has been generated until the selected provider
-has produced an image and the asset is saved under `images/`.
+Do not claim that an infographic has been generated until a callable route has
+produced or imported an image and the asset is saved under `images/`.
 
 ## Source And Accuracy Rules
 

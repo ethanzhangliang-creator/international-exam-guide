@@ -1,14 +1,14 @@
 ---
 name: igcse-a-level-revision-guide
-description: Generate image-rich IGCSE and A-Level revision handbooks for OxfordAQA International GCSE and International AS-A-level subjects, with syllabus-based explanations, worked examples, visual learning units, review questions, HTML output, and optional PDF export.
+description: Generate image-rich International GCSE and International AS-A-level revision handbooks from official syllabus/specification sources, with AQA, Pearson Edexcel, and Cambridge International / CAIE support.
 ---
 
 # IGCSE & A-Level AI Revision Guide Skill
 
 Use this skill when the user asks for an International GCSE or International
-AS-A-level subject study/revision guide, especially for OxfordAQA. Treat IGCSE
-as a user-facing alias for International GCSE, but use the full qualification
-names in generated documentation.
+AS-A-level subject study/revision guide. Treat IGCSE as a user-facing alias for
+International GCSE, but use the full qualification names in generated
+documentation.
 
 Before generating a guide, read `references/revision_guide_spec.md`. That file
 defines the handbook contract inherited from the original IGCSE revision-guide
@@ -16,11 +16,26 @@ Skill: the output must be a student study/revision handbook with HTML, PDF,
 modular sections, visual assets, worked examples, and validation. Do not turn
 the output into project documentation.
 
-Current provider support is OxfordAQA only. Pearson Edexcel and Cambridge
-International / CAIE are roadmap providers for the China-market version, but
-they need their own provider references and parser checks before generation.
+Current provider support:
+
+- OxfordAQA: implemented provider, including catalogue discovery. In Chinese
+  user requests, treat "AQA" as the common shorthand for OxfordAQA /
+  Oxford International AQA unless the user explicitly gives a UK AQA page.
+- Pearson Edexcel: subject-name candidate discovery for common official
+  International GCSE / International AS-A-level page patterns, plus official
+  subject-page URL or direct specification PDF URL fallback.
+- Cambridge International / CAIE: official subject-index candidate discovery,
+  plus official subject-page URL or direct syllabus PDF URL fallback. If a
+  Cambridge page lists multiple syllabus year ranges, ask for `exam_year` and
+  use the range containing that year.
+
 Do not run the OxfordAQA provider against Edexcel, Cambridge, or generic AQA UK
-pages.
+pages. If the user says only "AQA" with no UK AQA URL, clarify or treat it as
+OxfordAQA for the China-facing International GCSE / International AS-A-level
+workflow. Do not claim full subject-catalogue crawling for Pearson. When Pearson
+or Cambridge cannot uniquely identify a subject from exam board, level, subject,
+and code, return the matching official candidates and ask the user to choose one.
+Do not silently pick a likely route.
 
 ## User-Facing Use
 
@@ -44,12 +59,19 @@ choice step first.
 
 ## Required Preflight Choices
 
-Before downloading a specification, generating content, or creating images, ask
-for and confirm these four choices if the user did not already provide them:
+Before downloading a specification or generating content, ask for and confirm
+these choices if the user did not already provide them:
 
 1. **Subject choice**: exam board, qualification level, subject, and code if
-   known. Current supported board is OxfordAQA only.
-2. **Output language**: ask whether the handbook should be `en` or `zh-CN`.
+   known. The user may only know the exam board and subject. First resolve an
+   official candidate yourself. If the provider finds several matching official
+   routes, show the choices and wait for the user to pick one. Official
+   subject-page URLs and direct specification/syllabus PDF URLs are accepted as
+   precise overrides.
+2. **Exam year when needed**: Cambridge subject pages often expose multiple
+   syllabus ranges. If more than one range is available, ask for the student's
+   exam year before selecting a syllabus.
+3. **Output language**: ask whether the handbook should be `en` or `zh-CN`.
    This is a required language lock, not a bilingual mode. Do not offer a
    combined bilingual output. Do not render handbook labels
    as bilingual `Chinese / English`, `English / Chinese`, `中文 / English`, or
@@ -61,20 +83,53 @@ for and confirm these four choices if the user did not already provide them:
    English syllabus bullet points into the student-facing topic map/body. If the
    user changes language, regenerate the guide in the new language instead of
    merging old sections.
-3. **Infographic/image route**: ask which image model or provider the user wants
-   to use for complex visuals. Accepted built-in labels for this repository are
-   `gpt-image-2`, `qwen-image-pro`, `sensenova-u1-fast`, `custom`,
-   `deterministic-svg`, and `prompt-queue`.
 4. **Explanation style**: ask how the knowledge points and examples should read:
    `formal`, `friendly`, `life`, `story`, `detective`, or `adventure`.
+Do not ask the user to choose an image model before the base guide is generated.
+Do not show an image-model choice menu that mixes SVG, prompt queue, and
+recommended model names. The only required preflight choices are
+subject/provider, required exam year, output language, and explanation style.
 
-For `custom`, ask for the model name, endpoint URL, and the environment variable
-name that stores the API key. Never ask the user to paste a raw API key into the
-chat or commit one to the repository.
+The recommended complex-image models are GPT Image 2.0, Qwen Image 2.0 Pro, and
+SenseNova U1 Fast because they tend to handle text+diagram educational
+infographics better than generic art models. These are recommendations only.
+Do not imply every user can call them by default.
 
-`prompt-queue` is only a deliberate dry-run choice: it creates source-bound
-image prompts and SVG-safe drafts but does not produce final complex
-infographics. Do not use it silently.
+When no callable image model is available, do not treat every visual as a rough
+generic SVG. For chart-like or rule-driven visuals, use the internal
+scientific-vector fallback described in
+`references/scientific_vector_fallback.md`: number lines, axes, probability
+trees, function graphs, statistics charts, rate curves, pH scales, energy
+profiles, and simple labelled geometry should be rendered as source-bound,
+editable SVG where possible. This is not a user-facing image model choice.
+Complex infographics still require an external model, script, imported asset, or
+reviewed designer workflow.
+
+After the guide plan is built, inspect `validation.json.review_summary` or
+`images/visual_manifest.json` and tell the user how many complex infographic
+briefs were found. Then the user may provide their own image-generation model,
+API, Skill, script, designer workflow, or generated image directory. If they do
+not provide one, deliver the SVG fallback images already generated by the
+package, but say clearly that complex-information SVG fallbacks can be less
+accurate and need review.
+
+## Callable Image Capability Gate
+
+Before using any real image model name after the base guide run, verify one of
+these concrete capabilities:
+
+- a named image-generation Skill is installed and the user explicitly asked to
+  use it for this run;
+- a script path exists and is designed to generate or import the pending
+  `visual_manifest.json` entries;
+- an asset directory exists with generated image files matching the visual IDs;
+- `--image-provider custom` has model name, endpoint URL, and API-key
+  environment variable name, and the environment variable is set.
+
+If none of those checks passes, do not choose a model. Keep the base guide on
+`prompt-queue` and use the generated SVG fallback images with a review warning.
+Never ask the user to paste a raw API key into chat or commit one to the
+repository.
 
 Handle repository setup, CLI execution, validation checks, and PDF export as the
 agent. Do not ask the user to install dependencies unless the local environment
@@ -121,21 +176,26 @@ The required generation logic is:
 6. Render the guide to HTML/PDF only after the content, examples, visual briefs,
    and source checks are present.
 
-For student-facing guides, do not produce a text-only template. During preflight,
-ask the user which infographic/image route to use:
+For student-facing guides, do not produce a text-only template. During visual
+planning:
 
-- `prompt-queue` for a dry run that writes prompts but no complex images;
+- `prompt-queue` is the default route for complex visuals when no callable image
+  capability exists;
 - `deterministic-svg` for offline concept maps and simple diagrams only;
-- `gpt-image-2` for high-quality polished educational visuals;
-- `qwen-image-pro` for text-heavy Chinese or English infographics;
-- SenseNova U1 Fast (`sensenova-u1-fast`) for fast infographic drafts or local/provider experiments;
+- GPT Image 2.0, Qwen Image 2.0 Pro, and SenseNova U1 Fast are recommended
+  external options for text+diagram educational infographics;
 - `custom` if the user has another provider, URL, model name, and key env var.
 
-If the user has not chosen an output language, image route, and explanation
-style, stop and ask. The generation process starts only after the subject,
-output language, image route, and writing style are confirmed. Do not claim that
-complex infographics have been generated until the selected model has actually
-produced reviewed image assets.
+These recommended model names are not CLI providers. Do not pass them as
+`--image-provider` values to the base generator. Use `prompt-queue` for the
+guide, then run or import external images only after the callable gate above
+passes.
+
+If the user has not chosen the subject, required exam year, output language, and
+explanation style, stop and ask. Do not block the base handbook on image-model
+choice. Do not claim that complex infographics have been finalized until a
+callable image route has produced reviewed image assets; SVG fallbacks are
+draft aids.
 
 When the full repository is available and the user has confirmed GPT Image 2
 Codex-only Router parameters, use
@@ -160,32 +220,59 @@ https://github.com/mianbaofang/igcse-a-level-revision-guide.git
 
 ## Workflow
 
-1. Confirm the required preflight choices: subject, output language, image
-   route, and explanation style.
+1. Confirm the required preflight choices: subject/provider, required exam
+   year, output language, and explanation style. Do not ask for an image model
+   at this stage.
 2. Read `references/revision_guide_spec.md`.
 3. For OxfordAQA, read `references/oxfordaqa.md`.
-4. If the requested provider is Pearson Edexcel or Cambridge International /
-   CAIE, explain that it is planned but not implemented in the current release.
+4. For Pearson Edexcel or Cambridge International / CAIE, first try official
+   candidate discovery from the user's subject request. If more than one
+   official candidate matches, return the choices and wait. If none matches,
+   ask for an official subject-page URL, direct specification/syllabus PDF URL,
+   or subject code. Do not silently switch to another board or reuse an AQA
+   syllabus.
 5. Run the generator CLI from the repository root with the confirmed
-   `--language`, `--image-provider`, and `--explanation-style`. Confirm that detailed PDF
+   `--language`, `--explanation-style`, optional `--exam-year`, and optional
+   `--image-provider`. Confirm that detailed PDF
    syllabus units were extracted; do not accept broad web summary topics as the
    final guide structure when the PDF contains finer subject content.
 6. Check `validation.json` before presenting the guide. A usable student guide
    needs detailed units, worked examples, source snippets, visual briefs,
    `sections/`, and `images/`; a guide with only broad topic headings is a
    failed draft.
-7. If the guide will be used with children, require subject-specialist review for
+7. Report how many complex infographic briefs were found. If the user provides
+   a generation/import method, use it after the callable gate passes. If not,
+   deliver the SVG fallbacks and warn that they are less reliable for complex
+   information diagrams.
+8. If the guide will be used with children, require subject-specialist review for
    worked examples before treating it as final exam preparation material.
-8. Preserve the visual and narrative learning layer: after the base topic guide
+9. Preserve the visual and narrative learning layer: after the base topic guide
    and practice items are generated, analyze which knowledge points or examples
    need visual explanation. Use deterministic SVG for simple diagrams. For
-   complex infographic needs, ask the user to choose an image model and keep
-   source-bound prompts without copying protected IP.
+   complex infographic needs, create source-bound briefs and SVG fallbacks
+   marked as needing review unless a callable route is available.
+   When the visual is an exact chart/axis/curve/simple geometry case, read
+   `references/scientific_vector_fallback.md` and keep the SVG editable,
+   source-bound, and recorded as a scientific-vector fallback in the manifest.
 
 ## Commands
 
+From a full repository checkout, install the package first when possible:
+
 ```bash
-PYTHONPATH=src python -m intl_exam_guide generate --query chemistry --level igcse --language en --image-provider qwen-image-pro --explanation-style friendly --out ./outputs/chemistry-9202
+python -m pip install -e .
+python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
+```
+
+If the package is not installed and the agent only needs a local run, set
+`PYTHONPATH` for the current shell:
+
+```powershell
+$env:PYTHONPATH='src'; python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
+```
+
+```bash
+PYTHONPATH=src python -m intl_exam_guide generate --query chemistry --level igcse --language en --explanation-style friendly --out ./outputs/chemistry-9202
 ```
 
 Use `--skip-pdf` only when no local browser or Playwright runtime is available.

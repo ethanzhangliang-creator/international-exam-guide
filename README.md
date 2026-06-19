@@ -32,6 +32,8 @@ control.
   ·
   <a href="docs/PROJECT_DETAILS.md">Project details</a>
   ·
+  <a href="docs/PROJECT_OPERATIONS.md">Operations guide</a>
+  ·
   <a href="docs/IMAGE_MODEL_GUIDE.md">Image guidance</a>
 </p>
 

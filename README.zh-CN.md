@@ -30,6 +30,8 @@
   ·
   <a href="docs/PROJECT_DETAILS.md">项目详情</a>
   ·
+  <a href="docs/PROJECT_OPERATIONS.md">维护说明</a>
+  ·
   <a href="docs/IMAGE_MODEL_GUIDE.md">生图建议</a>
 </p>
 

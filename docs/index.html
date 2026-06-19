@@ -759,7 +759,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.7</div>
+          <div class="kicker">三大考试局支持 · v0.2.8</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1048,15 +1048,15 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.7：清理公开入口，收紧内容质量验证。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；本次功能修复重点是删除公开文档里的本地私有路径，并把中文占位符、重复例题等问题纳入错误级检查。</p>
+          <h2>v0.2.8：加固三大考试局生成主流程。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次功能修复重点是让 Edexcel 表格型大纲解析更稳，PDF 导出路径更一致，并把兜底主题、缺失考试结构和重复例题挡在最终交付前。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
             <div class="num">01 · 考试局</div>
             <div>
               <h3>三大考试局继续作为基准</h3>
-              <p>AQA、Edexcel、CAIE 都保留官方来源路线；无法唯一确认科目时先返回候选给用户选择。</p>
+              <p>AQA、Edexcel、CAIE 都保留官方来源路线；Edexcel 表格型 syllabus 会拆成具体 topic，不再把前言误切成 Content unit。</p>
             </div>
           </article>
           <article class="flow-item">
@@ -1069,15 +1069,15 @@
           <article class="flow-item">
             <div class="num">03 · 图文</div>
             <div>
-              <h3>生图不再假装可用</h3>
-              <p>GPT Image、Qwen、SenseNova 只是推荐模型；只有用户提供可调用路线后才进入真实生图。</p>
+              <h3>PDF 导出路径更稳</h3>
+              <p>先尝试 Playwright，再回退到本机 Chrome/Edge；如果两条路都不可用，会给出明确错误而不是静默失败。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">04 · 质量</div>
             <div>
               <h3>质量不过不交付</h3>
-              <p>必须有详细知识点、例题、来源片段、视觉 briefs、sections 和 images，验证报错时不当成最终手册。</p>
+              <p>必须有详细知识点、例题、来源片段、考试结构、视觉 briefs、sections 和 images，验证报错时不当成最终手册。</p>
             </div>
           </article>
         </div>

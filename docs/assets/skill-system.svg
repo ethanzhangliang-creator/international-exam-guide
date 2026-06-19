@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
-  <title id="title">Codex skill system</title>
-  <desc id="desc">How the Codex skill turns a confirmed course request into a revision guide.</desc>
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="500" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
+  <title id="title">AI Agent skill system</title>
+  <desc id="desc">How the AI Agent skill turns a confirmed course request into a revision guide.</desc>
   <rect width="1100" height="500" rx="24" fill="#ffffff"/>
   <rect x="28" y="28" width="1044" height="444" rx="22" fill="#f7f9fc" stroke="#d9e2ef"/>
   <text x="64" y="80" font-family="Segoe UI, Arial, sans-serif" font-size="30" font-weight="800" fill="#172033">Skill wrapper design</text>

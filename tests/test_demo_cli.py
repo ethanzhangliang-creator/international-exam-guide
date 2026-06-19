@@ -1,5 +1,6 @@
 import json
 
+import intl_exam_guide.cli as cli_module
 from intl_exam_guide.cli import main
 from intl_exam_guide.models import AssessmentPaper, Qualification, SourceRecord, SourceSnippet, Topic
 from intl_exam_guide.planning.guide_plan import (
@@ -17,6 +18,7 @@ from intl_exam_guide.rendering.visual_assets import (
     has_renderable_infographic,
     scientific_vector_route,
 )
+from intl_exam_guide.providers.base import Link
 from intl_exam_guide.validation.checks import review_summary, validate_plan
 
 
@@ -53,6 +55,132 @@ def sample_qualification() -> Qualification:
         ),
         audience_note="International GCSE linear qualification for international students outside the UK.",
     )
+
+
+def sample_downloaded_qualification() -> Qualification:
+    topics = [
+        Topic(
+            title=f"3.{index} - Accounting topic {index}",
+            points=[
+                f"Students should explain accounting source document {index}.",
+                f"Students should prepare ledger entries for scenario {index}.",
+            ],
+            source_snippets=[
+                SourceSnippet(
+                    page=10 + index,
+                    text=f"Students should explain accounting source document {index} and prepare ledger entries.",
+                    matched_term=f"Accounting topic {index}",
+                )
+            ],
+        )
+        for index in range(1, 7)
+    ]
+    return Qualification(
+        title="International GCSE Accounting Example (9999)",
+        code="9999",
+        qualification_type="international_gcse",
+        subject_area="Accounting",
+        page_url="https://example.test/accounting/",
+        summary=["International GCSE linear qualification for international students."],
+        topics=topics,
+        assessments=[
+            AssessmentPaper(
+                title="Paper 1",
+                details=["1 hour 30 minutes"],
+                source_snippets=[
+                    SourceSnippet(page=30, text="Paper 1 is 1 hour 30 minutes.", matched_term="Paper 1")
+                ],
+            )
+        ],
+        source=SourceRecord(
+            provider="test",
+            page_url="https://example.test/accounting/",
+            specification_url="https://example.test/accounting-spec.pdf",
+            specification_sha256="abc",
+            specification_path="source/spec.pdf",
+        ),
+        audience_note="International GCSE linear qualification for international students outside the UK.",
+    )
+
+
+def test_discover_cli_lists_subject_pages_offline(monkeypatch, capsys):
+    class FakeProvider:
+        def discover_subject_pages(self):
+            return [
+                Link(
+                    text="Accounting",
+                    href="https://example.test/accounting/",
+                )
+            ]
+
+    monkeypatch.setattr(cli_module, "get_provider", lambda _name: FakeProvider())
+
+    result = cli_module.main(["discover", "--provider", "fake"])
+
+    assert result == 0
+    assert "Accounting\thttps://example.test/accounting/" in capsys.readouterr().out
+
+
+def test_generate_cli_runs_provider_chain_offline(monkeypatch, tmp_path):
+    calls = []
+
+    class FakeProvider:
+        def find_qualification(self, query, level=None, exam_year=None):
+            calls.append(("find", query, level, exam_year))
+            return Link(text="Accounting", href="https://example.test/accounting/")
+
+        def parse_qualification(self, page_url, level=None, exam_year=None):
+            calls.append(("parse", page_url, level, exam_year))
+            return sample_downloaded_qualification()
+
+        def apply_listing_metadata(self, qualification, link):
+            calls.append(("metadata", link.text))
+            qualification.source.listing_subject = link.text
+            return qualification
+
+        def download_specification(self, qualification, output_dir, exam_year=None):
+            calls.append(("download", str(output_dir.name), exam_year))
+            output_dir.mkdir(parents=True, exist_ok=True)
+            (output_dir / "spec.pdf").write_bytes(b"%PDF-1.4\n")
+            return qualification
+
+    monkeypatch.setattr(cli_module, "get_provider", lambda _name: FakeProvider())
+    output_dir = tmp_path / "generated"
+
+    result = cli_module.main(
+        [
+            "generate",
+            "--provider",
+            "fake",
+            "--query",
+            "Accounting 9999",
+            "--level",
+            "igcse",
+            "--out",
+            str(output_dir),
+            "--image-provider",
+            "prompt-queue",
+            "--explanation-style",
+            "friendly",
+            "--language",
+            "en",
+            "--skip-pdf",
+        ]
+    )
+
+    assert result == 0
+    assert calls == [
+        ("find", "Accounting 9999", "igcse", None),
+        ("parse", "https://example.test/accounting/", "igcse", None),
+        ("metadata", "Accounting"),
+        ("download", "source", None),
+    ]
+    validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))
+    assert validation["review_summary"]["topics"] == 6
+    assert validation["review_summary"]["practice_cards"] == 12
+    assert validation["review_summary"]["topics_with_guides"] == 6
+    assert validation["review_summary"]["topics_with_practice"] == 6
+    assert not [issue for issue in validation["issues"] if issue["severity"] == "error"]
 
 
 def test_demo_cli_generates_offline_guide(tmp_path):
@@ -570,6 +698,22 @@ def test_accounting_chinese_examples_translate_visible_terms():
     assert "book of prime entry" not in combined
 
 
+def test_chinese_practice_variants_are_not_duplicate_questions():
+    plan = build_guide_plan(
+        sample_qualification(),
+        questions_per_topic=2,
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="zh-CN",
+        requested_subject="chemistry",
+    )
+
+    questions = [item.question for item in plan.practice_items]
+
+    assert len(questions) == 2
+    assert len(set(questions)) == 2
+
+
 def test_chinese_point_labels_do_not_use_generic_syllabus_placeholder():
     label = zh_point_label("Source documents are purchase invoices and sales invoices.", 0)
 
@@ -630,6 +774,73 @@ def test_downloaded_specification_with_too_few_topics_is_an_error():
 
     assert any(
         issue.severity == "error" and "Only 1 syllabus topics" in issue.message
+        for issue in issues
+    )
+
+
+def test_downloaded_specification_with_generic_content_units_is_an_error():
+    qualification = sample_qualification()
+    qualification.source.specification_path = "source/spec.pdf"
+    qualification.topics = [
+        Topic(
+            title=f"Content unit {index} - fallback",
+            points=[f"fallback point {index}"],
+            source_snippets=[
+                SourceSnippet(
+                    page=10 + index,
+                    text=f"fallback point {index}",
+                    matched_term="fallback",
+                )
+            ],
+        )
+        for index in range(1, 7)
+    ]
+
+    plan = build_guide_plan(
+        qualification,
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="en",
+        requested_subject="chemistry",
+    )
+    issues = validate_plan(plan)
+
+    assert any(
+        issue.severity == "error" and "generic Content unit topics" in issue.message
+        for issue in issues
+    )
+
+
+def test_downloaded_specification_without_assessments_is_an_error():
+    qualification = sample_qualification()
+    qualification.source.specification_path = "source/spec.pdf"
+    qualification.assessments = []
+    qualification.topics = [
+        Topic(
+            title=f"3.{index} - Specific topic",
+            points=[f"specific point {index}"],
+            source_snippets=[
+                SourceSnippet(
+                    page=10 + index,
+                    text=f"specific point {index}",
+                    matched_term="specific",
+                )
+            ],
+        )
+        for index in range(1, 7)
+    ]
+
+    plan = build_guide_plan(
+        qualification,
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="en",
+        requested_subject="chemistry",
+    )
+    issues = validate_plan(plan)
+
+    assert any(
+        issue.severity == "error" and "No assessment papers were extracted" in issue.message
         for issue in issues
     )
 

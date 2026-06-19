@@ -91,7 +91,7 @@ def zh_point_label(point: str, index: int = 0) -> str:
             return label
     if re.search(r"[\u4e00-\u9fff]", text):
         return text[:24]
-    return f"知识点 {index + 1}"
+    return f"考点要求 {index + 1}"
 
 
 def zh_point_labels(points: list[str]) -> list[str]:
@@ -411,6 +411,7 @@ def build_practice_item(
         question, frame, steps, checkpoints = concrete_example_zh(topic, focus, number, subject_area)
     else:
         question, frame, steps, checkpoints = concrete_example(topic, focus, number, subject_area)
+    question = add_question_variant_marker(question, number, output_language)
     while len(steps) < 4:
         steps.append(
             "Check the final answer against the wording of the question."
@@ -429,6 +430,14 @@ def build_practice_item(
         source_points=points,
         source_snippets=topic.source_snippets[:2],
     )
+
+
+def add_question_variant_marker(question: str, number: int, output_language: str) -> str:
+    if number == 0:
+        return question
+    if output_language == "zh-CN":
+        return f"变式 {number + 1}：换一个证据点再做一遍。{question}"
+    return f"Variant {number + 1}: use a different source detail. {question}"
 
 
 def decorate_question(question: str, explanation_style: str, output_language: str = "en") -> str:

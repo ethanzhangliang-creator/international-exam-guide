@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import urllib.error
 from pathlib import Path
 
 from intl_exam_guide.models import Qualification, SourceRecord
@@ -288,7 +289,7 @@ def cambridge_subject_candidates(query: str, level: str | None) -> list[Link]:
     for url, qtype in index_pages:
         try:
             parser = parse_page(url)
-        except Exception:
+        except (OSError, TimeoutError, urllib.error.URLError, UnicodeDecodeError):
             continue
         for link in parser.links:
             combined = f"{link.text} {link.href}".lower()

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import urllib.error
 from pathlib import Path
 
 from intl_exam_guide.models import Qualification, SourceRecord
@@ -120,7 +121,7 @@ class PearsonEdexcelProvider(ExamBoardProvider):
     def _validate_candidate_url(self, url: str, level: str | None) -> Link | None:
         try:
             parser = parse_page(url)
-        except Exception:
+        except (OSError, TimeoutError, urllib.error.URLError, UnicodeDecodeError):
             return None
         title = clean_text(first_node_text(parser, "h1") or parser.title or title_from_url(url))
         lower_title = title.lower()

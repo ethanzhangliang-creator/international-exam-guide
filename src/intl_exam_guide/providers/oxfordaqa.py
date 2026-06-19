@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import hashlib
 import re
+import urllib.error
 import urllib.parse
-import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from html.parser import HTMLParser
@@ -12,16 +12,10 @@ from pathlib import Path
 from intl_exam_guide.models import AssessmentPaper, Qualification, SourceRecord, SourceSnippet, Topic
 from intl_exam_guide.parsing.pdf_text import extract_pdf_pages, extract_pdf_text
 from intl_exam_guide.providers.base import ExamBoardProvider, Link
+from intl_exam_guide.providers.common import TextNode, clean_text, fetch_bytes, fetch_text
 
 BASE_URL = "https://www.oxfordaqa.com"
 SUBJECTS_URL = f"{BASE_URL}/subjects/"
-USER_AGENT = "igcse-a-level-revision-guide/0.1 (+https://github.com/) source-traceable"
-
-
-@dataclass
-class TextNode:
-    tag: str
-    text: str
 
 
 @dataclass
@@ -94,27 +88,6 @@ class PageParser(HTMLParser):
             self._link_parts.append(text)
         if self._heading_parts is not None:
             self._heading_parts.append(text)
-
-
-def clean_text(value: str) -> str:
-    value = normalize_extracted_symbols(value)
-    return re.sub(r"\s+", " ", value).strip()
-
-
-def normalize_extracted_symbols(value: str) -> str:
-    # PDF extraction can duplicate the union sign in the OxfordAQA set-notation line.
-    return value.replace("A \u222a B, A \u222a B", "A \u222a B, A \u2229 B")
-
-
-def fetch_bytes(url: str, timeout: int = 30) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        return response.read()
-
-
-def fetch_text(url: str, timeout: int = 30) -> str:
-    data = fetch_bytes(url, timeout=timeout)
-    return data.decode("utf-8", errors="replace")
 
 
 def parse_page(url: str) -> PageParser:
@@ -286,7 +259,7 @@ class OxfordAQAProvider(ExamBoardProvider):
             for candidate in group:
                 try:
                     qualification = self.parse_qualification(candidate.href)
-                except Exception:
+                except (OSError, TimeoutError, urllib.error.URLError, ValueError):
                     continue
                 if qualification.code == code:
                     return Link(

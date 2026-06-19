@@ -17,7 +17,7 @@ from intl_exam_guide.planning.guide_plan import (
 from intl_exam_guide.providers import PROVIDER_NAMES, get_provider, infer_provider_from_url
 from intl_exam_guide.rendering.handbook_package import write_handbook_package
 from intl_exam_guide.rendering.html import render_html
-from intl_exam_guide.rendering.pdf import export_pdf
+from intl_exam_guide.rendering.pdf import PdfExportError, export_pdf
 from intl_exam_guide.validation.checks import issues_to_dict, review_summary, validate_plan
 
 
@@ -257,7 +257,7 @@ def write_guide_outputs(
     if not skip_pdf:
         try:
             export_pdf(html_path, pdf_path)
-        except Exception as exc:  # pragma: no cover - depends on local browser
+        except PdfExportError as exc:  # pragma: no cover - depends on local browser
             pdf_error = str(exc)
 
     issues = validate_plan(

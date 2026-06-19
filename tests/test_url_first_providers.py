@@ -71,6 +71,70 @@ def test_generic_pdf_parser_handles_pearson_split_topic_codes():
     assert all(topic.points for topic in topics)
 
 
+def test_generic_pdf_parser_handles_pearson_learning_tables():
+    pages = [
+        (
+            19,
+            """
+            Topic 1: The accounting environment
+            What students need to learn:
+            1 Types of
+            business
+            organisation
+            a) Explain the characteristics of public sector organisations.
+            b) Explain the connection between stakeholders and a business.
+            2 Accounting
+            concepts
+            a) Understand the significance of consistency and prudence.
+            b) Apply accounting concepts to simple scenarios.
+            """,
+        ),
+        (
+            21,
+            """
+            Topic 2: Introduction to bookkeeping
+            What students need to learn:
+            1 Business
+            documentation
+            a) Explain the purpose of business documents.
+            b) Prepare purchase invoices and sales invoices.
+            2 Books of original
+            entry
+            a) Explain the purpose of books of original entry.
+            b) Prepare purchases and sales day books.
+            3 Ledger
+            accounting
+            a) Explain the purpose of the nominal ledger.
+            b) Record transactions using double entry principles.
+            """,
+        ),
+        (
+            23,
+            """
+            Topic 3: Introduction to control processes
+            What students need to learn:
+            1 Trial balance  a) Explain the purpose of a trial balance.
+            b) Prepare a trial balance.
+            2 Control accounts a) Explain the purpose of control accounts.
+            b) Prepare trade receivables control accounts.
+            """,
+        ),
+    ]
+
+    topics = parse_generic_topics_from_pdf(pages)
+
+    assert [topic.title for topic in topics[:7]] == [
+        "1.1 - Types of business organisation",
+        "1.2 - Accounting concepts",
+        "2.1 - Business documentation",
+        "2.2 - Books of original entry",
+        "2.3 - Ledger accounting",
+        "3.1 - Trial balance",
+        "3.2 - Control accounts",
+    ]
+    assert "a) Explain the purpose of books of original entry." in topics[3].points
+
+
 def test_cambridge_subject_page_requires_exam_year_when_ranges_are_ambiguous():
     links = [
         Link(
@@ -122,6 +186,16 @@ def test_pearson_subject_query_resolves_unique_official_candidate(monkeypatch):
     assert link.qualification_type == "international_gcse"
 
 
+def test_pearson_subject_query_does_not_swallow_code_errors(monkeypatch):
+    def fake_parse_page(_url):
+        raise RuntimeError("parser bug")
+
+    monkeypatch.setattr(pearson_module, "parse_page", fake_parse_page)
+
+    with pytest.raises(RuntimeError, match="parser bug"):
+        PearsonEdexcelProvider().find_qualification("Edexcel Accounting", "igcse")
+
+
 def test_pearson_igcse_subject_slug_preserves_mathematics_a_suffix():
     urls = pearson_candidate_urls("Edexcel Mathematics A", "igcse")
 
@@ -170,6 +244,16 @@ def test_cambridge_subject_query_lists_ambiguous_level_and_codes(monkeypatch):
     assert "0452" in message
     assert "0985" in message
     assert "9706" in message
+
+
+def test_cambridge_subject_query_does_not_swallow_code_errors(monkeypatch):
+    def fake_parse_page(_url):
+        raise RuntimeError("parser bug")
+
+    monkeypatch.setattr(cambridge_module, "parse_page", fake_parse_page)
+
+    with pytest.raises(RuntimeError, match="parser bug"):
+        CambridgeInternationalProvider().find_qualification("CAIE Accounting", "igcse")
 
 
 def test_cambridge_subject_query_uses_code_to_resolve_unique_candidate(monkeypatch):

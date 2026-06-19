@@ -1,4 +1,4 @@
-# Skill Explained / Skill 图解说明
+﻿# Skill Explained / Skill 图解说明
 
 <p align="center">
   <img src="assets/skill-system.svg" alt="Skill system" width="100%">
@@ -6,7 +6,7 @@
 
 ## English
 
-The repository includes a Codex skill wrapper in `skill/`. The skill is designed
+The repository includes a AI Agent skill wrapper in `skill/`. The skill is designed
 with progressive disclosure:
 
 - `skill/SKILL.md` stays short and tells an agent when to use the tool.
@@ -25,7 +25,7 @@ before reporting success.
 
 ```mermaid
 flowchart LR
-  A["User asks for an International GCSE or International AS-A-level guide"] --> B["Codex loads skill/SKILL.md"]
+  A["User asks for an International GCSE or International AS-A-level guide"] --> B["AI Agent loads skill/SKILL.md"]
   B --> C["Confirm subject/provider, required exam year, output language, and explanation style"]
   C --> D["Read handbook spec and provider reference"]
   D --> E["Run intl_exam_guide generate"]
@@ -61,7 +61,7 @@ python -m intl_exam_guide demo --out ./outputs/demo-science --language en --imag
 
 ## 中文
 
-仓库内置 `skill/` 目录，用来作为 Codex skill。它遵循 progressive disclosure：
+仓库内置 `skill/` 目录，用来作为 AI Agent skill。它遵循 progressive disclosure：
 
 - `skill/SKILL.md` 保持简洁，只告诉 agent 什么时候使用、怎么运行。
 - `skill/references/revision_guide_spec.md` 存放从原复习册 Skill 继承下来的
@@ -77,7 +77,7 @@ python -m intl_exam_guide demo --out ./outputs/demo-science --language en --imag
 
 ```mermaid
 flowchart LR
-  A["用户要求生成 International GCSE 或 International AS-A-level 指南"] --> B["Codex 加载 skill/SKILL.md"]
+  A["用户要求生成 International GCSE 或 International AS-A-level 指南"] --> B["AI Agent 加载 skill/SKILL.md"]
   B --> C["确认科目、输出语言、生图路线和讲解风格"]
   C --> D["读取手册规范和 provider reference"]
   D --> E["运行 intl_exam_guide generate"]

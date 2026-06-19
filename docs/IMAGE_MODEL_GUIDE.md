@@ -1,4 +1,4 @@
-# Image Model Guide / 生图模型建议
+﻿# Image Model Guide / 生图模型建议
 
 ## English
 
@@ -69,7 +69,7 @@ prompt-queue items until a reviewed asset is supplied.
 
 | Provider | Best use | Notes |
 |---|---|---|
-| GPT Image 2.0 | High-quality option for Codex/OpenAI workflows, visual explanations, edits, and polished guide illustrations. | Treat it as an external capability unless the user has a callable route. Check cost, moderation, and organization requirements. |
+| GPT Image 2.0 | High-quality option for OpenAI-compatible workflows, visual explanations, edits, and polished guide illustrations. | Treat it as an external capability unless the user has a callable route. Check cost, moderation, and organization requirements. |
 | Qwen-Image-2.0 / Qwen Image 2.0 Pro | Chinese or English text-heavy infographics, poster-like layouts, PPT-style visual explanations, and China-market experiments. | Treat API availability, provider endpoint, license, and deployment constraints as configurable. |
 | SenseNova U1 Fast | Fast infographic drafts, local/provider experiments, dense visual communication, and interleaved image-text tests. | Use as an experimental provider until this project has its own visual benchmark set. |
 
@@ -130,8 +130,8 @@ visual_002_market-equilibrium.png
 visual_003.webp
 ```
 
-For Codex environments that have Ethan's `image-gen-flow` GPT Image 2
-Codex-only Router installed, pending showcase images can be generated directly
+For local environments that have a compatible `image-gen-flow` GPT Image 2
+local Router installed, pending showcase images can be generated directly
 after Ethan confirms the route and parameters:
 
 ```bash
@@ -164,7 +164,7 @@ python scripts/verify_release_samples.py --outputs-root ./outputs
 - Use deterministic SVG for knowledge maps, topic dependency diagrams, and
   source-bound structure.
 - Use GPT Image 2.0 when the user wants polished guide illustrations and a
-  callable OpenAI/Codex image route is available.
+  callable OpenAI-compatible image route is available.
 - Use Qwen-Image-2.0 or Qwen Image 2.0 Pro when Chinese typography or
   text-heavy infographic layout is the main evaluation point.
 - Use SenseNova U1 Fast for fast infographic drafts, local experiments, or
@@ -229,7 +229,7 @@ the source point.
 
 | Provider | 适合场景 | 备注 |
 |---|---|---|
-| GPT Image 2.0 | Codex/OpenAI 工作流里的高质量选项，适合复习手册插图、视觉解释和编辑。 | 只有用户有可调用路线时才使用；注意成本、内容审核和组织要求。 |
+| GPT Image 2.0 | OpenAI-compatible 工作流里的高质量选项，适合复习手册插图、视觉解释和编辑。 | 只有用户有可调用路线时才使用；注意成本、内容审核和组织要求。 |
 | Qwen-Image-2.0 / Qwen Image 2.0 Pro | 中文或英文文字较多的信息图、海报式解释、PPT 风格知识图、国内场景实验。 | API、服务商、许可和部署限制应做成配置，不要写死。 |
 | SenseNova U1 Fast | 快速信息图草稿、本地或自定义 provider 实验、密集图文表达测试。 | 在本项目建立自己的视觉基准前，建议作为实验性 provider。 |
 
@@ -239,7 +239,7 @@ the source point.
 ## 生成边界
 
 - 知识地图、topic 依赖关系和 source-bound 结构优先用确定性 SVG。
-- 需要精美插图且用户有可调用 OpenAI/Codex 图像路线时，可以评估 GPT Image 2.0。
+- 需要精美插图且用户有可调用 OpenAI-compatible 图像路线时，可以评估 GPT Image 2.0。
 - 需要中文排版或文字密集型信息图时，可以评估 Qwen-Image-2.0 / Qwen Image 2.0 Pro。
 - 需要快速信息图草稿、本地实验或低延迟 provider 测试时，可以评估 SenseNova U1 Fast。
 - 不要复刻官方真题图、mark scheme 图或教材版权插图。

@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from html.parser import HTMLParser
 from pathlib import Path
 
+from intl_exam_guide import __version__
 from intl_exam_guide.models import (
     AssessmentPaper,
     Qualification,
@@ -19,7 +20,10 @@ from intl_exam_guide.parsing.pdf_text import extract_pdf_pages, extract_pdf_text
 from intl_exam_guide.providers.base import Link
 
 
-USER_AGENT = "igcse-a-level-revision-guide/0.2 (+https://github.com/) source-traceable"
+USER_AGENT = (
+    f"igcse-a-level-revision-guide/{__version__} "
+    "(+https://github.com/mianbaofang/igcse-a-level-revision-guide) source-traceable"
+)
 
 
 @dataclass
@@ -97,7 +101,17 @@ def parse_page(url: str) -> BasicPageParser:
 
 def clean_text(value: str) -> str:
     value = value.replace("\u00a0", " ").replace("\u2013", "-").replace("\u2014", "-")
+    value = normalize_extracted_symbols(value)
     return re.sub(r"\s+", " ", value).strip()
+
+
+def normalize_extracted_symbols(value: str) -> str:
+    if (
+        "A \u222a B, A \u222a B" in value
+        and any(marker in value for marker in ("n(A)", "A\u2032", "\u03be", "intersection"))
+    ):
+        return value.replace("A \u222a B, A \u222a B", "A \u222a B, A \u2229 B")
+    return value
 
 
 def safe_url(url: str) -> str:
@@ -296,6 +310,9 @@ def attach_pdf_content(
 
 
 def parse_generic_topics_from_pdf(pages: list[tuple[int, str]]) -> list[Topic]:
+    pearson_topics = parse_pearson_topic_tables(pages)
+    if len(pearson_topics) >= 6:
+        return pearson_topics
     content_pages = select_content_pages(pages)
     topics = parse_numbered_topics(content_pages)
     if len(topics) >= 6:
@@ -304,6 +321,118 @@ def parse_generic_topics_from_pdf(pages: list[tuple[int, str]]) -> list[Topic]:
     if len(overview) >= 6:
         return overview
     return topics or chunk_informative_lines(content_pages)
+
+
+def parse_pearson_topic_tables(pages: list[tuple[int, str]]) -> list[Topic]:
+    topics: list[Topic] = []
+    current_topic_number: str | None = None
+    current_code: str | None = None
+    current_title_parts: list[str] = []
+    current_points: list[str] = []
+    current_page: int | None = None
+    in_learning_table = False
+
+    def flush() -> None:
+        nonlocal current_code, current_title_parts, current_points, current_page
+        if not current_code or not current_title_parts or current_page is None:
+            current_code = None
+            current_title_parts = []
+            current_points = []
+            current_page = None
+            return
+        title = clean_text(" ".join(current_title_parts))
+        points = dedupe([point for point in current_points if is_topic_point(point)])
+        if title and points:
+            snippet = clean_text(" ".join([current_code, title, *points[:5]]))
+            topics.append(
+                Topic(
+                    title=f"{current_code} - {title}",
+                    points=points[:10],
+                    source_snippets=[
+                        SourceSnippet(
+                            page=current_page,
+                            text=snippet[:900],
+                            matched_term=current_code,
+                        )
+                    ],
+                )
+            )
+        current_code = None
+        current_title_parts = []
+        current_points = []
+        current_page = None
+
+    for page_number, page_text in pages:
+        for raw_line in page_text.splitlines():
+            line = clean_topic_line(raw_line)
+            if not line or is_noise_line(line):
+                continue
+            topic_match = re.match(r"^Topic\s+(\d+):\s+(.{3,120})$", line, re.I)
+            if topic_match:
+                flush()
+                current_topic_number = topic_match.group(1)
+                in_learning_table = False
+                continue
+            if current_topic_number is None:
+                continue
+            lower = line.lower()
+            if lower.startswith(("paper ", "assessment ", "appendix ", "administration ")):
+                flush()
+                in_learning_table = False
+                if lower.startswith(("appendix ", "administration ")):
+                    current_topic_number = None
+                continue
+            if "what students need to learn" in lower:
+                in_learning_table = True
+                continue
+            if not in_learning_table:
+                continue
+
+            subsection = parse_pearson_subsection_line(line)
+            if subsection:
+                flush()
+                number, title, point = subsection
+                current_code = f"{current_topic_number}.{number}"
+                current_title_parts = [title]
+                current_points = [point] if point else []
+                current_page = page_number
+                continue
+
+            if current_code and not current_points and is_pearson_title_continuation(line):
+                current_title_parts.append(line)
+                continue
+            if current_code and is_topic_point(line):
+                current_points.append(line)
+    flush()
+    return dedupe_topics(topics)
+
+
+def parse_pearson_subsection_line(line: str) -> tuple[str, str, str | None] | None:
+    match = re.match(r"^(\d{1,2})\s+(.+)$", line)
+    if not match:
+        return None
+    rest = clean_text(match.group(2))
+    if not rest or re.fullmatch(r"\d+", rest):
+        return None
+    objective = re.search(r"\b([a-z]\)\s+.+)$", rest)
+    if objective:
+        title = clean_text(rest[: objective.start()])
+        point = clean_text(objective.group(1))
+    else:
+        title = rest
+        point = None
+    if not title or len(title) > 90:
+        return None
+    return match.group(1), title, point
+
+
+def is_pearson_title_continuation(line: str) -> bool:
+    if re.match(r"^[a-z]\)\s+", line, re.I):
+        return False
+    lower = line.lower()
+    if lower.startswith(("topic ", "paper ", "assessment ", "section ")):
+        return False
+    return 2 <= len(line) <= 45
 
 
 def select_content_pages(pages: list[tuple[int, str]]) -> list[tuple[int, str]]:

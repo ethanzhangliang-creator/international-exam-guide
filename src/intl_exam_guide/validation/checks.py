@@ -102,10 +102,21 @@ def validate_plan(
                 f"Only {len(qualification.topics)} syllabus topics were extracted from a downloaded specification PDF.",
             )
         )
+    if qualification.source.specification_path and any(
+        topic.title.lower().startswith("content unit ") for topic in qualification.topics
+    ):
+        issues.append(
+            ValidationIssue(
+                "error",
+                "Downloaded specification fell back to generic Content unit topics; "
+                "the syllabus parser needs a more precise provider-specific match.",
+            )
+        )
     if (qualification.source.provider == "cambridge" or qualification.provider == "cambridge") and qualification.source.syllabus_year_range and not qualification.source.selected_exam_year:
         issues.append(ValidationIssue("error", "Cambridge syllabus range is present but selected exam year was not recorded."))
     if not qualification.assessments:
-        issues.append(ValidationIssue("warning", "No assessment papers were extracted."))
+        severity = "error" if qualification.source.specification_path else "warning"
+        issues.append(ValidationIssue(severity, "No assessment papers were extracted."))
     if len(plan.practice_items) < len(qualification.topics):
         issues.append(ValidationIssue("warning", "Practice coverage is below one item per topic."))
     if len(plan.topic_guides) != len(qualification.topics):

@@ -171,6 +171,7 @@ README 只保留会影响 Skill 实际生成流程的变化；完整历史统一
 - **v0.2.1：** 修复 Accounting 和 Economics 实际生成时暴露的问题，包括中文术语、会计学科显示名、外部生成图片渲染、PDF 导出超时和验证覆盖。
 - **v0.2.2：** 评审后强化 Skill 流程门槛：先确认科目/年份/语言/讲解风格；Edexcel/CAIE 出现多个官方候选时返回给用户选择；候选检查生成的 scratch 手册不能当最终交付。
 - **v0.2.7：** 清理公开文档里的本地私有路径，删除重复 CLI provider resolver，并把中文占位符、重复例题纳入错误级验证。
+- **v0.2.8：** 加固生成引擎：统一三大考试局下载与文本清洗入口，新增 Pearson Edexcel 表格型大纲解析，PDF 导出优先用 Playwright 并回退到 Chrome/Edge，补上 CLI `discover` / `generate` 覆盖，同时把 `Content unit` 兜底主题和缺失考试结构解析列为错误。
 
 ## 开发者快速开始
 
@@ -196,6 +197,7 @@ python -m intl_exam_guide generate --query chemistry --level igcse --language zh
 
 ```bash
 python -m pytest
+python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py .
 ```

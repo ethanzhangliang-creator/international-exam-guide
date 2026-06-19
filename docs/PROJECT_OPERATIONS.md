@@ -1,4 +1,4 @@
-# Project Operations Guide / 项目维护说明
+﻿# Project Operations Guide / 项目维护说明
 
 Last updated: 2026-06-19
 
@@ -90,7 +90,7 @@ Then:
 3. Update `CHANGELOG.md`.
 4. Update README/project docs if the public promise changed.
 5. Commit intentionally.
-6. Create an annotated tag, for example `v0.2.7`.
+6. Create an annotated tag, for example `vX.Y.Z`.
 7. Push `main`.
 8. Push the tag.
 9. Create or update the GitHub Release for that tag.
@@ -204,7 +204,13 @@ Important error cases:
 - cross-subject borrowed practice templates;
 - missing source URLs or missing specification metadata;
 - Edexcel/CAIE ambiguity resolved by guessing instead of returning candidates;
+- downloaded official PDFs that only produce generic `Content unit` topics;
+- downloaded official PDFs that produce no assessment-paper structure;
 - missing manifest files or broken image references.
+
+PDF export should try Playwright first, then fall back to a local Chrome/Edge
+browser. If both routes fail, record a clear PDF export error instead of
+masking the rest of the generation run.
 
 Do not treat `issues: []` as meaningful unless the run was generated from the
 current code and not copied from old `outputs/` folders.

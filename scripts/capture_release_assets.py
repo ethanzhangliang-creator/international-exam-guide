@@ -28,6 +28,7 @@ def main() -> int:
     docs_assets.mkdir(parents=True, exist_ok=True)
 
     try:
+        from playwright.sync_api import Error as PlaywrightError
         from playwright.sync_api import sync_playwright
     except ImportError:
         return capture_with_chrome_cli(outputs_root, docs_assets, args.viewport_width, args.viewport_height)
@@ -54,6 +55,7 @@ def main() -> int:
                     ".guide-grid",
                     ".topic",
                 ],
+                PlaywrightError,
             )
             if target is None:
                 print(f"no screenshot target found in {guide}", file=sys.stderr)
@@ -147,13 +149,13 @@ window.addEventListener("load", () => {
     return html.replace("</body>", f"{script}\n</body>")
 
 
-def first_visible(page, selectors: list[str]):
+def first_visible(page, selectors: list[str], playwright_error: type[Exception]):
     for selector in selectors:
         locator = page.locator(selector).first
         try:
             if locator.count() and locator.is_visible(timeout=1000):
                 return locator
-        except Exception:
+        except playwright_error:
             continue
     return None
 

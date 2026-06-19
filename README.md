@@ -196,6 +196,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
 - **v0.2.7:** cleaned public docs so a GitHub clone has no private local paths,
   removed a duplicate CLI resolver, and tightened validation for Chinese
   placeholders plus duplicate practice questions.
+- **v0.2.8:** hardened the generation engine: unified provider fetching, added
+  Pearson Edexcel learning-table parsing, made PDF export prefer Playwright with
+  Chrome/Edge fallback, added CLI `discover`/`generate` coverage, and added
+  validation gates for generic `Content unit` topics or missing assessment
+  extraction.
 
 ## Developer Quick Start
 
@@ -221,6 +226,7 @@ Checks:
 
 ```bash
 python -m pytest
+python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py .
 ```

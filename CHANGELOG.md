@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.2.8 - 2026-06-19
+
+### Fixed
+
+- Unified provider download/text-cleaning helpers so AQA, Edexcel, and CAIE use
+  one source-traceable User-Agent and one safe URL/text path.
+- Replaced broad provider and PDF `except Exception` handlers with narrower
+  network, parser, and PDF-export errors so implementation bugs are no longer
+  hidden as missing candidates.
+- Added a Pearson Edexcel learning-table parser for `Topic ... / What students
+  need to learn` specification pages, preventing Edexcel Accounting from falling
+  back to generic `Content unit` blocks.
+- Made PDF export match the declared optional dependency: Playwright is tried
+  first, then local Chrome/Edge is used as a fallback, with a clear PDF export
+  error if neither route works.
+- Added validation hard gates for downloaded specifications that produce generic
+  `Content unit` topics or no assessment papers.
+- Added practice-question variant markers so repeated worked examples under the
+  same topic are caught and avoided.
+- Renamed the HTML escaping helper to avoid shadowing the standard-library
+  module while keeping quoted attribute escaping enabled.
+- Added CI linting with `ruff check .`.
+- Added offline CLI coverage for `discover` and the full `generate` provider
+  chain.
+
+### Verified
+
+- `python -m ruff check .`
+- `python -m pytest -q` (`74 passed`)
+- `python -m compileall -q src tests scripts`
+- `python scripts/scan_for_raw_keys.py .` (`raw_key_matches: 0`)
+- `git diff --check`
+- Real CLI regressions with no validation errors except expected pending
+  infographic warnings:
+  AQA Accounting, AQA Economics, Pearson Edexcel Accounting, and CAIE
+  Accounting.
+
 ## 0.2.7 - 2026-06-19
 
 ### Fixed

@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -20,7 +20,7 @@ PENDING_STATUSES = {
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
-            "Generate pending infographic assets with the GPT Image 2 Codex-only "
+            "Generate pending infographic assets with the GPT Image 2 local "
             "Router script from image-gen-flow."
         )
     )
@@ -274,7 +274,7 @@ def generate_one(
 
     entry["file"] = image_name
     entry["asset_status"] = "codex-router-generated"
-    entry["generated_by"] = "gpt-image-2 codex-only router"
+    entry["generated_by"] = "gpt-image-2 local router"
     entry["image_size"] = size
     entry["image_quality"] = quality
     entry["output_format"] = output_format

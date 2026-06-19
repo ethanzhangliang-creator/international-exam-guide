@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import html
 from pathlib import Path
@@ -42,7 +42,7 @@ def render_html(
     )
     parts = [
         f"<!doctype html><html lang=\"{html_lang}\"><head><meta charset=\"utf-8\">",
-        f"<title>{escape(page_title)}</title>",
+        f"<title>{html_escape(page_title)}</title>",
         f"<style>{stylesheet()}</style></head><body>",
         render_cover(qualification, plan.run_options),
         render_student_overview(qualification, plan.revision_stages, plan.run_options),
@@ -67,28 +67,28 @@ def render_cover(qualification: Qualification, options: GuideRunOptions) -> str:
         qtype = "International GCSE" if qualification.qualification_type == "international_gcse" else "International AS-A-level"
         return f"""
 <section class="cover">
-  <div class="kicker">{escape(qtype)} Study and Revision Guide</div>
-  <h1>{escape(qualification.title)}</h1>
+  <div class="kicker">{html_escape(qtype)} Study and Revision Guide</div>
+  <h1>{html_escape(qualification.title)}</h1>
   <p class="subtitle">Built from the official specification into learnable, practicable, and checkable knowledge units. Understand first, inspect the visual, then answer the worked examples.</p>
   <div class="cover-grid">
-    <div><span>Code</span><strong>{escape(qualification.code or "Unknown")}</strong></div>
+    <div><span>Code</span><strong>{html_escape(qualification.code or "Unknown")}</strong></div>
     <div><span>Knowledge units</span><strong>{len(qualification.topics)}</strong></div>
     <div><span>Assessment papers</span><strong>{len(qualification.assessments)}</strong></div>
-    <div><span>Style</span><strong>{escape(style_display(options.explanation_style, options.output_language))}</strong></div>
+    <div><span>Style</span><strong>{html_escape(style_display(options.explanation_style, options.output_language))}</strong></div>
   </div>
 </section>
 """
     qtype = "国际 GCSE" if qualification.qualification_type == "international_gcse" else "国际 AS-A-level"
     return f"""
 <section class="cover">
-  <div class="kicker">{escape(qtype)} 学习复习手册</div>
-  <h1>{escape(subject_display_name(qualification))}学习复习手册</h1>
+  <div class="kicker">{html_escape(qtype)} 学习复习手册</div>
+  <h1>{html_escape(subject_display_name(qualification))}学习复习手册</h1>
   <p class="subtitle">按官方大纲拆成可学习、可做题、可检查的知识单元。先理解，再看图，再做例题。</p>
   <div class="cover-grid">
-    <div><span>课程编号</span><strong>{escape(qualification.code or "未知")}</strong></div>
+    <div><span>课程编号</span><strong>{html_escape(qualification.code or "未知")}</strong></div>
     <div><span>知识单元</span><strong>{len(qualification.topics)}</strong></div>
     <div><span>考试试卷</span><strong>{len(qualification.assessments)}</strong></div>
-    <div><span>讲解风格</span><strong>{escape(style_display(options.explanation_style, options.output_language))}</strong></div>
+    <div><span>讲解风格</span><strong>{html_escape(style_display(options.explanation_style, options.output_language))}</strong></div>
   </div>
 </section>
 """
@@ -99,17 +99,17 @@ def render_student_overview(
     stages: list[str],
     options: GuideRunOptions,
 ) -> str:
-    summary = "".join(f"<li>{escape(item)}</li>" for item in qualification.summary[:4])
+    summary = "".join(f"<li>{html_escape(item)}</li>" for item in qualification.summary[:4])
     if options.output_language == "zh-CN":
         summary = "".join(
-            f"<li>{escape(item)}</li>"
+            f"<li>{html_escape(item)}</li>"
             for item in [
                 "本手册根据官方课程页面和考试大纲 PDF 整理。",
                 "知识单元按大纲抽取结果展开，便于逐节复习。",
                 "官方英文来源保留在结构化文件中，正文按中文学习手册排版。",
             ]
         )
-    stage_items = "".join(f"<li>{escape(stage)}</li>" for stage in stages)
+    stage_items = "".join(f"<li>{html_escape(stage)}</li>" for stage in stages)
     if options.output_language == "en":
         return f"""
 <section class="band student-overview">
@@ -126,10 +126,10 @@ def render_student_overview(
     <article>
       <h3>Preflight Choices</h3>
       <ul>
-        <li>Subject request: {escape(options.requested_subject)}</li>
+        <li>Subject request: {html_escape(options.requested_subject)}</li>
         <li>Output language: English</li>
-        <li>Image route: {escape(image_provider_display(options, options.output_language))}</li>
-        <li>Explanation style: {escape(style_display(options.explanation_style, options.output_language))}</li>
+        <li>Image route: {html_escape(image_provider_display(options, options.output_language))}</li>
+        <li>Explanation style: {html_escape(style_display(options.explanation_style, options.output_language))}</li>
       </ul>
     </article>
   </div>
@@ -151,10 +151,10 @@ def render_student_overview(
     <article>
       <h3>生成前选择</h3>
       <ul>
-        <li>科目：{escape(subject_request)}</li>
+        <li>科目：{html_escape(subject_request)}</li>
         <li>输出语言：中文</li>
-        <li>生图方式：{escape(image_provider_display(options, options.output_language))}</li>
-        <li>讲解风格：{escape(style_display(options.explanation_style, options.output_language))}</li>
+        <li>生图方式：{html_escape(image_provider_display(options, options.output_language))}</li>
+        <li>讲解风格：{html_escape(style_display(options.explanation_style, options.output_language))}</li>
       </ul>
     </article>
   </div>
@@ -218,13 +218,13 @@ def render_source_note(qualification: Qualification, language: str = "en") -> st
     )
     return f"""
 <section class="band source">
-  <h2>{escape(heading)}</h2>
-  <p>{escape(audience_note)}</p>
+  <h2>{html_escape(heading)}</h2>
+  <p>{html_escape(audience_note)}</p>
   {listing_note}
   <ul>
-    <li>{escape(page_label)}: <a href="{escape(qualification.page_url)}">{escape(qualification.page_url)}</a></li>
-    <li>{escape(spec_label)}: {link_or_missing(qualification.source.specification_url, language)}</li>
-    <li>PDF SHA-256: <code>{escape(hash_value)}</code></li>
+    <li>{html_escape(page_label)}: <a href="{html_escape(qualification.page_url)}">{html_escape(qualification.page_url)}</a></li>
+    <li>{html_escape(spec_label)}: {link_or_missing(qualification.source.specification_url, language)}</li>
+    <li>PDF SHA-256: <code>{html_escape(hash_value)}</code></li>
   </ul>
 </section>
 """
@@ -250,13 +250,13 @@ def render_listing_note(qualification: Qualification, language: str = "en") -> s
     pieces = []
     if source.listing_subject:
         label = "Subject group" if language == "en" else "科目组"
-        pieces.append(f"{label}: {escape(source.listing_subject)}")
+        pieces.append(f"{label}: {html_escape(source.listing_subject)}")
     if source.listing_group_label:
         label = "Website group" if language == "en" else "官网分组"
-        pieces.append(f"{label}: {escape(source.listing_group_label)}")
+        pieces.append(f"{label}: {html_escape(source.listing_group_label)}")
     if source.listing_style_class:
         label = "Detected class" if language == "en" else "识别类型"
-        pieces.append(f"{label}: {escape(source.listing_style_class)}")
+        pieces.append(f"{label}: {html_escape(source.listing_style_class)}")
     return f"<p class=\"listing-note\">{' · '.join(pieces)}</p>"
 
 
@@ -269,11 +269,11 @@ def render_summary(qualification: Qualification, language: str = "en") -> str:
             "详细学习内容按 PDF 大纲抽取结果整理。",
             "英文来源保留在结构化文件中，学生正文保持中文。",
         ]
-    items = "\n".join(f"<li>{escape(item)}</li>" for item in summary_items)
+    items = "\n".join(f"<li>{html_escape(item)}</li>" for item in summary_items)
     heading = "Course Position" if language == "en" else "课程定位"
     return f"""
 <section class="band">
-  <h2>{escape(heading)}</h2>
+  <h2>{html_escape(heading)}</h2>
   <ul class="plain">{items}</ul>
 </section>
 """
@@ -291,8 +291,8 @@ def render_assessments(qualification: Qualification, language: str = "en") -> st
                 "考试时长、分值和占比以官方大纲为准。",
                 "结构化输出中保留官方英文考试信息，便于老师或维护者复核。",
             ]
-        details = "".join(f"<li>{escape(item)}</li>" for item in detail_items)
-        cards.append(f"<article class=\"assessment\"><h3>{escape(title)}</h3><ul>{details}</ul></article>")
+        details = "".join(f"<li>{html_escape(item)}</li>" for item in detail_items)
+        cards.append(f"<article class=\"assessment\"><h3>{html_escape(title)}</h3><ul>{details}</ul></article>")
     if cards:
         body = "\n".join(cards)
     else:
@@ -302,7 +302,7 @@ def render_assessments(qualification: Qualification, language: str = "en") -> st
             else "<p class=\"warning\">没有抽取到考试结构，需要人工复核来源页面。</p>"
         )
     heading = "Assessment Structure" if language == "en" else "考试结构"
-    return f"<section class=\"band\"><h2>{escape(heading)}</h2><div class=\"assessment-grid\">{body}</div></section>"
+    return f"<section class=\"band\"><h2>{html_escape(heading)}</h2><div class=\"assessment-grid\">{body}</div></section>"
 
 
 def render_topic_map(
@@ -330,8 +330,8 @@ def render_topic_map(
         route = "concept boundary -> worked example -> error review" if language == "en" else "概念边界 -> 例题 -> 错题回看"
         rows.append(
             "<tr>"
-            f"<td>{index}</td><td>{escape(title)}</td><td>{escape(points)}</td>"
-            f"<td>{escape(route)}</td>"
+            f"<td>{index}</td><td>{html_escape(title)}</td><td>{html_escape(points)}</td>"
+            f"<td>{html_escape(route)}</td>"
             "</tr>"
         )
     if language == "en":
@@ -350,9 +350,9 @@ def render_topic_map(
 
 
 def render_revision_stages(stages: list[str], language: str = "en") -> str:
-    items = "".join(f"<li>{escape(stage)}</li>" for stage in stages)
+    items = "".join(f"<li>{html_escape(stage)}</li>" for stage in stages)
     heading = "Three-Stage Revision" if language == "en" else "三阶段复习法"
-    return f"<section class=\"band\"><h2>{escape(heading)}</h2><ol class=\"stage-list\">{items}</ol></section>"
+    return f"<section class=\"band\"><h2>{html_escape(heading)}</h2><ol class=\"stage-list\">{items}</ol></section>"
 
 
 def render_topics(
@@ -379,7 +379,7 @@ def render_topics(
             point_values = guide.checklist[:4]
         else:
             point_values = ["根据官方大纲抽取结果复习本知识单元。"]
-        points = "".join(f"<li>{escape(point)}</li>" for point in point_values)
+        points = "".join(f"<li>{html_escape(point)}</li>" for point in point_values)
         if not points:
             points = (
                 "<li>Use the official specification text to expand this topic into teachable sub-points.</li>"
@@ -414,16 +414,16 @@ def render_topics(
         sections.append(
             f"""
 <section class="topic">
-  <h2>T{index}. {escape(title)}</h2>
+  <h2>T{index}. {html_escape(title)}</h2>
   <div class="topic-grid">
     <div>
-      <h3>{escape(key_heading)}</h3>
+      <h3>{html_escape(key_heading)}</h3>
       <ul>{points}</ul>
     </div>
     <div class="logic-card">
-      <h3>{escape(logic_heading)}</h3>
-      <p>{escape(logic_goal)}</p>
-      <p>{escape(logic_pitfall)}</p>
+      <h3>{html_escape(logic_heading)}</h3>
+      <p>{html_escape(logic_goal)}</p>
+      <p>{html_escape(logic_pitfall)}</p>
     </div>
   </div>
   {guide_block}
@@ -439,8 +439,8 @@ def render_topics(
 
 
 def render_topic_guide(guide: TopicGuide, language: str) -> str:
-    steps = "".join(f"<li>{escape(step)}</li>" for step in guide.worked_solution_steps)
-    checklist = "".join(f"<li>{escape(item)}</li>" for item in guide.checklist)
+    steps = "".join(f"<li>{html_escape(step)}</li>" for step in guide.worked_solution_steps)
+    checklist = "".join(f"<li>{html_escape(item)}</li>" for item in guide.checklist)
     labels = (
         {
             "essence": "One-Sentence Essence",
@@ -458,10 +458,10 @@ def render_topic_guide(guide: TopicGuide, language: str) -> str:
     )
     return f"""
 <div class="guide-grid">
-  <article class="essence"><h3>{render_icon("target")}<span>{labels["essence"]}</span></h3><p>{escape(guide.essence)}</p></article>
-  <article class="analogy"><h3>{render_icon("bridge")}<span>{labels["analogy"]}</span></h3><p>{escape(guide.analogy)}</p></article>
-  <article class="worked"><h3>{render_icon("steps")}<span>{labels["worked"]}</span></h3><p>{escape(guide.mini_worked_example)}</p><ol>{steps}</ol></article>
-  <article class="pitfall"><h3>{render_icon("alert")}<span>{labels["pitfall"]}</span></h3><p>{escape(guide.pitfall)}</p><ul>{checklist}</ul></article>
+  <article class="essence"><h3>{render_icon("target")}<span>{labels["essence"]}</span></h3><p>{html_escape(guide.essence)}</p></article>
+  <article class="analogy"><h3>{render_icon("bridge")}<span>{labels["analogy"]}</span></h3><p>{html_escape(guide.analogy)}</p></article>
+  <article class="worked"><h3>{render_icon("steps")}<span>{labels["worked"]}</span></h3><p>{html_escape(guide.mini_worked_example)}</p><ol>{steps}</ol></article>
+  <article class="pitfall"><h3>{render_icon("alert")}<span>{labels["pitfall"]}</span></h3><p>{html_escape(guide.pitfall)}</p><ul>{checklist}</ul></article>
 </div>
 """
 
@@ -480,18 +480,18 @@ def render_topic_diagram(topic: Topic, guide: TopicGuide, index: int, language: 
         cards.append(
             "<li>"
             f"<span>{number}</span>"
-            f"<strong>{escape(point)}</strong>"
-            f"<em>{escape(action)}</em>"
+            f"<strong>{html_escape(point)}</strong>"
+            f"<em>{html_escape(action)}</em>"
             "</li>"
         )
     return f"""
-<figure class="topic-diagram" aria-label="Concept map for {escape(title)}">
-  <figcaption>{escape(caption)}</figcaption>
+<figure class="topic-diagram" aria-label="Concept map for {html_escape(title)}">
+  <figcaption>{html_escape(caption)}</figcaption>
   <div class="concept-html-map">
     <div class="concept-core">
-      <span>{escape(topic_label)} {index}</span>
-      <strong>{escape(title)}</strong>
-      <small>{escape(source_label)}</small>
+      <span>{html_escape(topic_label)} {index}</span>
+      <strong>{html_escape(title)}</strong>
+      <small>{html_escape(source_label)}</small>
     </div>
     <ol>{''.join(cards)}</ol>
   </div>
@@ -547,16 +547,16 @@ def render_visual_example(
             "用一句回应指令词的话收尾。",
         ]
     )
-    step_items = "".join(f"<li>{escape(step)}</li>" for step in visual_steps)
+    step_items = "".join(f"<li>{html_escape(step)}</li>" for step in visual_steps)
     return f"""
-<figure class="visual-example" aria-label="Visual worked example for {escape(title)}">
-  <figcaption>{render_icon("visual")}<span>{escape(caption)}</span></figcaption>
+<figure class="visual-example" aria-label="Visual worked example for {html_escape(title)}">
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="visual-grid">
     {render_topic_visual_svg(visual, index, language)}
     <div class="visual-notes">
-      <div class="visual-model">{escape(model_note)}</div>
-      <div class="visual-source">{escape(source_prefix)}: {escape(source_label)}</div>
-      <p class="visual-question">{escape(question)} <strong>{escape(visual.focus_point)}</strong>.</p>
+      <div class="visual-model">{html_escape(model_note)}</div>
+      <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
+      <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
       <ol>{step_items}</ol>
     </div>
   </div>
@@ -595,20 +595,20 @@ def render_infographic_required(
                 "按指令词要求写出最终答案。",
             ]
         )
-        step_items = "".join(f"<li>{escape(step)}</li>" for step in visual_steps)
+        step_items = "".join(f"<li>{html_escape(step)}</li>" for step in visual_steps)
         return f"""
-<figure class="visual-example generated-infographic" aria-label="Generated infographic for {escape(title)}">
-  <figcaption>{render_icon("visual")}<span>{escape(caption)}</span></figcaption>
+<figure class="visual-example generated-infographic" aria-label="Generated infographic for {html_escape(title)}">
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="generated-infographic-grid">
-    <img class="infographic-image" src="images/{escape(filename)}" alt="{escape(title)} infographic for {escape(visual.focus_point)}">
+    <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
-      <div class="visual-model">{escape(provider)} - {escape(model_note)}</div>
-      <div class="visual-source">{escape(source_prefix)}: {escape(source_label)}</div>
-      <p class="visual-question">{escape(question)} <strong>{escape(visual.focus_point)}</strong>.</p>
+      <div class="visual-model">{html_escape(provider)} - {html_escape(model_note)}</div>
+      <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
+      <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
       <ol>{step_items}</ol>
       <details class="visual-prompt">
-        <summary>{escape(prompt_label)}</summary>
-        <p>{escape(visual.prompt)}</p>
+        <summary>{html_escape(prompt_label)}</summary>
+        <p>{html_escape(visual.prompt)}</p>
       </details>
     </div>
   </div>
@@ -638,20 +638,20 @@ def render_infographic_required(
                 "不要把这张兜底图当作事实来源。",
             ]
         )
-        step_items = "".join(f"<li>{escape(step)}</li>" for step in visual_steps)
+        step_items = "".join(f"<li>{html_escape(step)}</li>" for step in visual_steps)
         return f"""
-<figure class="visual-example svg-fallback" aria-label="SVG fallback for {escape(title)}">
-  <figcaption>{render_icon("visual")}<span>{escape(caption)}</span></figcaption>
+<figure class="visual-example svg-fallback" aria-label="SVG fallback for {html_escape(title)}">
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="generated-infographic-grid">
-    <img class="infographic-image" src="images/{escape(filename)}" alt="{escape(title)} SVG fallback for {escape(visual.focus_point)}">
+    <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} SVG fallback for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
-      <div class="visual-model">{escape(model_note)}</div>
-      <div class="visual-source">{escape(source_prefix)}: {escape(source_label)}</div>
-      <p class="visual-question">{escape(question)} <strong>{escape(visual.focus_point)}</strong>.</p>
+      <div class="visual-model">{html_escape(model_note)}</div>
+      <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
+      <p class="visual-question">{html_escape(question)} <strong>{html_escape(visual.focus_point)}</strong>.</p>
       <ol>{step_items}</ol>
       <details class="visual-prompt">
-        <summary>{escape(prompt_label)}</summary>
-        <p>{escape(visual.prompt)}</p>
+        <summary>{html_escape(prompt_label)}</summary>
+        <p>{html_escape(visual.prompt)}</p>
       </details>
     </div>
   </div>
@@ -677,17 +677,17 @@ def render_infographic_required(
     focus_label = "Focus" if language == "en" else "聚焦知识点"
     prompt_label = "Prompt queue" if language == "en" else "生图提示词"
     return f"""
-<figure class="visual-example infographic-required" aria-label="Infographic required for {escape(title)}">
-  <figcaption>{render_icon("visual")}<span>{escape(caption)}</span></figcaption>
+<figure class="visual-example infographic-required" aria-label="Infographic required for {html_escape(title)}">
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="infographic-card">
-    <div class="visual-model">{escape(status)}</div>
-    <div class="visual-source">{escape(source_prefix)}: {escape(source_label)}</div>
-    <p><strong>{escape(why_label)}:</strong> {escape(visual.trigger)}</p>
-    <p><strong>{escape(type_label)}:</strong> {escape(visual.visual_type)}</p>
-    <p><strong>{escape(focus_label)}:</strong> {escape(visual.focus_point)}</p>
+    <div class="visual-model">{html_escape(status)}</div>
+    <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
+    <p><strong>{html_escape(why_label)}:</strong> {html_escape(visual.trigger)}</p>
+    <p><strong>{html_escape(type_label)}:</strong> {html_escape(visual.visual_type)}</p>
+    <p><strong>{html_escape(focus_label)}:</strong> {html_escape(visual.focus_point)}</p>
     <details class="visual-prompt">
-      <summary>{escape(prompt_label)}</summary>
-      <p>{escape(visual.prompt)}</p>
+      <summary>{html_escape(prompt_label)}</summary>
+      <p>{html_escape(visual.prompt)}</p>
     </details>
   </div>
 </figure>
@@ -737,10 +737,10 @@ def render_story_modes(topic: Topic, guide: TopicGuide, language: str) -> str:
     focus = topic.points[0] if topic.points else guide.topic_title
     if language == "en":
         return f"""
-<div class="story-modes" aria-label="Narrative explanation styles for {escape(topic.title)}">
+<div class="story-modes" aria-label="Narrative explanation styles for {html_escape(topic.title)}">
   <article>
     <h3>{render_icon("life")}<span>Life Scene</span></h3>
-    <p>Understand <strong>{escape(topic.title)}</strong> through a real situation: observe what happens, then explain it using <strong>{escape(focus)}</strong>.</p>
+    <p>Understand <strong>{html_escape(topic.title)}</strong> through a real situation: observe what happens, then explain it using <strong>{html_escape(focus)}</strong>.</p>
   </article>
   <article>
     <h3>{render_icon("detective")}<span>Detective Mode</span></h3>
@@ -755,10 +755,10 @@ def render_story_modes(topic: Topic, guide: TopicGuide, language: str) -> str:
     title = "本知识单元"
     focus = guide.checklist[0] if guide.checklist else "本节核心要求"
     return f"""
-<div class="story-modes" aria-label="叙事化讲解风格：{escape(title)}">
+<div class="story-modes" aria-label="叙事化讲解风格：{html_escape(title)}">
   <article>
     <h3>{render_icon("life")}<span>生活场景</span></h3>
-    <p>把 <strong>{escape(title)}</strong> 当成身边的一件事来理解：先找现象，再用 <strong>{escape(focus)}</strong> 解释它为什么发生。</p>
+    <p>把 <strong>{html_escape(title)}</strong> 当成身边的一件事来理解：先找现象，再用 <strong>{html_escape(focus)}</strong> 解释它为什么发生。</p>
   </article>
   <article>
     <h3>{render_icon("detective")}<span>侦探推理</span></h3>
@@ -1067,9 +1067,9 @@ def render_bonding_svg(index: int) -> str:
 
 
 def render_practice(item: PracticeItem, language: str, display_title: str | None = None) -> str:
-    frame = "".join(f"<li>{escape(step)}</li>" for step in item.answer_frame)
-    solution = "".join(f"<li>{escape(step)}</li>" for step in item.public_solution_steps)
-    checkpoints = "".join(f"<li>{escape(point)}</li>" for point in item.answer_checkpoints)
+    frame = "".join(f"<li>{html_escape(step)}</li>" for step in item.answer_frame)
+    solution = "".join(f"<li>{html_escape(step)}</li>" for step in item.public_solution_steps)
+    checkpoints = "".join(f"<li>{html_escape(point)}</li>" for point in item.answer_checkpoints)
     source = render_source_snippets(item.source_snippets, compact=True, language=language)
     labels = (
         {
@@ -1095,13 +1095,13 @@ def render_practice(item: PracticeItem, language: str, display_title: str | None
     title = item.topic_title if language == "en" else (display_title or "本知识单元")
     return f"""
 <article class="practice">
-  <h3>{render_icon("practice")}<span>{escape(title)} - {labels["worked"]}</span></h3>
+  <h3>{render_icon("practice")}<span>{html_escape(title)} - {labels["worked"]}</span></h3>
   <div class="practice-meta">
-    <span>{render_icon("command")}{labels["command"]}: {escape(item.command_word)}</span>
-    <span>{render_icon("level")}{labels["difficulty"]}: {escape(item.difficulty)}</span>
-    <span>{render_icon("focus")}{labels["focus"]}: {escape(item.focus_point)}</span>
+    <span>{render_icon("command")}{labels["command"]}: {html_escape(item.command_word)}</span>
+    <span>{render_icon("level")}{labels["difficulty"]}: {html_escape(item.difficulty)}</span>
+    <span>{render_icon("focus")}{labels["focus"]}: {html_escape(item.focus_point)}</span>
   </div>
-  <p class="practice-question">{escape(item.question)}</p>
+  <p class="practice-question">{html_escape(item.question)}</p>
   <h4>{render_icon("frame")}{labels["try"]}</h4>
   <ol>{frame}</ol>
   <h4>{render_icon("steps")}{labels["solution"]}</h4>
@@ -1153,14 +1153,14 @@ def render_reference_appendix(qualification: Qualification, practice_count: int,
     )
     return f"""
 <section class="band source appendix">
-  <h2>{escape(heading)}</h2>
-  <p>{escape(audience_note)}</p>
+  <h2>{html_escape(heading)}</h2>
+  <p>{html_escape(audience_note)}</p>
   {listing_note}
   <ul>
-    <li>{escape(page_label)}: <a href="{escape(qualification.page_url)}">{escape(qualification.page_url)}</a></li>
-    <li>{escape(spec_label)}: {link_or_missing(qualification.source.specification_url, language)}</li>
-    <li>PDF SHA-256: <code>{escape(hash_value)}</code></li>
-    <li>{escape(practice_label)}: {practice_count}</li>
+    <li>{html_escape(page_label)}: <a href="{html_escape(qualification.page_url)}">{html_escape(qualification.page_url)}</a></li>
+    <li>{html_escape(spec_label)}: {link_or_missing(qualification.source.specification_url, language)}</li>
+    <li>PDF SHA-256: <code>{html_escape(hash_value)}</code></li>
+    <li>{html_escape(practice_label)}: {practice_count}</li>
   </ul>
 </section>
 {assessment}
@@ -1175,7 +1175,7 @@ def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False,
             if language == "en"
             else "本节没有匹配到页码级来源片段，需要人工复核。"
         )
-        return f"<details class=\"source-snippets\"><summary>{escape(summary)}</summary><p class=\"warning\">{escape(message)}</p></details>"
+        return f"<details class=\"source-snippets\"><summary>{html_escape(summary)}</summary><p class=\"warning\">{html_escape(message)}</p></details>"
     css_class = "source-snippets compact" if compact else "source-snippets"
     if language == "zh-CN":
         review_note = "官方英文来源片段已保存在结构化输出中，供老师或维护者复核；学生正文不混排英文原文。"
@@ -1184,10 +1184,10 @@ def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False,
             items.append(
                 "<li>"
                 f"<strong>第 {snippet.page} 页</strong> "
-                f"<span>{escape(review_note)}</span>"
+                f"<span>{html_escape(review_note)}</span>"
                 "</li>"
             )
-        return f"<details class=\"{css_class}\"><summary>{escape(summary)}</summary><ul>{''.join(items)}</ul></details>"
+        return f"<details class=\"{css_class}\"><summary>{html_escape(summary)}</summary><ul>{''.join(items)}</ul></details>"
     items = []
     for snippet in snippets:
         text = snippet.text
@@ -1196,11 +1196,11 @@ def render_source_snippets(snippets: list[SourceSnippet], compact: bool = False,
         items.append(
             "<li>"
             f"<strong>p.{snippet.page}</strong> "
-            f"<span>{escape(snippet.matched_term)}</span>"
-            f"<blockquote>{escape(text)}</blockquote>"
+            f"<span>{html_escape(snippet.matched_term)}</span>"
+            f"<blockquote>{html_escape(text)}</blockquote>"
             "</li>"
         )
-    return f"<details class=\"{css_class}\"><summary>{escape(summary)}</summary><ul>{''.join(items)}</ul></details>"
+    return f"<details class=\"{css_class}\"><summary>{html_escape(summary)}</summary><ul>{''.join(items)}</ul></details>"
 
 
 def format_source_reference(
@@ -1220,8 +1220,8 @@ def format_source_reference(
 def link_or_missing(value: str | None, language: str = "en") -> str:
     if not value:
         missing = "missing" if language == "en" else "缺失"
-        return f"<span class=\"warning\">{escape(missing)}</span>"
-    return f"<a href=\"{escape(value)}\">{escape(value)}</a>"
+        return f"<span class=\"warning\">{html_escape(missing)}</span>"
+    return f"<a href=\"{html_escape(value)}\">{html_escape(value)}</a>"
 
 
 def subject_display_name(qualification: Qualification) -> str:
@@ -1253,7 +1253,7 @@ def display_topic_title(topic: Topic, index: int, language: str) -> str:
     return f"知识单元 {index}"
 
 
-def escape(value: str) -> str:
+def html_escape(value: str) -> str:
     return html.escape(value, quote=True)
 
 
@@ -1296,7 +1296,7 @@ def svg_multiline_text(
     tspans = []
     for index, line in enumerate(lines):
         dy = 0 if index == 0 else line_height
-        tspans.append(f'<tspan x="{x}" dy="{dy}">{escape(line)}</tspan>')
+        tspans.append(f'<tspan x="{x}" dy="{dy}">{html_escape(line)}</tspan>')
     return (
         f'<text x="{x}" y="{y}" fill="{fill}" font-size="{size}" '
         f'font-weight="{weight}">{"".join(tspans)}</text>'

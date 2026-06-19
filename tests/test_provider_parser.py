@@ -26,6 +26,11 @@ def test_clean_text_repairs_set_notation_pdf_symbol_duplication():
     assert text == "n(A), A\u2032, A \u222a B, A \u2229 B, \u03be"
 
 
+def test_clean_text_does_not_rewrite_plain_repeated_union():
+    text = clean_text("Compare A \u222a B, A \u222a B in two worked examples")
+    assert text == "Compare A \u222a B, A \u222a B in two worked examples"
+
+
 def test_extract_topics_with_group_headings():
     parser = parse(
         """

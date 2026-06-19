@@ -1371,13 +1371,13 @@ const providerData = [
     tag: "02",
     title: "Edexcel",
     accent: "#be4750",
-    points: ["先支持用户提供官方链接", "IGCSE 和 IAL 样例已通过", "后续再扩展自动目录发现"],
+    points: ["按科目名匹配官方候选", "支持官方科目页或大纲 PDF 输入", "候选不唯一就返回列表让用户选择"],
   },
   {
     tag: "03",
     title: "CAIE",
     accent: "#4fa394",
-    points: ["先支持用户提供官方链接", "多年份大纲要先确认考试年份", "年份不清楚就先停下确认"],
+    points: ["从官方科目索引匹配候选", "多年份大纲要先确认考试年份", "年份不清楚就先停下确认"],
   },
 ];
 
@@ -1435,7 +1435,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={6.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.2.3 · 三大考试局支持</div>
+      <div className="kicker">v0.2.4 · 三大考试局支持</div>
       <h1 className="headline">三大常用国际考试局，现在都能跑。</h1>
       <p className="lead">
         AQA、Edexcel、CAIE：同一套复习手册框架，但每个考试局都按自己的官方来源读取大纲。
@@ -1504,7 +1504,7 @@ function ProviderScene() {
     <SceneFrame start={11.2} end={18.3}>
       <div className="kicker">三大考试局怎么支持</div>
       <h2 className="headline">各走官方来源，不混用大纲。</h2>
-      <p className="lead">AQA 可从官网目录发现课程；Edexcel 和 CAIE 先支持用户提供官方链接或 PDF，后续再扩展自动发现。</p>
+      <p className="lead">AQA 可从官网目录发现课程；Edexcel 会按官方页面规则匹配候选；CAIE 会从官方科目索引匹配候选。无法唯一确认时，先让用户选。</p>
       <div className="provider-system">
         {providerData.map((provider, index) => {
           const p = clamp((time - 12.0 - index * 0.28) / 0.75, 0, 1);
@@ -1639,7 +1639,7 @@ function Footer() {
   const p = `${Math.min(100, (time / 32) * 100)}%`;
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI 复习手册 Skill · v0.2.3</span>
+      <span>IGCSE & A-Level AI 复习手册 Skill · v0.2.4</span>
       <div className="progress-line" style={{ "--p": p }}><span></span></div>
       <span>{Math.floor(time).toString().padStart(2, "0")} / 32s</span>
     </div>

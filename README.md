@@ -179,6 +179,12 @@ The output language is chosen before generation:
 - The generator should not create bilingual `Chinese / English` labels.
 - Official English terms can stay in source files or a review appendix, but the student-facing handbook should remain in one language.
 
+## What Changed In v0.2.4
+
+v0.2.4 updates the intro animation copy so it matches the current three-board
+support model: AQA catalogue discovery, Edexcel official candidate matching, and
+CAIE official subject-index matching with exam-year confirmation.
+
 ## What Changed In v0.2.3
 
 v0.2.3 restores the intro-animation preview in the README:

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.4 - 2026-06-19
+
+### Fixed
+
+- Updated the intro-animation copy so Edexcel and CAIE are no longer described
+  as future/URL-only work. The animation now reflects the current v0.2.x support
+  model: AQA catalogue discovery, Edexcel official candidate matching, and CAIE
+  official subject-index matching with exam-year confirmation.
+
 ## 0.2.3 - 2026-06-19
 
 ### Fixed

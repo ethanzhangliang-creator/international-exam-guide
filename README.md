@@ -18,6 +18,12 @@ the noise around learning so students can face schoolwork with more calm and
 control.
 
 <p align="center">
+  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">
+    <img src="docs/assets/intro-animation-preview.gif" alt="Three-board revision handbook Skill HTML intro preview" width="100%">
+  </a>
+</p>
+
+<p align="center">
   <a href="README.zh-CN.md">中文 README</a>
   ·
   <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">Project site</a>
@@ -172,6 +178,13 @@ The output language is chosen before generation:
 - Chinese mode keeps student-facing text, labels, examples, and visual prompts in Simplified Chinese.
 - The generator should not create bilingual `Chinese / English` labels.
 - Official English terms can stay in source files or a review appendix, but the student-facing handbook should remain in one language.
+
+## What Changed In v0.2.3
+
+v0.2.3 restores the intro-animation preview in the README:
+
+- Added a clickable GIF preview directly under the project-origin story.
+- Kept the full HTML animation available on the project site.
 
 ## What Changed In v0.2.2
 

@@ -16,6 +16,12 @@
 利用人工智能帮助孩子更轻松、更有掌控感地面对学业。
 
 <p align="center">
+  <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/project-intro-animation.html">
+    <img src="docs/assets/intro-animation-preview.gif" alt="三大考试局复习手册 Skill 介绍动画预览" width="100%">
+  </a>
+</p>
+
+<p align="center">
   <a href="README.md">英文 README</a>
   ·
   <a href="https://mianbaofang.github.io/igcse-a-level-revision-guide/">项目主页</a>
@@ -156,6 +162,13 @@ outputs/chemistry-9202/
 - 选择英文，学生看到的正文、标签、例题和配图提示都用英文。
 - 不做中英拼接标签。
 - 官方英文术语可以保留在来源文件或复核附录里，学生正文尽量保持单一语言。
+
+## v0.2.3 更新了什么
+
+v0.2.3 把 README 里的介绍动画预览补回来了：
+
+- 在项目初衷下面放回可点击的 GIF 动画预览。
+- 完整 HTML 动画仍然保留在项目主页里。
 
 ## v0.2.2 更新了什么
 

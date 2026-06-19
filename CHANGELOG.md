@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.3 - 2026-06-19
+
+### Fixed
+
+- Restored the clickable intro-animation preview directly under the project
+  origin section in both English and Chinese READMEs, using the tracked GIF
+  preview and linking to the full HTML animation.
+- Made the full HTML intro animation standalone by inlining the local animation
+  scripts, so opening `docs/project-intro-animation.html` from `file://` also
+  auto-plays instead of being blocked by browser CORS rules.
+
 ## 0.2.2 - 2026-06-19
 
 ### Changed

@@ -52,9 +52,10 @@ then turn the official syllabus into a reusable revision-handbook framework.
 ### Current MVP
 
 The current MVP can generate guides for AQA International GCSE and
-International AS-A-level qualification pages, plus Pearson Edexcel and
-Cambridge International / CAIE candidate discovery with official URL/PDF
-fallbacks. It has been verified on:
+International AS-A-level qualification pages, plus Edexcel and CAIE candidate
+discovery with official URL/PDF fallbacks. Full official names are OxfordAQA /
+Oxford International AQA, Pearson Edexcel, and Cambridge International / CAIE.
+It has been verified on:
 
 The entries below are validation samples, not a subject support matrix. The
 provider/parser pipeline is designed to work across discovered OxfordAQA
@@ -108,9 +109,9 @@ crawling yet.
 
 | Provider / exam board | Status | Notes |
 |---|---|---|
-| AQA / Oxford International AQA Examinations | implemented | Catalogue discovery plus qualification parsing. |
-| Pearson Edexcel | implemented MVP | Subject-name candidate discovery for common official page patterns; official URL/PDF fallback. |
-| Cambridge International / CAIE | implemented MVP | Official subject-index candidate discovery; official URL/PDF fallback; `exam_year` required for multi-range pages. |
+| AQA | implemented | Catalogue discovery through OxfordAQA / Oxford International AQA pages plus qualification parsing. |
+| Edexcel | implemented MVP | Subject-name candidate discovery for common official Pearson Edexcel page patterns; official URL/PDF fallback. |
+| CAIE | implemented MVP | Official Cambridge International subject-index discovery; official URL/PDF fallback; `exam_year` required for multi-range pages. |
 | OCR, WJEC/Eduqas, CCEA, and other UK boards | out of scope | Do not promise support in README or generated examples. |
 
 Market comments about relative exam difficulty, vocabulary load, or scoring
@@ -128,13 +129,13 @@ They are useful positioning context, but they are not official provider facts.
 6. Add an optional image-provider adapter for reviewed educational
    illustrations, with model/prompt/source metadata recorded for every asset.
 7. Add visual regression snapshots for generated HTML.
-8. Expand Pearson Edexcel and Cambridge International / CAIE beyond candidate
+8. Expand Edexcel and CAIE beyond candidate
    discovery MVP only after provider fixtures and quality gates are stable.
 
 ## 中文
 
-IGCSE & A-Level AI Revision Guide Skill 是一个开源流水线，用来为 OxfordAQA International
-GCSE 与 International AS-A-level 学科生成可追溯来源的复习指南。
+IGCSE & A-Level AI Revision Guide Skill 是一个开源流水线，用来为 AQA、Edexcel、CAIE 的 International
+GCSE 与 International AS-A-level 学科生成可追溯来源的复习指南。按国内常用习惯，文档主称使用 AQA、Edexcel、CAIE；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE。
 
 它不是泛泛的 AI 教育平台。核心原理对各学科通用：以官方 specification 为输入，
 再把大纲内容融合进统一的学习复习手册框架。
@@ -214,14 +215,14 @@ Literature 的 text-list 标签、History/Sociology 从 assessment 回推 topic 
 
 ### Provider 范围
 
-当前产品只实现 OxfordAQA，不应写成覆盖全部 International GCSE 或
-International AS-A-level provider。国内市场路线图是：
+当前产品聚焦国内常用的 AQA、Edexcel、CAIE，不应写成覆盖全部 International GCSE 或
+International AS-A-level provider。
 
 | Provider / exam board | 状态 | 备注 |
 |---|---|---|
-| OxfordAQA / Oxford International AQA Examinations | 已实现 | 当前 parser、renderer、样例和 validation 都围绕这个网站构建。 |
-| Pearson Edexcel | 计划支持 | 等 OxfordAQA fixtures 和质量门槛稳定后再加。 |
-| Cambridge International / CAIE | 计划支持 | 作为独立 provider 实现，不复用 OxfordAQA 的网页假设。 |
+| AQA | 已实现 | 通过 OxfordAQA / Oxford International AQA 页面进行目录发现与 qualification 解析。 |
+| Edexcel | MVP 已实现 | 根据官方 Pearson Edexcel 页面规则做候选发现；官方 URL/PDF 可以作为精确输入。 |
+| CAIE | MVP 已实现 | 通过 Cambridge International 官方科目索引做候选发现；官方 URL/PDF 可以作为精确输入；多年份页面需要 `exam_year`。 |
 | OCR、WJEC/Eduqas、CCEA 等其他英国考试局 | 暂不支持 | README 和样例里都不承诺覆盖。 |
 
 关于考试难度、词汇负担、得分友好度这类市场判断，只能作为 planning note，
@@ -231,12 +232,11 @@ International AS-A-level provider。国内市场路线图是：
 
 1. 强化 PDF 分段：subject content、指令词、assessment objectives、
    appendices、version history。
-2. 用合成 PDF fixtures 补测试，避免提交 OxfordAQA PDF。
+2. 用合成 PDF fixtures 补测试，避免提交官方 PDF。
 3. 增加经过审核的 authoring adapter，生成更深度 worked examples。
 4. 为常见题型增加更专业的学科 SVG 图解模板。
 5. 增加可配置的 explanation-style presets，适配不同学生的阅读偏好。
 6. 增加可选 image-provider adapter，用于经过复核的教学插图，并记录每张图的
    model、prompt、source metadata 和 review status。
 7. 增加 HTML 视觉回归检查。
-8. OxfordAQA 稳定后，按 Pearson Edexcel、Cambridge International / CAIE
-   的顺序扩 provider。
+8. Edexcel 与 CAIE 在 MVP 基础上继续补 fixture、质量门槛和更多真实科目回归。

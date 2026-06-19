@@ -1,6 +1,6 @@
 ---
 name: igcse-a-level-revision-guide
-description: Generate image-rich International GCSE and International AS-A-level revision handbooks from official syllabus/specification sources, with AQA, Pearson Edexcel, and Cambridge International / CAIE support.
+description: Generate image-rich International GCSE and International AS-A-level revision handbooks from official syllabus/specification sources, with AQA, Edexcel, and CAIE support.
 ---
 
 # IGCSE & A-Level AI Revision Guide Skill
@@ -16,26 +16,26 @@ Skill: the output must be a student study/revision handbook with HTML, PDF,
 modular sections, visual assets, worked examples, and validation. Do not turn
 the output into project documentation.
 
-Current provider support:
+Current exam-board support:
 
-- OxfordAQA: implemented provider, including catalogue discovery. In Chinese
-  user requests, treat "AQA" as the common shorthand for OxfordAQA /
-  Oxford International AQA unless the user explicitly gives a UK AQA page.
-- Pearson Edexcel: subject-name candidate discovery for common official
+- AQA: implemented through OxfordAQA / Oxford International AQA public pages,
+  including catalogue discovery. In Chinese user requests, treat "AQA" as this
+  international AQA route unless the user explicitly gives a UK AQA page.
+- Edexcel: subject-name candidate discovery for common official Pearson Edexcel
   International GCSE / International AS-A-level page patterns, plus official
   subject-page URL or direct specification PDF URL fallback.
-- Cambridge International / CAIE: official subject-index candidate discovery,
-  plus official subject-page URL or direct syllabus PDF URL fallback. If a
-  Cambridge page lists multiple syllabus year ranges, ask for `exam_year` and
-  use the range containing that year.
+- CAIE: official Cambridge International subject-index candidate discovery,
+  plus official subject-page URL or direct syllabus PDF URL fallback. If a CAIE
+  page lists multiple syllabus year ranges, ask for `exam_year` and use the
+  range containing that year.
 
-Do not run the OxfordAQA provider against Edexcel, Cambridge, or generic AQA UK
-pages. If the user says only "AQA" with no UK AQA URL, clarify or treat it as
-OxfordAQA for the China-facing International GCSE / International AS-A-level
-workflow. Do not claim full subject-catalogue crawling for Pearson. When Pearson
-or Cambridge cannot uniquely identify a subject from exam board, level, subject,
-and code, return the matching official candidates and ask the user to choose one.
-Do not silently pick a likely route.
+Do not run the AQA/OxfordAQA provider against Edexcel, CAIE, or generic UK AQA
+pages. If the user says only "AQA" with no UK AQA URL, treat it as the
+China-facing International GCSE / International AS-A-level AQA route. Do not
+claim full subject-catalogue crawling for Edexcel. When Edexcel or CAIE cannot
+uniquely identify a subject from exam board, level, subject, and code, return the
+matching official candidates and ask the user to choose one. Do not silently pick
+a likely route.
 
 ## User-Facing Use
 
@@ -49,9 +49,9 @@ https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 After installation, plain-language requests are enough, for example:
 
 ```text
-帮我生成 OxfordAQA Chemistry International GCSE 复习手册，并导出 PDF。
-帮我生成 Chemistry 9202 学习手册。
-帮我生成 OxfordAQA Business International AS-A-level revision guide。
+帮我生成 AQA Chemistry International GCSE 复习手册，并导出 PDF。
+帮我生成 Edexcel Accounting International GCSE 中文复习手册。
+帮我生成 CAIE IGCSE Economics 2027 考试用中文学习手册。
 ```
 
 Do not start generation immediately after a broad request. Run the preflight
@@ -140,12 +140,12 @@ is genuinely missing the required runtime and cannot proceed.
 This skill is a cross-subject framework, not a Mathematics, Chemistry, or
 Economics template. Do not hard-code one subject's examples, diagrams, topic
 counts, tone, or revision structure into another subject.
-Within OxfordAQA, do not maintain a per-subject allowlist. If the official
-qualification page and specification PDF can be discovered, run the same
-source-bound generation pipeline. Specialist subject profiles may improve
-examples and visual decisions; subjects without a specialist profile must fall
-back to generic source-bound examples instead of borrowing another subject's
-template.
+Within a supported board, do not maintain a per-subject allowlist. If the
+official qualification page and specification PDF can be discovered or supplied,
+run the same source-bound generation pipeline. Specialist subject profiles may
+improve examples and visual decisions; subjects without a specialist profile
+must fall back to generic source-bound examples instead of borrowing another
+subject's template.
 
 The end product is a study/revision handbook package. A valid run writes:
 
@@ -224,8 +224,9 @@ https://github.com/mianbaofang/igcse-a-level-revision-guide.git
    year, output language, and explanation style. Do not ask for an image model
    at this stage.
 2. Read `references/revision_guide_spec.md`.
-3. For OxfordAQA, read `references/oxfordaqa.md`.
-4. For Pearson Edexcel or Cambridge International / CAIE, first try official
+3. For AQA, read `references/oxfordaqa.md` because the implemented AQA route is
+   based on OxfordAQA / Oxford International AQA pages.
+4. For Edexcel or CAIE, first try official
    candidate discovery from the user's subject request. If more than one
    official candidate matches, return the choices and wait. If none matches,
    ask for an official subject-page URL, direct specification/syllabus PDF URL,
@@ -277,10 +278,24 @@ PYTHONPATH=src python -m intl_exam_guide generate --query chemistry --level igcs
 
 Use `--skip-pdf` only when no local browser or Playwright runtime is available.
 
+## Anti-Patterns
+
+- Do not ask for an image model during preflight.
+- Do not show `gpt-image-2`, `qwen-image-pro`, `sensenova-u1-fast`,
+  `deterministic-svg`, and `prompt-queue` as one user-facing model menu.
+- Do not treat a recommended model name as a callable capability.
+- Do not use AQA syllabus content when the user asked for Edexcel or CAIE.
+- Do not accept a guide with only broad topic headings, missing worked examples,
+  or missing visual briefs.
+- Do not present SVG fallbacks for complex infographics as final reviewed
+  teaching diagrams.
+- Do not mix Chinese and English in student-facing handbook labels or topic
+  bodies after the language lock is chosen.
+
 ## Safety Rules
 
-- Do not copy OxfordAQA past paper questions, mark schemes, or large passages of
-  specification text into generated public examples.
+- Do not copy official past-paper questions, mark schemes, or large passages of
+  specification/syllabus text into generated public examples.
 - Keep the official page URL, specification URL, and PDF hash in every output.
 - Treat the generated guide as incomplete if topic extraction, assessment
   extraction, source download, or HTML validation fails.

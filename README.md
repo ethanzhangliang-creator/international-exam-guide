@@ -39,9 +39,9 @@ China international-school usage:
 
 | Exam board | Current support |
 |---|---|
-| OxfordAQA | Discovers qualifications from the public subject catalogue and reads the public specification PDF. |
-| Pearson Edexcel | Tries official subject-page candidates from the subject name; falls back to a supplied official subject page or direct specification PDF URL. |
-| Cambridge International / CAIE | Searches official subject indexes for candidates; falls back to a supplied official subject page or direct syllabus PDF URL; asks for the exam year when several ranges are listed. |
+| AQA | Discovers qualifications from OxfordAQA / Oxford International AQA public pages and reads the public specification PDF. |
+| Edexcel | Tries official Pearson Edexcel subject-page candidates from the subject name; falls back to a supplied official subject page or direct specification PDF URL. |
+| CAIE | Searches official Cambridge International subject indexes for candidates; falls back to a supplied official subject page or direct syllabus PDF URL; asks for the exam year when several ranges are listed. |
 
 It uses one shared handbook workflow across the three boards: read the official
 syllabus, expand it into teachable topic units, create worked examples, decide
@@ -59,15 +59,15 @@ https://github.com/mianbaofang/igcse-a-level-revision-guide/tree/main/skill
 Then ask:
 
 ```text
-Install this Skill, then generate a Chinese OxfordAQA Chemistry International GCSE revision handbook and export it as PDF.
+Install this Skill, then generate a Chinese AQA Chemistry International GCSE revision handbook and export it as PDF.
 ```
 
 Typical requests:
 
 ```text
-Generate a Pearson Edexcel Accounting International GCSE revision guide.
+Generate an Edexcel Accounting International GCSE revision guide.
 Generate a Chinese Cambridge IGCSE Economics guide for the 2027 exam year.
-Generate an OxfordAQA Mathematics 9260 revision handbook with visual worked examples and final review questions.
+Generate an AQA Mathematics 9260 revision handbook with visual worked examples and final review questions.
 ```
 
 Before generation starts, the agent should confirm:
@@ -122,13 +122,14 @@ These screenshots demonstrate handbook quality. They are not the subject limit.
 
 | Exam board | International GCSE | International AS-A-level | Current behavior |
 |---|---:|---:|---|
-| OxfordAQA / Oxford International AQA Examinations | yes | yes | Public catalogue discovery. |
-| Pearson Edexcel | yes | yes | Subject-name candidate discovery for common official page patterns; official URL/PDF can override ambiguity. |
-| Cambridge International / CAIE | yes | yes | Official subject-index candidate discovery; official URL/PDF can override ambiguity; exam year is required for multi-range pages. |
+| AQA | yes | yes | Public catalogue discovery through OxfordAQA / Oxford International AQA pages. |
+| Edexcel | yes | yes | Subject-name candidate discovery for common official Pearson Edexcel page patterns; official URL/PDF can override ambiguity. |
+| CAIE | yes | yes | Official Cambridge International subject-index candidate discovery; official URL/PDF can override ambiguity; exam year is required for multi-range pages. |
 | OCR, WJEC/Eduqas, CCEA, and other UK boards | no | no | Outside the current release scope. |
 
-The current release focuses on OxfordAQA, Pearson Edexcel, and Cambridge
-International / CAIE. It does not claim support for every UK A-level awarding
+The current release focuses on AQA, Edexcel, and CAIE. Full official names are
+OxfordAQA / Oxford International AQA, Pearson Edexcel, and Cambridge
+International. It does not claim support for every UK A-level awarding
 organisation.
 
 ## Visuals And Writing Styles
@@ -174,11 +175,11 @@ The output language is chosen before generation:
 
 ## What Changed In v0.2.0
 
-v0.1.0 mainly focused on the OxfordAQA handbook-generation path. v0.2.0 turns the
+v0.1.0 mainly focused on the AQA handbook-generation path. v0.2.0 turns the
 project into a three-exam-board open-source release:
 
-- Added Pearson Edexcel official candidate discovery plus official URL/PDF intake.
-- Added Cambridge International / CAIE official subject-index discovery plus official URL/PDF intake and exam-year selection.
+- Added Edexcel official candidate discovery plus official URL/PDF intake.
+- Added CAIE official subject-index discovery plus official URL/PDF intake and exam-year selection.
 - Strengthened the language lock to avoid half-Chinese, half-English guides.
 - Changed image routing: the base handbook is generated first, then complex
   infographic needs are reported.

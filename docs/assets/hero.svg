@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420" role="img" aria-labelledby="title desc">
   <title id="title">IGCSE &amp; A-Level AI Revision Guide Skill</title>
-  <desc id="desc">A Codex Skill for printable, image-rich OxfordAQA IGCSE and A-Level revision guides.</desc>
+  <desc id="desc">A Codex Skill for printable, image-rich AQA, Edexcel, and CAIE IGCSE and A-Level revision guides.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#124f9b"/>
@@ -18,7 +18,7 @@
     <text x="72" y="94" font-family="Segoe UI, Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="3">IMAGE-RICH REVISION GUIDES</text>
     <text x="72" y="154" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="800">IGCSE &amp; A-Level AI Revision</text>
     <text x="72" y="210" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="800" opacity="0.96">Guide Skill</text>
-    <text x="72" y="254" font-family="Segoe UI, Arial, sans-serif" font-size="24" opacity="0.92">OxfordAQA now · Edexcel / CAIE roadmap</text>
+    <text x="72" y="254" font-family="Segoe UI, Arial, sans-serif" font-size="24" opacity="0.92">AQA · Edexcel · CAIE</text>
     <text x="72" y="296" font-family="Segoe UI, Arial, sans-serif" font-size="20" opacity="0.9">Subject request in. Visual HTML/PDF revision guide out.</text>
   </g>
   <g filter="url(#shadow)">

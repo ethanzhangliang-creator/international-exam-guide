@@ -1,0 +1,22 @@
+[
+  {
+    "id": "aqa-accounting-zh",
+    "prompt": "帮我生成 AQA IGCSE 会计中文复习手册。",
+    "expected": "The agent treats AQA as the OxfordAQA international route, confirms output language and explanation style, does not ask for an image model before generation, then validates that detailed syllabus units, worked examples, visual briefs, HTML, and PDF exist."
+  },
+  {
+    "id": "edexcel-ambiguous-subject",
+    "prompt": "我需要 Edexcel IGCSE Accounting 复习手册。",
+    "expected": "The agent first resolves official Edexcel candidates. If more than one official route matches, it returns the candidates and waits for the user instead of silently reusing an AQA syllabus or guessing a URL."
+  },
+  {
+    "id": "caie-exam-year",
+    "prompt": "帮我生成 CAIE IGCSE Economics 中文学习手册。",
+    "expected": "The agent checks whether the CAIE page exposes multiple syllabus year ranges. If so, it asks for exam year before selecting the syllabus, then keeps the handbook language locked to Chinese."
+  },
+  {
+    "id": "image-model-not-callable",
+    "prompt": "用 SenseNova U1 Fast 给复杂图都生出来。",
+    "expected": "The agent verifies that a callable image-generation skill, script, custom provider configuration, or matching asset directory exists. If none exists, it does not pretend SenseNova is callable and instead reports the pending infographic count plus SVG fallback review risk."
+  }
+]

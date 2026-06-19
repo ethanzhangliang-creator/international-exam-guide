@@ -9,7 +9,7 @@ than generation speed or stylistic fluency.
 
 1. Do not invent syllabus topics.
 2. Do not copy past-paper questions or mark schemes.
-3. Do not commit downloaded OxfordAQA PDFs to the repository.
+3. Do not commit downloaded official PDFs to the repository.
 4. Do not treat a generated guide as final if validation has errors.
 5. Do not use deep worked examples with students until they have been reviewed
    against the extracted specification text.
@@ -17,8 +17,8 @@ than generation speed or stylistic fluency.
 ### What the MVP Can Safely Do
 
 - Extract topic titles and syllabus summary points from the public page.
-- Record subject-page listing metadata for blue International GCSE and red
-  International AS-A-level entries when discovered from OxfordAQA subject pages.
+- Record provider-specific listing metadata when the official page exposes it,
+  such as AQA International GCSE / International AS-A-level listing groups.
 - Download the public specification PDF at runtime.
 - Record source URLs and PDF hash.
 - Match topic-level source snippets from extracted PDF pages.
@@ -52,15 +52,15 @@ than generation speed or stylistic fluency.
 
 1. 不编造 syllabus topics。
 2. 不复制 past-paper questions 或 mark schemes。
-3. 不把下载的 OxfordAQA PDFs 提交到仓库。
+3. 不把下载的官方 PDFs 提交到仓库。
 4. validation 有 error 时，不把指南当完成品。
 5. 深度 worked examples 必须对照抽取出的大纲文本复核后，才能给孩子正式使用。
 
 ### MVP 可以安全完成什么
 
 - 从公开页面抽取 topic titles 和 syllabus summary points。
-- 从 OxfordAQA subject 页面发现 qualification 时，记录蓝色 International GCSE
-  和红色 International AS-A-level listing 元数据。
+- 当官方页面提供 listing 元数据时进行记录，例如 AQA 的 International GCSE /
+  International AS-A-level 分组。
 - 运行时下载公开 specification PDF。
 - 记录 source URLs 和 PDF hash。
 - 从 PDF 页文本中匹配 topic-level source snippets。

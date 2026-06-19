@@ -1,3 +1,3 @@
 display_name: IGCSE & A-Level AI Revision Guide
-short_description: Build image-aware International GCSE and AS/A-Level study handbooks from official syllabus sources after confirming subject, exam year when needed, language, and explanation style.
-default_prompt: Ask me to confirm the provider, subject, required exam year, output language, and explanation style, then generate a source-bound study/revision handbook with explanations, worked examples, visual briefs, optional visuals, PDF output, and validation.
+short_description: Build image-aware International GCSE and AS/A-Level study handbooks for AQA, Edexcel, and CAIE from official syllabus sources.
+default_prompt: Ask me to confirm the exam board, subject, required exam year, output language, and explanation style. Then generate a source-bound study/revision handbook with explanations, worked examples, visual briefs, optional visuals, PDF output, and validation.

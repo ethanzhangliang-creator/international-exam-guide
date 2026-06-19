@@ -36,16 +36,16 @@ The user-facing promise is simple:
    generate examples and visual briefs, render HTML, export PDF, and validate
    the result.
 
-Current provider support:
+Current exam-board support:
 
-- OxfordAQA: implemented with catalogue discovery.
-- Pearson Edexcel: subject-name candidate discovery for common official page
+- AQA: implemented through OxfordAQA / Oxford International AQA pages, with catalogue discovery.
+- Edexcel: subject-name candidate discovery for common official Pearson Edexcel page
   patterns, with official subject-page URL or direct specification PDF fallback.
-- Cambridge International / CAIE: official subject-index candidate discovery,
+- CAIE: official Cambridge International subject-index candidate discovery,
   with official subject-page URL or direct syllabus PDF fallback and `exam_year`
   required when a page lists multiple syllabus ranges.
 
-Do not claim support for all UK exam boards or full Pearson/Cambridge catalogue
+Do not claim support for all UK exam boards or full Edexcel/CAIE catalogue
 crawling.
 
 ## Current State
@@ -149,14 +149,14 @@ python scripts/scan_for_raw_keys.py . ..\..\outputs
 5. Improve real image-provider adapter interfaces beyond the current
    prompt-queue/import workflow.
 6. Add visual regression checks for generated HTML and public homepage assets.
-7. Expand Pearson Edexcel beyond candidate discovery MVP after fixtures and
+7. Expand Edexcel beyond candidate discovery MVP after fixtures and
    validation are stable.
-8. Expand Cambridge International / CAIE beyond candidate discovery MVP with its
+8. Expand CAIE beyond candidate discovery MVP with its
    own provider fixtures and source model.
 
 ## Do Not Do
 
-- Do not commit downloaded OxfordAQA PDFs, past papers, mark schemes, or copied
+- Do not commit downloaded official PDFs, past papers, mark schemes, or copied
   question content.
 - Do not describe the project as supporting all IGCSE/A-Level providers.
 - Do not mix Chinese and English labels in student-facing guide bodies unless

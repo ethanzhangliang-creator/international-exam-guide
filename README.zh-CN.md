@@ -38,7 +38,9 @@
 |---|---|
 | AQA | 支持从官网科目目录发现课程，并读取公开大纲 PDF。 |
 | Edexcel | 会先根据科目名尝试匹配官方候选页面；无法唯一确认时列出候选，也支持用户直接提供官方科目页或大纲 PDF。 |
-| CAIE / Cambridge International | 会从官方科目索引匹配候选；无法唯一确认时列出候选，也支持官方科目页或大纲 PDF；遇到多个考试年份时会先确认年份。 |
+| CAIE | 会从官方科目索引匹配候选；无法唯一确认时列出候选，也支持官方科目页或大纲 PDF；遇到多个考试年份时会先确认年份。 |
+
+说明：文档和用户提示里优先使用国内更常见的简称 AQA、Edexcel、CAIE；对应全称分别是 OxfordAQA / Oxford International AQA、Pearson Edexcel、Cambridge International / CAIE。
 
 这套流程面向三大考试局统一设计：先读取官方大纲，再生成知识点讲解、例题、图文学习单元、复习题和 PDF。
 

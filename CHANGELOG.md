@@ -1,5 +1,31 @@
 # Changelog
 
+## 0.2.1 - 2026-06-19
+
+### Changed
+
+- Updated the public naming convention to use the familiar exam-board names
+  AQA, Edexcel, and CAIE across the Skill, README, homepage copy, handoff notes,
+  and hero artwork, while keeping the full official names as explanatory notes:
+  OxfordAQA / Oxford International AQA, Pearson Edexcel, and Cambridge
+  International / CAIE.
+- Darwin-tuned `skill/SKILL.md` so the agent flow is clearer: confirm exam
+  board, subject, required exam year, output language, and explanation style
+  first; do not ask for an image model before the base handbook run.
+- Added `skill/test-prompts.json` with regression prompts for AQA Accounting,
+  ambiguous Edexcel subject selection, CAIE exam-year selection, and non-callable
+  image-model requests.
+
+### Fixed
+
+- Removed remaining user-facing wording that made the project look like an
+  OxfordAQA-only Skill after the v0.2.0 three-board upgrade.
+- Tightened image-generation instructions so recommended models such as GPT
+  Image 2.0, Qwen Image 2.0 Pro, and SenseNova U1 Fast are described as
+  recommendations, not guaranteed built-in capabilities.
+- Generalized source-safety wording from OxfordAQA-only PDFs to official PDFs
+  from all supported exam boards.
+
 ## 0.2.0 - 2026-06-19
 
 ### Added

@@ -205,6 +205,12 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   with coverage, visual routing has cross-subject benchmarks, Physics force and
   motion routes to infographic briefs, SVG substring collisions are fixed, and
   the HTML renderer is split into structure, SVG templates, and CSS modules.
+- **v0.2.10:** fixes real second-round audit regressions: Edexcel no longer
+  appends Pearson front matter into topics, CAIE skips content-overview and AO
+  tables, Chinese handbook titles avoid generic numbered placeholders, generated
+  HTML gains quick navigation and width constraints, and SVG fallbacks now use
+  subject-specific accounting, economics, maths, physics, and chemistry
+  templates.
 
 ## Developer Quick Start
 

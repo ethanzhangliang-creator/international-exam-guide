@@ -11,6 +11,7 @@ from intl_exam_guide.rendering.html import (
     render_student_overview,
     subject_display_name,
     render_topic_map,
+    render_topic_nav,
     render_topic_visual_svg,
     render_topics,
     stylesheet,
@@ -79,6 +80,7 @@ def write_sections(
             render_student_overview(qualification, plan.revision_stages, plan.run_options),
         ),
         ("03_topic_map.txt", render_topic_map(qualification.topics, language, plan.topic_guides)),
+        ("03_topic_navigation.txt", render_topic_nav(qualification.topics, language)),
         (
             "04_topic_guides_and_examples.txt",
             render_topics(

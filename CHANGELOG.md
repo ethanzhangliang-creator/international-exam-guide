@@ -1,5 +1,40 @@
 # Changelog
 
+## 0.2.10 - 2026-06-19
+
+### Fixed
+
+- Hardened PDF text extraction so missing, damaged, encrypted, or page-level
+  extraction failures are reported as controlled `PdfTextExtractionError`
+  cases with tests.
+- Added cross-platform browser discovery for PDF export fallbacks on Windows,
+  Linux, and macOS.
+- Removed duplicated provider helpers from the OxfordAQA provider and added
+  coverage for the shared helper signatures.
+- Fixed Pearson Edexcel parsing so trailing Pearson copyright/front-matter
+  pages cannot be appended into the last learning-table topic.
+- Fixed Cambridge / CAIE parsing so `Content overview` pages and AO1/AO2/AO3
+  assessment-objective tables are not mixed into detailed subject topics.
+- Added topic navigation anchors and max-width reading constraints to generated
+  handbook HTML and section packages.
+- Replaced Chinese topic-title placeholders such as numbered knowledge units
+  with cleaner section labels or subject-aware localized titles.
+- Added subject-specific SVG fallback templates for accounting records,
+  reconciliation, financial statements, market diagrams, economic flows, Venn
+  regions, forces, and gas tests.
+- Kept Chinese visual routing subject-specific so accounting visuals no longer
+  collapse into a generic "图文结合学习图" route.
+- Split validation checks into smaller validation stages and moved story-mode
+  sentence rotation into a small rendering helper module.
+
+### Verified
+
+- `python -m ruff check .`
+- `python -m pytest -q` (`90 passed`)
+- Real CLI checks in temporary directories:
+  AQA Accounting, Pearson Edexcel Accounting by official URL, and CAIE
+  Accounting by official URL with `--exam-year 2027`.
+
 ## 0.2.9 - 2026-06-19
 
 ### Fixed

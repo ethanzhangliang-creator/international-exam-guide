@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 
 from intl_exam_guide.rendering import pdf
 
@@ -45,3 +46,19 @@ def test_export_pdf_reports_both_routes_when_all_fail(monkeypatch, tmp_path):
 
     assert "Playwright unavailable" in message
     assert "No browser found" in message
+
+
+def test_find_browser_uses_cross_platform_path_names(monkeypatch):
+    seen: list[str] = []
+
+    def fake_which(name: str) -> str | None:
+        seen.append(name)
+        if name == "chromium":
+            return sys.executable
+        return None
+
+    monkeypatch.setattr(pdf.shutil, "which", fake_which)
+
+    assert pdf.find_browser() == sys.executable
+    assert "google-chrome" in seen
+    assert "chromium" in seen

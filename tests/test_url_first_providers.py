@@ -135,6 +135,160 @@ def test_generic_pdf_parser_handles_pearson_learning_tables():
     assert "a) Explain the purpose of books of original entry." in topics[3].points
 
 
+def test_pearson_learning_tables_ignore_trailing_front_matter():
+    pages = [
+        (
+            17,
+            """
+            Paper 1: Introduction to Bookkeeping and Accounting
+            Topic 1: The accounting environment
+            What students need to learn:
+            1 Types of business organisation a) Explain the characteristics of public sector organisations.
+            b) Explain the connection between stakeholders and a business.
+            2 Accounting concepts a) Understand consistency and prudence.
+            b) Apply accounting concepts to simple scenarios.
+            Topic 2: Introduction to bookkeeping
+            What students need to learn:
+            1 Business documentation a) Explain the purpose of business documents.
+            2 Books of original entry a) Prepare purchases and sales day books.
+            3 Ledger accounting a) Record transactions using double entry principles.
+            Topic 3: Introduction to control processes
+            What students need to learn:
+            1 Trial balance a) Explain the purpose of a trial balance.
+            2 Control accounts a) Prepare trade receivables control accounts.
+            """,
+        ),
+        (
+            42,
+            """
+            Specification - Issue 1 - October 2016 © Pearson Education Limited 2016
+            We have guided Pearson through what we judge to be a rigorous world-class qualification
+            development process that has included benchmarking assessments against UK and overseas providers.
+            Professor Sing Kong Lee
+            Chief Education Advisor, Pearson plc
+            """,
+        ),
+    ]
+
+    topics = parse_generic_topics_from_pdf(pages)
+    titles = [topic.title for topic in topics]
+    joined = " ".join(titles + [point for topic in topics for point in topic.points])
+
+    assert len(topics) >= 6
+    assert any("Books of original entry" in title for title in titles)
+    assert "Content unit" not in joined
+    assert "Specification - Issue" not in joined
+    assert "Pearson Education Limited" not in joined
+
+
+def test_generic_pdf_parser_does_not_treat_assessment_objectives_as_topics():
+    pages = [
+        (
+            12,
+            """
+            Subject content
+            1.1 The purpose of accounting
+            Candidates should understand the role of accounting information.
+            1.2 The accounting equation
+            Candidates should understand assets, liabilities and capital.
+            2.1 The double entry system of book-keeping
+            Candidates should prepare ledger accounts.
+            2.2 Business documents
+            Candidates should understand invoices and credit notes.
+            3.1 The trial balance
+            Candidates should prepare and interpret a trial balance.
+            3.2 Corrections of errors
+            Candidates should correct errors and understand suspense accounts.
+            """,
+        ),
+        (
+            23,
+            """
+            Assessment objectives
+            AO1 Knowledge and understanding
+            AO2 Analysis
+            AO3 Evaluation
+            Paper 1 Paper 2
+            AO1 Knowledge and understanding 80 60
+            AO2 Analysis 20 25
+            AO3 Evaluation 0 15
+            """,
+        ),
+    ]
+
+    topics = parse_generic_topics_from_pdf(pages)
+    titles = [topic.title for topic in topics]
+
+    assert len(topics) >= 6
+    assert any("The accounting equation" in title for title in titles)
+    assert not any(title.startswith("AO") for title in titles)
+
+
+def test_cambridge_content_overview_is_not_mixed_with_detailed_subject_content():
+    pages = [
+        (
+            8,
+            """
+            Syllabus overview
+            Content overview
+            1 The fundamentals of accounting
+            1.1 The purpose of accounting
+            1.2 The accounting equation
+            2 Sources and recording of data
+            2.1 The double entry system of book-keeping
+            2.2 Business documents
+            2.3 Books of prime entry
+            7 Accounting concepts and modern practice
+            7.3 Technology and sustainability
+            """,
+        ),
+        (
+            11,
+            """
+            3 Subject content
+            1.1 The purpose of accounting
+            Candidates should have an understanding of:
+            the difference between book-keeping and accounting
+            the role of accounting in providing information
+            1.2 The accounting equation
+            Candidates should have an understanding of:
+            assets, liabilities and owner’s equity
+            how to apply the accounting equation
+            2.1 The double entry system of book-keeping
+            Candidates should have an understanding of:
+            the dual effect of transactions
+            how to prepare ledger accounts
+            2.2 Business documents
+            Candidates should have an understanding of:
+            invoices, credit notes and statements of account
+            how documents are used as sources of information
+            2.3 Books of prime entry
+            Candidates should have an understanding of:
+            how to process accounting data in the books of prime entry
+            how to post the ledger entries from the books of prime entry
+            3.1 The trial balance
+            Candidates should have an understanding of:
+            how to prepare and use a trial balance
+            how to identify errors not revealed by a trial balance
+            4 Details of the assessment
+            """,
+        ),
+    ]
+
+    topics = parse_generic_topics_from_pdf(pages)
+    titles = [topic.title for topic in topics]
+
+    assert titles[:6] == [
+        "1.1 - The purpose of accounting",
+        "1.2 - The accounting equation",
+        "2.1 - The double entry system of book-keeping",
+        "2.2 - Business documents",
+        "2.3 - Books of prime entry",
+        "3.1 - The trial balance",
+    ]
+    assert "7.3 - Technology and sustainability" not in titles
+
+
 def test_cambridge_subject_page_requires_exam_year_when_ranges_are_ambiguous():
     links = [
         Link(

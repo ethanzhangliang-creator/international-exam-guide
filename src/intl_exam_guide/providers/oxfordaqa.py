@@ -12,7 +12,14 @@ from pathlib import Path
 from intl_exam_guide.models import AssessmentPaper, Qualification, SourceRecord, SourceSnippet, Topic
 from intl_exam_guide.parsing.pdf_text import extract_pdf_pages, extract_pdf_text
 from intl_exam_guide.providers.base import ExamBoardProvider, Link
-from intl_exam_guide.providers.common import TextNode, clean_text, fetch_bytes, fetch_text
+from intl_exam_guide.providers.common import (
+    TextNode,
+    clean_text,
+    dedupe,
+    fetch_bytes,
+    fetch_text,
+    first_node_text,
+)
 
 BASE_URL = "https://www.oxfordaqa.com"
 SUBJECTS_URL = f"{BASE_URL}/subjects/"
@@ -344,13 +351,6 @@ class OxfordAQAProvider(ExamBoardProvider):
         qualification.source.extracted_text_path = str(text_path)
         qualification.source.downloaded_at = datetime.now(UTC).isoformat()
         return qualification
-
-
-def first_node_text(nodes: list[TextNode], tag: str) -> str | None:
-    for node in nodes:
-        if node.tag == tag:
-            return node.text
-    return None
 
 
 def title_from_links(links: list[Link], page_url: str) -> str:
@@ -1136,16 +1136,6 @@ def audience_note(qualification_type: str) -> str:
         "This is an OxfordAQA international qualification. Confirm the qualification type, "
         "local availability, and exam entry route with the school or centre."
     )
-
-
-def dedupe(values: list[str]) -> list[str]:
-    seen: set[str] = set()
-    result: list[str] = []
-    for value in values:
-        if value not in seen:
-            seen.add(value)
-            result.append(value)
-    return result
 
 
 def attach_source_snippets(qualification: Qualification, pages: list[tuple[int, str]]) -> None:

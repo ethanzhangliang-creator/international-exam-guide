@@ -105,7 +105,9 @@ def clean_text(value: str) -> str:
     return re.sub(r"\s+", " ", value).strip()
 
 
-def normalize_extracted_symbols(value: str) -> str:
+def normalize_extracted_symbols(value: str | None) -> str:
+    if not value:
+        return ""
     if (
         "A \u222a B, A \u222a B" in value
         and any(marker in value for marker in ("n(A)", "A\u2032", "\u03be", "intersection"))
@@ -129,8 +131,9 @@ def is_pdf_url(value: str) -> bool:
     return ".pdf" in urllib.parse.urlparse(value).path.lower()
 
 
-def first_node_text(parser: BasicPageParser, *tags: str) -> str | None:
-    for node in parser.nodes:
+def first_node_text(source: object, *tags: str) -> str | None:
+    nodes = getattr(source, "nodes", source)
+    for node in nodes:
         if node.tag in tags:
             return node.text
     return None
@@ -376,6 +379,11 @@ def parse_pearson_topic_tables(pages: list[tuple[int, str]]) -> list[Topic]:
             if current_topic_number is None:
                 continue
             lower = line.lower()
+            if is_pearson_front_matter_line(line):
+                flush()
+                in_learning_table = False
+                current_topic_number = None
+                continue
             if lower.startswith(("paper ", "assessment ", "appendix ", "administration ")):
                 flush()
                 in_learning_table = False
@@ -435,6 +443,17 @@ def is_pearson_title_continuation(line: str) -> bool:
     return 2 <= len(line) <= 45
 
 
+def is_pearson_front_matter_line(line: str) -> bool:
+    lower = line.lower()
+    return (
+        lower.startswith("specification - issue")
+        or "pearson education limited" in lower
+        or "world-class qualification" in lower
+        or lower.startswith("we have guided pearson")
+        or lower.startswith("chief education advisor")
+    )
+
+
 def select_content_pages(pages: list[tuple[int, str]]) -> list[tuple[int, str]]:
     detailed_start = first_detailed_topic_page(pages)
     if detailed_start is not None:
@@ -479,6 +498,10 @@ def first_detailed_topic_page(pages: list[tuple[int, str]]) -> int | None:
             continue
         lower = page_text.lower()
         if "contents" in lower and "assessment information" in lower:
+            continue
+        if "content overview" in lower and "subject content" not in lower:
+            continue
+        if "syllabus overview" in lower and "subject content" not in lower:
             continue
         for raw_line in page_text.splitlines():
             line = clean_topic_line(raw_line)
@@ -576,6 +599,8 @@ def parse_topic_heading(line: str) -> tuple[str, str] | None:
     if not match:
         return None
     code = match.group(1).rstrip(".")
+    if code.upper().startswith("AO"):
+        return None
     title = clean_text(match.group(2)).strip(":- ")
     if not title or len(title) < 3:
         return None
@@ -589,6 +614,8 @@ def parse_standalone_topic_code(line: str) -> str | None:
     if re.fullmatch(r"\d+(?:\.\d+){1,4}", line):
         return line
     if re.fullmatch(r"[A-Z]{1,3}\d{1,3}[A-Z]?|FP\d|P\d|M\d|S\d", line):
+        if line.upper().startswith("AO"):
+            return None
         return line
     return None
 

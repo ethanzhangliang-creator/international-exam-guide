@@ -12,6 +12,7 @@ from intl_exam_guide.providers.oxfordaqa import (
     find_specification_url,
     clean_text,
 )
+from intl_exam_guide.providers.common import TextNode, first_node_text, normalize_extracted_symbols
 from intl_exam_guide.validation.checks import validate_plan
 
 
@@ -29,6 +30,19 @@ def test_clean_text_repairs_set_notation_pdf_symbol_duplication():
 def test_clean_text_does_not_rewrite_plain_repeated_union():
     text = clean_text("Compare A \u222a B, A \u222a B in two worked examples")
     assert text == "Compare A \u222a B, A \u222a B in two worked examples"
+
+
+def test_normalize_extracted_symbols_handles_empty_inputs():
+    assert normalize_extracted_symbols(None) == ""
+    assert normalize_extracted_symbols("") == ""
+
+
+def test_common_first_node_text_accepts_parser_or_nodes():
+    parser = parse("<h1>Chemistry</h1><p>Summary</p>")
+    nodes = [TextNode(tag="h2", text="Topic list")]
+
+    assert first_node_text(parser, "h1") == "Chemistry"
+    assert first_node_text(nodes, "h2") == "Topic list"
 
 
 def test_extract_topics_with_group_headings():

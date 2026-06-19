@@ -79,8 +79,8 @@ ZH_POINT_KEYWORDS = [
 def zh_topic_reference(topic: Topic) -> str:
     match = re.match(r"^\s*([A-Z]\d+[A-Z]?|\d+(?:\.\d+)+)\b", topic.title)
     if match:
-        return f"大纲点 {match.group(1)}"
-    return "本知识单元"
+        return f"第 {match.group(1)} 节"
+    return "本节内容"
 
 
 def zh_point_label(point: str, index: int = 0) -> str:
@@ -1492,6 +1492,14 @@ def choose_provider_for_visual(complexity: str, run_options: GuideRunOptions) ->
 
 def zh_visual_type(visual_type: str) -> str:
     text = visual_type.lower()
+    if "source-document" in text or "prime-entry" in text or "ledger" in text or "accounting process" in text:
+        return "会计记录流程图"
+    if "verification" in text or "reconciliation" in text or "trial balance" in text:
+        return "核对与调节流程图"
+    if "financial-statement" in text or "financial statement" in text or "ratio-analysis" in text:
+        return "财务报表与比率信息图"
+    if "accounting adjustment" in text or "concept-effect" in text:
+        return "会计调整影响信息图"
     if "chromatography" in text or "lab" in text:
         return "实验流程信息图"
     if "gas" in text:

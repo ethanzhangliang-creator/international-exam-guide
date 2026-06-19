@@ -759,7 +759,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.9</div>
+          <div class="kicker">三大考试局支持 · v0.2.10</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1048,36 +1048,36 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.9：补齐审查闭环。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；本次补齐 CI 矩阵、覆盖率门槛、跨学科视觉路由基准，并把 SVG 错配和渲染模块过大问题收进测试约束。</p>
+          <h2>v0.2.10：修复真实生成回归。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次重点修复真实样本里暴露的大纲解析、中文标题、SVG 兜底和生成页面可读性问题。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
             <div class="num">01 · 考试局</div>
             <div>
               <h3>三大考试局继续作为基准</h3>
-              <p>AQA、Edexcel、CAIE 都保留官方来源路线；新增的视觉基准覆盖 Accounting、Economics、Chemistry、Mathematics 和 Physics。</p>
+              <p>AQA、Edexcel、CAIE 都保留官方来源路线；Edexcel 会截断 Pearson 前言页，CAIE 会跳过 overview 和 AO 表。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">02 · 语言</div>
             <div>
               <h3>生成前必须确认四件事</h3>
-              <p>考试局和科目、必要考试年份、输出语言、讲解风格，仍然是生成前必须确认的四件事。</p>
+              <p>考试局和科目、必要考试年份、输出语言、讲解风格仍然必须先确认；多个官方候选会返回给用户选择。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">03 · 图文</div>
             <div>
-              <h3>CI 和覆盖率更稳</h3>
-              <p>Ubuntu/Windows 与 Python 3.11/3.12 都会跑测试；覆盖率低于门槛时 CI 直接失败。</p>
+              <h3>SVG 兜底更像学科图</h3>
+              <p>没有外部生图模型时，会计、经济、数学、物理、化学等主题会走对应的安全 SVG 模板，并明确提示需要复核。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">04 · 质量</div>
             <div>
               <h3>质量不过不交付</h3>
-              <p>复杂图进入信息图 brief，简单 SVG 必须匹配题型；主渲染器也有行数保护，避免重新膨胀。</p>
+              <p>生成页增加快速目录、阅读宽度约束和更细的质量验证；topic、例题、图文块缺失时会在验证中暴露。</p>
             </div>
           </article>
         </div>

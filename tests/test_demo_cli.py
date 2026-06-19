@@ -206,6 +206,7 @@ def test_demo_cli_generates_offline_guide(tmp_path):
     assert (output_dir / "run-options.json").exists()
     assert (output_dir / "handbook-package.json").exists()
     assert (output_dir / "sections" / "00_css.txt").exists()
+    assert (output_dir / "sections" / "03_topic_navigation.txt").exists()
     assert (output_dir / "sections" / "04_topic_guides_and_examples.txt").exists()
     assert (output_dir / "images" / "visual_manifest.json").exists()
     assert len(list((output_dir / "images").glob("*.svg"))) == 3
@@ -227,7 +228,7 @@ def test_demo_cli_generates_offline_guide(tmp_path):
     assert validation["review_summary"]["output_language"] == "en"
     assert validation["review_summary"]["visual_briefs"] == 3
     assert validation["review_summary"]["visual_examples_in_html"] == 3
-    assert validation["review_summary"]["section_files"] == 6
+    assert validation["review_summary"]["section_files"] == 7
     assert validation["review_summary"]["image_files"] == 3
     assert validation["review_summary"]["has_visual_manifest"] is True
     assert validation["review_summary"]["has_package_manifest"] is True
@@ -255,6 +256,9 @@ def test_demo_cli_generates_single_language_chinese_guide(tmp_path):
     assert 'lang="zh-CN"' in html
     assert "怎么用这本手册" in html
     assert "复习路线" in html
+    assert "快速目录" in html
+    assert 'href="#topic-1"' in html
+    assert 'id="topic-1"' in html
     assert "图形例题" in html
     assert "例题" in html
     assert "解题步骤" in html
@@ -273,7 +277,9 @@ def test_demo_cli_generates_single_language_chinese_guide(tmp_path):
     assert "Use SI units and standard prefixes" not in html
     assert "Demo specification page" not in html
     assert "Paper 1" not in html
-    assert "知识单元 1" in html
+    assert "测量与数据" in html
+    assert "知识单元 1" not in html
+    assert "大纲点 1" not in html
     validation = json.loads((output_dir / "validation.json").read_text(encoding="utf-8"))
     assert validation["review_summary"]["output_language"] == "zh-CN"
     assert validation["issues"] == []
@@ -1061,7 +1067,7 @@ def test_visual_type_classifier_uses_subject_specific_infographics():
     assert gas_complexity == "infographic"
     assert "gas tests" in gas_visual
     assert zh_visual_type(gas_visual) == "气体检验观察信息图"
-    assert zh_visual_type("accounting process infographic with records") == "图文结合学习图"
+    assert zh_visual_type("accounting process infographic with records") == "会计记录流程图"
 
     economics_visual, economics_complexity, _ = choose_visual_type(
         Topic(

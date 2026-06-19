@@ -41,9 +41,15 @@ h1 { max-width: 920px; font-size: 52px; line-height: 1.05; margin: 18px 0; lette
 .cover-grid strong { display: block; font-size: 26px; margin-top: 4px; }
 .band, .topic {
   margin: 0 auto;
-  padding: 34px 8vw;
+  padding: 34px max(24px, calc((100vw - 1120px) / 2));
   background: white;
   border-bottom: 1px solid var(--line);
+}
+.band > *,
+.topic > * {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .student-overview { background: #fffaf1; }
 .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -82,6 +88,34 @@ code { overflow-wrap: anywhere; color: var(--red); }
 table { width: 100%; border-collapse: collapse; margin-top: 14px; }
 th { background: var(--blue); color: #fff; text-align: left; }
 th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top; }
+.topic-nav {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #f7fbff;
+  box-shadow: 0 8px 18px rgba(23, 32, 51, .08);
+}
+.topic-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+.topic-nav a {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  padding: 8px 10px;
+  color: var(--ink);
+  text-decoration: none;
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+.topic-nav span {
+  flex: 0 0 auto;
+  color: var(--red);
+  font-weight: 800;
+}
 .assessment-grid, .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .assessment, .logic-card, .practice {
   border: 1px solid var(--line);
@@ -295,6 +329,7 @@ th, td { border: 1px solid var(--line); padding: 10px 12px; vertical-align: top;
 @media (max-width: 760px) {
   h1 { font-size: 38px; }
   .cover-grid, .overview-grid, .assessment-grid, .topic-grid, .practice-block, .guide-grid, .visual-grid, .generated-infographic-grid, .story-modes, .concept-html-map, .concept-html-map ol { grid-template-columns: 1fr; }
+  .topic-nav { position: static; }
 }
 @media print {
   body { background: white; }

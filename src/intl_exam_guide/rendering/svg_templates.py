@@ -11,6 +11,22 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_zh_visual_svg(visual, index)
     text = visual.visual_type.lower()
     tokens = set(re.findall(r"[a-z0-9]+", text))
+    if any(word in text for word in ["ledger", "book-of-prime-entry", "source-document", "accounting process"]):
+        return render_accounting_flow_svg(index, "en")
+    if any(word in text for word in ["reconciliation", "verification", "trial balance"]):
+        return render_reconciliation_svg(index, "en")
+    if any(word in text for word in ["financial-statement", "financial statement", "ratio-analysis", "ratio analysis"]):
+        return render_financial_statement_svg(index, "en")
+    if any(word in text for word in ["demand-supply", "demand supply", "market scenario"]):
+        return render_market_svg(index, "en")
+    if any(word in text for word in ["factors of production", "production-chain", "opportunity-cost", "opportunity cost"]):
+        return render_economic_flow_svg(index, "en")
+    if any(word in text for word in ["set notation", "venn"]):
+        return render_venn_svg(index, "en")
+    if any(word in text for word in ["force and motion", "force arrows"]):
+        return render_force_svg(index, "en")
+    if any(word in text for word in ["gas tests", "common gas"]):
+        return render_gas_tests_svg(index, "en")
     if any(word in tokens for word in ["acid", "acids", "base", "bases", "salt", "salts", "ph"]):
         return render_ph_svg(index)
     if any(word in text for word in ["solid", "liquid", "particle", "atom"]):
@@ -43,7 +59,7 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_triangle_svg(index)
     if any(word in text for word in ["data table", "graph interpretation"]):
         return render_statistics_svg(index)
-    return render_particles_svg(index)
+    return render_concept_fallback_svg(index, "en", visual.visual_type or "Study visual")
 
 
 def render_number_svg(index: int) -> str:
@@ -339,8 +355,263 @@ def render_bonding_svg(index: int) -> str:
 </svg>
 """
 
+def render_accounting_flow_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    labels = (
+        ("原始凭证", "日记账", "分类账", "试算平衡")
+        if zh
+        else ("Source document", "Prime entry", "Ledger", "Trial balance")
+    )
+    title = "会计记录流程" if zh else "Accounting records flow"
+    return render_flow_svg(index, title, labels, "#1354a5", "#1f7a5b")
+
+
+def render_reconciliation_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    labels = (
+        ("现金账", "银行对账单", "差异项目", "调整后余额")
+        if zh
+        else ("Cash book", "Bank statement", "Timing items", "Adjusted balance")
+    )
+    title = "核对与调节流程" if zh else "Verification and reconciliation"
+    return render_flow_svg(index, title, labels, "#1f7a5b", "#d99a24")
+
+
+def render_financial_statement_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    title = "财务报表结构" if zh else "Financial statement layout"
+    labels = (
+        ("收入", "成本", "利润", "资产", "负债", "资本")
+        if zh
+        else ("Revenue", "Cost", "Profit", "Assets", "Liabilities", "Capital")
+    )
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(title)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
+  <rect x="64" y="104" width="260" height="198" rx="14" fill="#fffaf1" stroke="#d99a24" stroke-width="3"/>
+  <rect x="396" y="104" width="260" height="198" rx="14" fill="#f7fbff" stroke="#9cbce8" stroke-width="3"/>
+  <text x="88" y="142" font-size="20" font-weight="800" fill="#b83246">{html_escape(labels[0])}</text>
+  <text x="88" y="182" font-size="20" font-weight="800" fill="#172033">- {html_escape(labels[1])}</text>
+  <path d="M88 205h190" stroke="#d7deea" stroke-width="4"/>
+  <text x="88" y="246" font-size="22" font-weight="800" fill="#1f7a5b">= {html_escape(labels[2])}</text>
+  <text x="420" y="142" font-size="20" font-weight="800" fill="#1354a5">{html_escape(labels[3])}</text>
+  <text x="420" y="184" font-size="20" font-weight="800" fill="#b83246">- {html_escape(labels[4])}</text>
+  <path d="M420 205h190" stroke="#d7deea" stroke-width="4"/>
+  <text x="420" y="246" font-size="22" font-weight="800" fill="#1f7a5b">= {html_escape(labels[5])}</text>
+</svg>
+"""
+
+
+def render_market_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    title = "市场供需图" if zh else "Demand and supply market diagram"
+    demand = "需求" if zh else "Demand"
+    supply = "供给" if zh else "Supply"
+    price = "价格" if zh else "Price"
+    qty = "数量" if zh else "Quantity"
+    equilibrium = "均衡" if zh else "Equilibrium"
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(title)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="60" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
+  <path d="M118 284V92M118 284h470" stroke="#172033" stroke-width="4"/>
+  <path d="M150 118L548 260" stroke="#b83246" stroke-width="6"/>
+  <path d="M150 260L548 118" stroke="#1f7a5b" stroke-width="6"/>
+  <circle cx="350" cy="188" r="10" fill="#d99a24"/>
+  <path d="M350 188v96M118 188h232" stroke="#d99a24" stroke-width="3" stroke-dasharray="7 6"/>
+  <text x="555" y="266" font-size="18" font-weight="800" fill="#b83246">{html_escape(demand)}</text>
+  <text x="552" y="126" font-size="18" font-weight="800" fill="#1f7a5b">{html_escape(supply)}</text>
+  <text x="132" y="96" font-size="17" font-weight="800">{html_escape(price)}</text>
+  <text x="520" y="314" font-size="17" font-weight="800">{html_escape(qty)}</text>
+  <text x="366" y="184" font-size="17" font-weight="800" fill="#9b6a10">{html_escape(equilibrium)}</text>
+</svg>
+"""
+
+
+def render_economic_flow_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    labels = (
+        ("选择", "资源限制", "机会成本", "经济结果")
+        if zh
+        else ("Choice", "Scarce resources", "Opportunity cost", "Economic outcome")
+    )
+    title = "经济选择流程" if zh else "Economic choice flow"
+    return render_flow_svg(index, title, labels, "#d99a24", "#1354a5")
+
+
+def render_venn_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    title = "集合与韦恩图" if zh else "Set notation and Venn regions"
+    union = "并集" if zh else "Union"
+    intersect = "交集" if zh else "Intersection"
+    outside = "补集" if zh else "Complement"
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(title)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
+  <rect x="86" y="104" width="360" height="198" rx="16" fill="#f7fbff" stroke="#172033" stroke-width="3"/>
+  <circle cx="228" cy="200" r="82" fill="#1354a5" fill-opacity=".35" stroke="#1354a5" stroke-width="4"/>
+  <circle cx="310" cy="200" r="82" fill="#b83246" fill-opacity=".32" stroke="#b83246" stroke-width="4"/>
+  <text x="178" y="202" font-size="22" font-weight="800">A</text>
+  <text x="350" y="202" font-size="22" font-weight="800">B</text>
+  <text x="250" y="205" font-size="18" font-weight="800" fill="#172033">A ∩ B</text>
+  <rect x="488" y="118" width="150" height="46" rx="10" fill="#edf4ff" stroke="#9cbce8"/>
+  <rect x="488" y="178" width="150" height="46" rx="10" fill="#fff1f3" stroke="#e5aab4"/>
+  <rect x="488" y="238" width="150" height="46" rx="10" fill="#fffaf1" stroke="#d99a24"/>
+  <text x="508" y="148" font-size="18" font-weight="800" fill="#1354a5">{html_escape(union)}</text>
+  <text x="508" y="208" font-size="18" font-weight="800" fill="#b83246">{html_escape(intersect)}</text>
+  <text x="508" y="268" font-size="18" font-weight="800" fill="#9b6a10">{html_escape(outside)}</text>
+</svg>
+"""
+
+
+def render_force_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    title = "力与运动示意图" if zh else "Force and motion diagram"
+    force = "合力" if zh else "resultant force"
+    accel = "加速度方向" if zh else "acceleration"
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(title)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
+  <rect x="258" y="152" width="170" height="88" rx="16" fill="#edf4ff" stroke="#1354a5" stroke-width="4"/>
+  <path d="M248 196h-126" stroke="#b83246" stroke-width="7" marker-end="url(#force-left-{index})"/>
+  <path d="M438 196h164" stroke="#1f7a5b" stroke-width="9" marker-end="url(#force-right-{index})"/>
+  <defs>
+    <marker id="force-left-{index}" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0 0 5 10 10z" fill="#b83246"/></marker>
+    <marker id="force-right-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#1f7a5b"/></marker>
+  </defs>
+  <text x="284" y="204" font-size="22" font-weight="800">object</text>
+  <text x="110" y="164" font-size="17" font-weight="800" fill="#b83246">smaller force</text>
+  <text x="452" y="164" font-size="17" font-weight="800" fill="#1f7a5b">{html_escape(force)}</text>
+  <text x="452" y="274" font-size="17" font-weight="800" fill="#1f7a5b">{html_escape(accel)} →</text>
+</svg>
+"""
+
+
+def render_gas_tests_svg(index: int, language: str) -> str:
+    zh = language == "zh-CN"
+    title = "气体检验观察图" if zh else "Common gas tests observation chart"
+    headers = (
+        ("气体", "检验", "观察")
+        if zh
+        else ("Gas", "Test", "Observation")
+    )
+    rows = (
+        (("氧气", "带火星木条", "复燃"), ("氢气", "燃着木条", "爆鸣"), ("二氧化碳", "石灰水", "变浑浊"))
+        if zh
+        else (("Oxygen", "glowing splint", "relights"), ("Hydrogen", "lit splint", "squeaky pop"), ("CO₂", "limewater", "turns cloudy"))
+    )
+    row_svg = []
+    for row_index, row in enumerate(rows):
+        y = 130 + row_index * 56
+        row_svg.append(f'<rect x="70" y="{y - 30}" width="580" height="48" fill="#fbfcff" stroke="#d7deea"/>')
+        row_svg.append(f'<text x="92" y="{y}" font-size="17" font-weight="800" fill="#1354a5">{html_escape(row[0])}</text>')
+        row_svg.append(f'<text x="258" y="{y}" font-size="17" fill="#172033">{html_escape(row[1])}</text>')
+        row_svg.append(f'<text x="486" y="{y}" font-size="17" fill="#1f7a5b">{html_escape(row[2])}</text>')
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(title)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="58" y="72" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
+  <text x="92" y="100" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[0])}</text>
+  <text x="258" y="100" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[1])}</text>
+  <text x="486" y="100" font-size="15" font-weight="800" fill="#b83246">{html_escape(headers[2])}</text>
+  {''.join(row_svg)}
+</svg>
+"""
+
+
+def render_flow_svg(
+    index: int,
+    title: str,
+    labels: tuple[str, str, str, str],
+    primary: str,
+    secondary: str,
+) -> str:
+    cards = []
+    for position, label in enumerate(labels):
+        x = 64 + position * 160
+        color = primary if position % 2 == 0 else secondary
+        cards.append(
+            f'<rect x="{x}" y="138" width="124" height="84" rx="14" fill="#ffffff" stroke="{color}" stroke-width="4"/>'
+            f'<text x="{x + 62}" y="188" font-size="16" font-weight="800" fill="{color}" text-anchor="middle">{html_escape(label)}</text>'
+        )
+        if position < 3:
+            ax = x + 132
+            cards.append(
+                f'<path d="M{ax} 180h38" stroke="#172033" stroke-width="4" marker-end="url(#flow-arrow-{index})"/>'
+            )
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(title)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="58" y="78" fill="#1354a5" font-size="24" font-weight="800">{html_escape(title)}</text>
+  <defs><marker id="flow-arrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#172033"/></marker></defs>
+  {''.join(cards)}
+</svg>
+"""
+
+
+def render_concept_fallback_svg(index: int, language: str, title: str) -> str:
+    zh = language == "zh-CN"
+    heading = title if not zh else title or "图文结合学习图"
+    labels = (
+        ("核心概念", "例题信息", "检查结论")
+        if zh
+        else ("Key idea", "Question evidence", "Checked answer")
+    )
+    return f"""
+<svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
+  <title id="visual-title-{index}">{html_escape(heading)}</title>
+  <rect x="20" y="20" width="680" height="320" rx="20" fill="#ffffff" stroke="#d7deea"/>
+  <text x="58" y="76" font-size="24" font-weight="800" fill="#1354a5">{html_escape(heading[:48])}</text>
+  <rect x="82" y="130" width="158" height="96" rx="16" fill="#edf4ff" stroke="#9cbce8" stroke-width="3"/>
+  <rect x="282" y="130" width="158" height="96" rx="16" fill="#fffaf1" stroke="#d99a24" stroke-width="3"/>
+  <rect x="482" y="130" width="158" height="96" rx="16" fill="#ecf8f3" stroke="#1f7a5b" stroke-width="3"/>
+  <path d="M246 178h30M446 178h30" stroke="#172033" stroke-width="4" marker-end="url(#concept-arrow-{index})"/>
+  <defs><marker id="concept-arrow-{index}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#172033"/></marker></defs>
+  <text x="161" y="184" font-size="18" font-weight="800" fill="#1354a5" text-anchor="middle">{html_escape(labels[0])}</text>
+  <text x="361" y="184" font-size="18" font-weight="800" fill="#9b6a10" text-anchor="middle">{html_escape(labels[1])}</text>
+  <text x="561" y="184" font-size="18" font-weight="800" fill="#1f7a5b" text-anchor="middle">{html_escape(labels[2])}</text>
+</svg>
+"""
+
+
 def render_zh_visual_svg(visual: VisualBrief, index: int) -> str:
     title = visual.visual_type or "图文结合学习图"
+    text = title.lower()
+    if any(word in text for word in ["会计记录", "原始", "分类账", "初始记录"]):
+        return render_accounting_flow_svg(index, "zh-CN")
+    if any(word in text for word in ["核对", "银行对账", "试算平衡"]):
+        return render_reconciliation_svg(index, "zh-CN")
+    if any(word in text for word in ["财务报表", "比率"]):
+        return render_financial_statement_svg(index, "zh-CN")
+    if any(word in text for word in ["会计调整", "影响"]):
+        return render_accounting_flow_svg(index, "zh-CN")
+    if any(word in text for word in ["市场", "曲线", "供需"]):
+        return render_market_svg(index, "zh-CN")
+    if any(word in text for word in ["生产要素", "机会成本", "经济选择"]):
+        return render_economic_flow_svg(index, "zh-CN")
+    if any(word in text for word in ["集合", "韦恩"]):
+        return render_venn_svg(index, "zh-CN")
+    if any(word in text for word in ["力与运动", "合力"]):
+        return render_force_svg(index, "zh-CN")
+    if any(word in text for word in ["气体检验", "气体"]):
+        return render_gas_tests_svg(index, "zh-CN")
+    if any(word in text for word in ["粒子"]):
+        return render_particles_svg(index)
+    if any(word in text for word in ["酸碱", "ph"]):
+        return render_ph_svg(index)
+    if any(word in text for word in ["几何"]):
+        return render_triangle_svg(index)
+    if any(word in text for word in ["统计", "概率"]):
+        return render_statistics_svg(index)
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">中文图文学习图</title>

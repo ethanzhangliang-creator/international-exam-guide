@@ -16,6 +16,7 @@ from intl_exam_guide.models import (
     VisualBrief,
 )
 from intl_exam_guide.rendering.styles import stylesheet
+from intl_exam_guide.rendering.story_modes import chinese_story_lines, english_story_lines
 from intl_exam_guide.rendering.svg_templates import render_topic_visual_svg
 from intl_exam_guide.rendering.visual_assets import (
     build_visual_asset_lookup,
@@ -49,6 +50,7 @@ def render_html(
         render_cover(qualification, plan.run_options),
         render_student_overview(qualification, plan.revision_stages, plan.run_options),
         render_topic_map(qualification.topics, language, plan.topic_guides),
+        render_topic_nav(qualification.topics, language),
         render_topics(
             qualification.topics,
             plan.topic_guides,
@@ -330,9 +332,10 @@ def render_topic_map(
             else:
                 points = "使用考试大纲抽取结果补全本节细分要求。"
         route = "concept boundary -> worked example -> error review" if language == "en" else "概念边界 -> 例题 -> 错题回看"
+        title_link = f'<a href="#{topic_anchor(index)}">{html_escape(title)}</a>'
         rows.append(
             "<tr>"
-            f"<td>{index}</td><td>{html_escape(title)}</td><td>{html_escape(points)}</td>"
+            f"<td>{index}</td><td>{title_link}</td><td>{html_escape(points)}</td>"
             f"<td>{html_escape(route)}</td>"
             "</tr>"
         )
@@ -349,6 +352,26 @@ def render_topic_map(
   <tbody>{''.join(rows)}</tbody></table>
 </section>
 """
+
+
+def render_topic_nav(topics: list[Topic], language: str) -> str:
+    heading = "Quick Navigation" if language == "en" else "快速目录"
+    links = []
+    for index, topic in enumerate(topics, start=1):
+        title = display_topic_title(topic, index, language)
+        links.append(
+            f'<a href="#{topic_anchor(index)}"><span>T{index}</span>{html_escape(title)}</a>'
+        )
+    return f"""
+<nav class="band topic-nav" aria-label="{html_escape(heading)}">
+  <h2>{html_escape(heading)}</h2>
+  <div class="topic-nav-grid">{''.join(links)}</div>
+</nav>
+"""
+
+
+def topic_anchor(index: int) -> str:
+    return f"topic-{index}"
 
 
 def render_revision_stages(stages: list[str], language: str = "en") -> str:
@@ -380,13 +403,13 @@ def render_topics(
         elif guide:
             point_values = guide.checklist[:4]
         else:
-            point_values = ["根据官方大纲抽取结果复习本知识单元。"]
+            point_values = ["根据官方大纲抽取结果复习本节内容。"]
         points = "".join(f"<li>{html_escape(point)}</li>" for point in point_values)
         if not points:
             points = (
                 "<li>Use the official specification text to expand this topic into teachable sub-points.</li>"
                 if language == "en"
-                else "<li>根据官方大纲抽取结果复习本知识单元。</li>"
+                else "<li>根据官方大纲抽取结果复习本节内容。</li>"
             )
         examples = "\n".join(
             render_practice(item, language, title)
@@ -415,7 +438,7 @@ def render_topics(
         )
         sections.append(
             f"""
-<section class="topic">
+<section class="topic" id="{topic_anchor(index)}">
   <h2>T{index}. {html_escape(title)}</h2>
   <div class="topic-grid">
     <div>
@@ -431,7 +454,7 @@ def render_topics(
   {guide_block}
   {diagram_block}
   {visual_block}
-  {render_story_modes(topic, guide, language) if guide else ""}
+  {render_story_modes(topic, guide, language, index) if guide else ""}
   {source_block}
   <div class="practice-block">{examples}</div>
 </section>
@@ -696,40 +719,42 @@ def render_infographic_required(
 """
 
 
-def render_story_modes(topic: Topic, guide: TopicGuide, language: str) -> str:
+def render_story_modes(topic: Topic, guide: TopicGuide, language: str, index: int) -> str:
     focus = topic.points[0] if topic.points else guide.topic_title
     if language == "en":
+        life, detective, quest = english_story_lines(topic.title, focus, index)
         return f"""
 <div class="story-modes" aria-label="Narrative explanation styles for {html_escape(topic.title)}">
   <article>
     <h3>{render_icon("life")}<span>Life Scene</span></h3>
-    <p>Understand <strong>{html_escape(topic.title)}</strong> through a real situation: observe what happens, then explain it using <strong>{html_escape(focus)}</strong>.</p>
+    <p>{life}</p>
   </article>
   <article>
     <h3>{render_icon("detective")}<span>Detective Mode</span></h3>
-    <p>Answer like a case: the question data are clues, the syllabus term is evidence, and the conclusion must match the command word.</p>
+    <p>{detective}</p>
   </article>
   <article>
     <h3>{render_icon("quest")}<span>Adventure Mode</span></h3>
-    <p>Break the topic into a mission: unlock the term, avoid the common trap, and finish with one check sentence. The framing is original and does not copy protected IP.</p>
+    <p>{quest}</p>
   </article>
 </div>
 """
-    title = "本知识单元"
+    title = display_topic_title(topic, index, language)
     focus = guide.checklist[0] if guide.checklist else "本节核心要求"
+    life, detective, quest = chinese_story_lines(title, focus, index)
     return f"""
 <div class="story-modes" aria-label="叙事化讲解风格：{html_escape(title)}">
   <article>
     <h3>{render_icon("life")}<span>生活场景</span></h3>
-    <p>把 <strong>{html_escape(title)}</strong> 当成身边的一件事来理解：先找现象，再用 <strong>{html_escape(focus)}</strong> 解释它为什么发生。</p>
+    <p>{life}</p>
   </article>
   <article>
     <h3>{render_icon("detective")}<span>侦探推理</span></h3>
-    <p>像破案一样答题：线索是题干数据，证据是大纲术语，结论必须回到指令词。</p>
+    <p>{detective}</p>
   </article>
   <article>
     <h3>{render_icon("quest")}<span>闯关感讲解</span></h3>
-    <p>把知识点拆成任务：解锁术语、避开常见陷阱、用一句检查句完成本关。默认使用原创冒险语气，不复刻具体作品设定。</p>
+    <p>{quest}</p>
   </article>
 </div>
 """
@@ -761,7 +786,7 @@ def render_practice(item: PracticeItem, language: str, display_title: str | None
             "check": "检查答案",
         }
     )
-    title = item.topic_title if language == "en" else (display_title or "本知识单元")
+    title = item.topic_title if language == "en" else (display_title or "本节内容")
     return f"""
 <article class="practice">
   <h3>{render_icon("practice")}<span>{html_escape(title)} - {labels["worked"]}</span></h3>
@@ -918,8 +943,36 @@ def display_topic_title(topic: Topic, index: int, language: str) -> str:
         return topic.title
     match = re.match(r"^\s*([A-Z]\d+[A-Z]?|\d+(?:\.\d+)+)\b", topic.title)
     if match:
-        return f"大纲点 {match.group(1)}"
-    return f"知识单元 {index}"
+        return f"第 {match.group(1)} 节"
+    keyword_title = localized_topic_title(topic.title, index)
+    if keyword_title:
+        return keyword_title
+    return f"第 {index} 节"
+
+
+def localized_topic_title(title: str, index: int) -> str | None:
+    text = title.lower()
+    keyword_titles = [
+        (("measurement", "data", "graph"), "测量与数据"),
+        (("force", "motion"), "力与运动"),
+        (("particle", "state", "solid", "liquid", "gas"), "粒子模型与物质状态"),
+        (("bond", "structure"), "结构与性质"),
+        (("acid", "alkali", "ph"), "酸碱与 pH"),
+        (("accounting", "ledger", "bookkeeping"), "会计记录"),
+        (("financial statement", "profit", "position"), "财务报表"),
+        (("ratio", "liquidity", "profitability"), "比率分析"),
+        (("demand", "supply", "market"), "市场供需"),
+        (("opportunity", "scarcity", "choice"), "选择与机会成本"),
+        (("set", "venn"), "集合与韦恩图"),
+        (("triangle", "pythagoras", "geometry"), "几何图形"),
+        (("statistics", "probability"), "统计与概率"),
+    ]
+    for keywords, label in keyword_titles:
+        if any(keyword in text for keyword in keywords):
+            return label
+    if re.search(r"[\u4e00-\u9fff]", title):
+        return title[:32]
+    return None
 
 
 def html_escape(value: str) -> str:

@@ -7,7 +7,9 @@ import re
 
 from intl_exam_guide.models import GuidePlan
 from intl_exam_guide.rendering.visual_assets import (
+    PENDING_ASSET_STATUSES,
     has_renderable_infographic,
+    has_renderable_svg_fallback,
     is_raster_asset,
     load_visual_manifest,
 )
@@ -532,23 +534,28 @@ def validate_infographic_assets(
         for entry in manifest_entries
         if entry.get("complexity") == "infographic" and has_renderable_infographic(entry, images_dir)
     )
+    svg_fallbacks = sum(
+        1
+        for entry in manifest_entries
+        if entry.get("complexity") == "infographic" and has_renderable_svg_fallback(entry, images_dir)
+    )
     pending_external_generation = sum(
         1
         for entry in manifest_entries
         if entry.get("complexity") == "infographic"
-        and entry.get("asset_status")
-        in {
-            "external-generation-required",
-            "infographic-provider-required",
-            "provider-selected-pending-generation",
-            "svg-fallback-needs-review",
-        }
+        and str(entry.get("asset_status", "")).lower() in PENDING_ASSET_STATUSES
     )
     if pending_external_generation:
+        fallback_note = (
+            f"; {svg_fallbacks} SVG fallback assets were written for draft review"
+            if svg_fallbacks
+            else ""
+        )
         issues.append(
             ValidationIssue(
                 "warning",
-                f"{pending_external_generation} infographic briefs are queued for external image generation or review.",
+                f"{pending_external_generation} infographic briefs are queued for external image generation or review"
+                f"{fallback_note}.",
             )
         )
     selected_or_generated = len(infographic_briefs) - pending_external_generation
@@ -726,6 +733,8 @@ def review_summary(
     section_files = 0
     image_files = 0
     generated_infographic_assets = 0
+    svg_fallback_assets = 0
+    pending_infographic_assets = 0
     has_visual_manifest = False
     has_package_manifest = False
     if output_dir:
@@ -747,6 +756,18 @@ def review_summary(
                 if entry.get("complexity") == "infographic"
                 and has_renderable_infographic(entry, images_dir)
             )
+            svg_fallback_assets = sum(
+                1
+                for entry in manifest_entries
+                if entry.get("complexity") == "infographic"
+                and has_renderable_svg_fallback(entry, images_dir)
+            )
+            pending_infographic_assets = sum(
+                1
+                for entry in manifest_entries
+                if entry.get("complexity") == "infographic"
+                and str(entry.get("asset_status", "")).lower() in PENDING_ASSET_STATUSES
+            )
         has_visual_manifest = (images_dir / "visual_manifest.json").exists()
         has_package_manifest = (output_dir / "handbook-package.json").exists()
     return {
@@ -767,6 +788,8 @@ def review_summary(
         "svg_safe_visuals": svg_safe_visuals,
         "infographic_visuals": infographic_visuals,
         "generated_infographic_assets": generated_infographic_assets,
+        "svg_fallback_assets": svg_fallback_assets,
+        "pending_infographic_assets": pending_infographic_assets,
         "practice_cards": len(plan.practice_items),
         "topics_with_practice": len(topic_titles & practice_topics),
         "topics_with_guides": len(topic_titles & guide_topics),

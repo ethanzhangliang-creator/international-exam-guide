@@ -96,7 +96,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={6.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.2.10 · Three-Board Support</div>
+      <div className="kicker">v0.2.11 · Three-Board Support</div>
       <h1 className="headline">Three common international exam boards now run in one workflow.</h1>
       <p className="lead">
         AQA, Edexcel, and CAIE share one handbook framework, while each provider reads the syllabus from its own official source.
@@ -300,7 +300,7 @@ function Footer() {
   const p = `${Math.min(100, (time / 32) * 100)}%`;
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.2.10</span>
+      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.2.11</span>
       <div className="progress-line" style={{ "--p": p }}><span></span></div>
       <span>{Math.floor(time).toString().padStart(2, "0")} / 32s</span>
     </div>

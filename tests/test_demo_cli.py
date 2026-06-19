@@ -348,6 +348,12 @@ def test_generated_infographic_assets_are_preserved_and_rendered(tmp_path):
     render_html(plan, output_dir / "guide.html", manifest_path)
     fallback_html = (output_dir / "guide.html").read_text(encoding="utf-8")
     assert "SVG Fallback - Review Needed" in fallback_html
+    fallback_summary = review_summary(plan, output_dir=output_dir)
+    assert fallback_summary["generated_infographic_assets"] == 0
+    assert fallback_summary["svg_fallback_assets"] == 1
+    assert fallback_summary["pending_infographic_assets"] == 1
+    fallback_warnings = [issue.message for issue in validate_plan(plan, output_dir=output_dir)]
+    assert any("1 SVG fallback assets were written" in message for message in fallback_warnings)
 
     image_name = "visual_001_bonding-infographic.png"
     (images_dir / image_name).write_bytes(b"fake-png")
@@ -362,7 +368,10 @@ def test_generated_infographic_assets_are_preserved_and_rendered(tmp_path):
     assert f'src="images/{image_name}"' in html
     assert "Generated Infographic" in html
     assert "Infographic Queue" not in html
-    assert review_summary(plan, output_dir=output_dir)["generated_infographic_assets"] == 1
+    generated_summary = review_summary(plan, output_dir=output_dir)
+    assert generated_summary["generated_infographic_assets"] == 1
+    assert generated_summary["svg_fallback_assets"] == 0
+    assert generated_summary["pending_infographic_assets"] == 0
     assert not [issue for issue in validate_plan(plan, output_dir=output_dir) if issue.severity == "error"]
 
 

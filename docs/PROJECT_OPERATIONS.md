@@ -215,6 +215,17 @@ masking the rest of the generation run.
 Do not treat `issues: []` as meaningful unless the run was generated from the
 current code and not copied from old `outputs/` folders.
 
+For visual-output audits, read the three counters together:
+
+- `generated_infographic_assets`: reviewed/generated raster infographic files;
+- `svg_fallback_assets`: local SVG fallback files written for draft review;
+- `pending_infographic_assets`: complex briefs still waiting for external
+  image generation or human review.
+
+A prompt-queue run can legitimately have `generated_infographic_assets: 0` if
+SVG fallback assets were written and the warning clearly states that final
+complex infographics still need an external model, script, or imported asset.
+
 ## 9. Repository Hygiene
 
 Keep committed files focused on source, docs, Skill, tests, screenshots, and

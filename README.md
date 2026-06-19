@@ -211,6 +211,9 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   HTML gains quick navigation and width constraints, and SVG fallbacks now use
   subject-specific accounting, economics, maths, physics, and chemistry
   templates.
+- **v0.2.11:** clarifies validation output for visual assets: generated raster
+  infographics, SVG fallback assets, and pending infographic briefs are now
+  counted separately so prompt-queue runs are not mistaken for missing visuals.
 
 ## Developer Quick Start
 

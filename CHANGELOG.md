@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.2.11 - 2026-06-19
+
+### Fixed
+
+- Clarified visual-output validation so `validation.json` now separates
+  reviewed/generated raster infographics from SVG fallback assets and pending
+  infographic briefs. This prevents audit reports from treating a deliberate
+  prompt-queue/SVG-fallback run as if the visual pipeline produced no files.
+- Updated infographic warning messages to include how many SVG fallback assets
+  were written for draft review while complex infographics wait for an external
+  image model, script, or imported reviewed asset.
+
+### Verified
+
+- `python -m pytest -q` (`90 passed`)
+- Real CLI checks in temporary directories:
+  AQA Accounting, Pearson Edexcel Accounting by official URL, and CAIE
+  Accounting by official URL with `--exam-year 2027`.
+
 ## 0.2.10 - 2026-06-19
 
 ### Fixed

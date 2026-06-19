@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "igcse-a-level-revision-guide"
-version = "0.2.10"
+version = "0.2.11"
 description = "Generate image-rich IGCSE and A-Level revision guides with worked examples, infographics, and PDF output."
 readme = "README.md"
 requires-python = ">=3.11"

@@ -174,6 +174,7 @@ README 只保留会影响 Skill 实际生成流程的变化；完整历史统一
 - **v0.2.8：** 加固生成引擎：统一三大考试局下载与文本清洗入口，新增 Pearson Edexcel 表格型大纲解析，PDF 导出优先用 Playwright 并回退到 Chrome/Edge，补上 CLI `discover` / `generate` 覆盖，同时把 `Content unit` 兜底主题和缺失考试结构解析列为错误。
 - **v0.2.9：** 补齐剩余审查闭环：CI 改为系统/Python 版本矩阵并加入覆盖率门槛；新增跨学科视觉路由基准；Physics 力与运动会进入信息图 brief；修复 `preparation` 误命中 `ratio`、`graph` 误命中 `ph` 这类 SVG 错配；并把 HTML 渲染器拆成页面结构、SVG 模板和 CSS 模块。
 - **v0.2.10：** 修复第二轮审查和真实样本暴露的问题：Edexcel 不再把 Pearson 版权/前言页接进 topic；CAIE 跳过 content overview 和 AO 表；中文手册标题不再退化成“知识单元 1”式占位；HTML 增加快速目录和阅读宽度约束；SVG 兜底图改为会计、经济、数学、物理、化学等学科专用模板。
+- **v0.2.11：** 梳理视觉资产验证摘要：外部模型生成的位图信息图、SVG 兜底图、仍待外部生成或审核的信息图 brief 分开统计，避免 prompt-queue 运行被误判成“没有任何配图产物”。
 
 ## 开发者快速开始
 

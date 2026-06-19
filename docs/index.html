@@ -759,7 +759,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.10</div>
+          <div class="kicker">三大考试局支持 · v0.2.11</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1048,8 +1048,8 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.10：修复真实生成回归。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；本次重点修复真实样本里暴露的大纲解析、中文标题、SVG 兜底和生成页面可读性问题。</p>
+          <h2>v0.2.11：验证摘要说清楚图文状态。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次把外部模型生成的位图信息图、SVG 兜底图、仍待生成或审核的信息图 brief 分开统计，避免把 prompt-queue 样本误判成没有配图产物。</p>
         </div>
         <div class="flow">
           <article class="flow-item">

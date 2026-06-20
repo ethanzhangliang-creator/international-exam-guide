@@ -1637,7 +1637,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.2.19 · Three-Board Support</div>
+      <div className="kicker">v0.2.20 · Three-Board Support</div>
       <h1 className="headline">Three common international exam boards now run in one workflow.</h1>
       <p className="lead">
         AQA, Edexcel, and CAIE share one handbook framework, while each provider reads the syllabus from its own official source.
@@ -1905,7 +1905,7 @@ function VisualRouteScene() {
   ];
   return (
     <SceneFrame start={32.5} end={38.2}>
-      <div className="kicker">Visual Routing Must Be Honest</div>
+      <div className="kicker">Visual Explanations Stay Reviewable</div>
       <h2 className="headline route-headline">Generate the handbook first, then handle complex visuals.</h2>
       <div className="visual-routing">
         {cards.map((card, index) => {
@@ -1985,7 +1985,7 @@ function Footer() {
   const p = `${Math.min(100, (time / TOTAL_DURATION) * 100)}%`;
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.2.19</span>
+      <span>IGCSE & A-Level AI Revision Handbook Skill · v0.2.20</span>
       <div className="progress-line" style={{ "--p": p }}><span></span></div>
       <span>{Math.floor(time).toString().padStart(2, "0")} / {TOTAL_DURATION}s</span>
     </div>

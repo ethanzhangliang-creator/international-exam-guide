@@ -17,6 +17,15 @@
 - [ ] `outputs/` is ignored.
 - [ ] Source policy is clear in README and docs.
 
+## Local Artifact Hygiene
+
+- [ ] Before release validation, review ignored local artifacts with
+  `git clean -fdX -n`. Remove stale `outputs/` only after reviewing the dry
+  run; release evidence must be regenerated from the current code into fresh
+  output directories.
+- [ ] Do not use old ignored `outputs/` folders, stale `validation.json`, or
+  local design drafts as proof that the current release output is valid.
+
 ## Commands
 
 - [ ] Offline demo works:
@@ -143,7 +152,7 @@ python scripts/render_intro_animation.py --html docs/project-intro-animation-en.
 
 ## Accuracy
 
-- [ ] The README clearly says the MVP creates source-bound frames, not copied past-paper questions.
+- [ ] The README clearly says the current release creates source-grounded handbooks, not copied past-paper questions.
 - [ ] Deep worked examples are marked as requiring subject review.
 - [ ] Regional/exam-centre availability is described as something families must confirm locally.
 

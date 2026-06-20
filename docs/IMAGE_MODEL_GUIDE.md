@@ -3,7 +3,7 @@
 ## English
 
 The guide generator should not depend on image generation for its core factual
-output. The current MVP uses deterministic SVG concept maps because they are
+output. The current release uses deterministic SVG concept maps because they are
 easy to trace back to syllabus points.
 
 For many subjects, richer illustrations are still useful:
@@ -188,7 +188,7 @@ the source point.
 
 ## 中文
 
-复习手册的核心事实不应该依赖生图模型。当前 MVP 使用确定性 SVG 知识地图，是因为
+复习手册的核心事实不应该依赖生图模型。当前版本使用确定性 SVG 知识地图，是因为
 它们更容易追溯到官方大纲点。
 
 但很多知识点确实需要更好的视觉解释，例如：

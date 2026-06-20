@@ -1,4 +1,4 @@
-﻿# Project Operations Guide / 项目维护说明
+# Project Operations Guide / 项目维护说明
 
 Last updated: 2026-06-20
 
@@ -79,6 +79,12 @@ tests updated whenever those areas change.
 v0.2.19 fixed a real product-labeling regression: unknown, synthetic, or demo
 sources must not fall back to AQA branding. Future provider-label changes need
 tests for both explicit AQA detection and neutral unknown-provider output.
+
+v0.2.20 closed the sixth-round audit loop around stale local artifacts and
+generator coverage. Release evidence must come from fresh outputs produced by
+the current code; ignored `outputs/` folders and old `validation.json` files are
+not valid proof. Keep `rendering/icons.py` tracked whenever renderer icon usage
+changes.
 
 ## 4. Version And Release Rules
 

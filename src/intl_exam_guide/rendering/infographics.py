@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from intl_exam_guide.models import VisualBrief
+from intl_exam_guide.rendering.icons import render_icon
 from intl_exam_guide.rendering.text import html_escape
 from intl_exam_guide.rendering.visual_assets import (
     has_renderable_infographic,
@@ -54,7 +55,7 @@ def _render_generated_infographic(
     step_items = "".join(f"<li>{html_escape(step)}</li>" for step in visual_steps)
     return f"""
 <figure class="visual-example generated-infographic" aria-label="Generated infographic for {html_escape(title)}">
-  <figcaption>{_render_visual_icon()}<span>{html_escape(caption)}</span></figcaption>
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="generated-infographic-grid">
     <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} infographic for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
@@ -106,7 +107,7 @@ def _render_svg_fallback_infographic(
     step_items = "".join(f"<li>{html_escape(step)}</li>" for step in visual_steps)
     return f"""
 <figure class="visual-example svg-fallback" aria-label="SVG fallback for {html_escape(title)}">
-  <figcaption>{_render_visual_icon()}<span>{html_escape(caption)}</span></figcaption>
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="generated-infographic-grid">
     <img class="infographic-image" src="images/{html_escape(filename)}" alt="{html_escape(title)} SVG fallback for {html_escape(visual.focus_point)}">
     <div class="visual-notes">
@@ -147,7 +148,7 @@ def _render_pending_infographic(
     prompt_label = "Prompt queue" if language == "en" else "生图提示词"
     return f"""
 <figure class="visual-example infographic-required" aria-label="Infographic required for {html_escape(title)}">
-  <figcaption>{_render_visual_icon()}<span>{html_escape(caption)}</span></figcaption>
+  <figcaption>{render_icon("visual")}<span>{html_escape(caption)}</span></figcaption>
   <div class="infographic-card">
     <div class="visual-model">{html_escape(status)}</div>
     <div class="visual-source">{html_escape(source_prefix)}: {html_escape(source_label)}</div>
@@ -161,12 +162,3 @@ def _render_pending_infographic(
   </div>
 </figure>
 """
-
-
-def _render_visual_icon() -> str:
-    return (
-        '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true" '
-        'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
-        'stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/>'
-        '<circle cx="9" cy="10" r="2"/><path d="m7 17 4-4 3 3 2-2 2 3"/></svg>'
-    )

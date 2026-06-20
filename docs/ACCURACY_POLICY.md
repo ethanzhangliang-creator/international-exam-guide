@@ -14,7 +14,7 @@ than generation speed or stylistic fluency.
 5. Do not use deep worked examples with students until they have been reviewed
    against the extracted specification text.
 
-### What the MVP Can Safely Do
+### What the Current Release Can Safely Do
 
 - Extract topic titles and syllabus summary points from the public page.
 - Record provider-specific listing metadata when the official page exposes it,
@@ -56,7 +56,7 @@ than generation speed or stylistic fluency.
 4. validation 有 error 时，不把指南当完成品。
 5. 深度 worked examples 必须对照抽取出的大纲文本复核后，才能给孩子正式使用。
 
-### MVP 可以安全完成什么
+### 当前版本可以安全完成什么
 
 - 从公开页面抽取 topic titles 和 syllabus summary points。
 - 当官方页面提供 listing 元数据时进行记录，例如 AQA 的 International GCSE /

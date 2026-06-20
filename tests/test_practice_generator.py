@@ -1,9 +1,16 @@
 from intl_exam_guide.models import SourceSnippet, Topic
 from intl_exam_guide.planning.practice_generator import (
     build_practice_item,
+    choose_command_word,
+    choose_difficulty,
     concrete_example,
     concrete_example_zh,
 )
+
+
+def combined_text(parts: tuple[str, list[str], list[str], list[str]]) -> str:
+    question, frame, steps, checkpoints = parts
+    return " ".join([question, *frame, *steps, *checkpoints]).lower()
 
 
 def test_build_practice_item_uses_requested_style_and_source_snippets():
@@ -121,6 +128,136 @@ def test_generic_example_fallback_remains_exam_focused():
     assert "memorised phrase" in combined
     assert "command word" in combined
     assert "evidence from the question" in combined
+
+
+def test_mathematics_examples_cover_major_strands():
+    cases = [
+        ("N1 - Number", "Ratio and percentage calculations.", 1, ["scale 1:25,000", "1.5 km"]),
+        ("N2 - Bounds", "Rounding and bounds.", 1, ["lower bound", "12.35 kg"]),
+        ("A3 - Functions", "Functions and graphs.", 1, ["gradient", "y-intercept"]),
+        ("A4 - Sequences", "Sequences and nth term.", 0, ["4n + 1", "20th term"]),
+        ("G1 - Angles", "Angles around a point.", 1, ["360 degrees", "135 degrees"]),
+        ("S1 - Probability", "Probability of outcomes.", 1, ["even outcomes", "1/2"]),
+        ("S2 - Statistics", "Mean and range.", 0, ["mean", "range"]),
+    ]
+
+    for title, focus, number, expected_terms in cases:
+        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Mathematics"))
+        for expected in expected_terms:
+            assert expected in text
+
+
+def test_chemistry_examples_cover_visual_and_calculation_branches():
+    cases = [
+        ("Nanoparticles", "Nanoparticles and surface area.", 0, ["surface area to volume ratio", "catalyst"]),
+        ("Carbon structures", "Diamond graphite graphene structure and bonding of carbon.", 1, ["graphite", "conduct electricity"]),
+        ("States", "States of matter and diffusion.", 1, ["melting", "liquid water"]),
+        ("Atomic particles", "Atomic proton neutron electron.", 1, ["2+ charge", "electrons"]),
+        ("Moles", "Moles mass conservation.", 0, ["magnesium oxide", "4.0 g"]),
+        ("Analysis", "Gas tests.", 1, ["limewater", "carbon dioxide"]),
+        ("Acids", "Acid base alkali salt pH.", 1, ["neutralises", "pH rises"]),
+        ("Rates", "Rate equilibrium reversible reaction.", 0, ["collision theory", "reaction rate"]),
+        ("Energy", "Exothermic endothermic energy.", 1, ["endothermic", "absorbed"]),
+        ("Carbonates", "Carbonates decompose.", 1, ["thermal decomposition", "copper oxide"]),
+        ("Organic", "Hydrocarbon polymer crude.", 1, ["poly(ethene)", "polymerisation"]),
+    ]
+
+    for title, focus, number, expected_terms in cases:
+        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Chemistry"))
+        for expected in expected_terms:
+            assert expected.lower() in text
+
+
+def test_accounting_examples_cover_statement_and_verification_branches():
+    cases = [
+        ("Verification", "Trial balance and bank reconciliation.", 1, ["bank reconciliation", "external bank evidence"]),
+        ("Errors", "Trial balance correction of errors.", 0, ["trial balance", "error of principle"]),
+        ("Adjustments", "Depreciation and irrecoverable receivables.", 1, ["annual depreciation", "$1,000"]),
+        ("Statements", "Financial statements income statement.", 1, ["gross profit", "$3,800"]),
+        ("Partnership", "Partnership financial statements.", 0, ["appropriation account", "profit sharing"]),
+        ("Ratios", "Ratio profitability liquidity.", 1, ["current ratio", "1.5 : 1"]),
+        ("Fallback", "Accounting ethics note.", 0, ["accounting idea", "business scenario"]),
+    ]
+
+    for title, focus, number, expected_terms in cases:
+        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Accounting"))
+        for expected in expected_terms:
+            assert expected.lower() in text
+
+
+def test_economics_examples_cover_core_topic_branches():
+    cases = [
+        ("Specialisation", "Specialisation and division of labour.", 1, ["specialisation", "factory"]),
+        ("Factors", "Factors of production land capital enterprise.", 1, ["vans are capital", "founder is enterprise"]),
+        ("Opportunity cost", "Opportunity cost and resource allocation.", 1, ["clinic", "sports centre"]),
+        ("Sectors", "Primary secondary tertiary sectors.", 0, ["wheat farm", "service"]),
+        ("Market", "Demand supply price equilibrium.", 1, ["supply curve shifts left", "quantity is likely to fall"]),
+        ("Elasticity", "Elasticity calculation.", 1, ["ped = 40% / -20%", "price elastic"]),
+        ("Costs", "Cost revenue profit production.", 0, ["total revenue = $8 x 200", "profit = $500"]),
+        ("Policy", "Government inflation growth employment.", 1, ["taxes", "inflationary pressure"]),
+        ("International trade", "Import export globalisation.", 0, ["appreciation", "imports become cheaper"]),
+        ("Banking", "Money bank financial interest.", 1, ["interest rates", "borrowing becomes more expensive"]),
+        ("Fallback", "Consumer behaviour.", 0, ["economic agent", "likely outcome"]),
+    ]
+
+    for title, focus, number, expected_terms in cases:
+        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Economics"))
+        for expected in expected_terms:
+            assert expected.lower() in text
+
+
+def test_biology_examples_cover_molecule_and_genetics_branches():
+    cases = [
+        ("Water", "Water solvent dipole transport.", 0, ["polar solvent", "transport"]),
+        ("Carbohydrate", "Carbohydrate starch glucose.", 0, ["glucose is a monosaccharide", "starch is a polysaccharide"]),
+        ("Lipid", "Lipid triglyceride ester fatty acid glycerol.", 0, ["triglyceride", "ester bonds"]),
+        ("DNA", "DNA RNA replication nucleotide gene genetic.", 0, ["complementary base", "genetic information"]),
+        ("Fallback", "Ecology adaptation.", 0, ["cause-and-effect", "biological structure"]),
+    ]
+
+    for title, focus, number, expected_terms in cases:
+        text = combined_text(concrete_example(Topic(title=title, points=[focus]), focus, number, "Biology"))
+        for expected in expected_terms:
+            assert expected.lower() in text
+
+
+def test_chinese_examples_cover_subject_specific_branches():
+    cases = [
+        ("Chemistry", Topic(title="Atomic structure", points=["atomic proton neutron electron"]), "atomic proton neutron electron", ["原子序数", "质量数"]),
+        ("Chemistry", Topic(title="Acid base", points=["acid base alkali salt pH"]), "acid base alkali salt pH", ["化学解释题", "结论"]),
+        ("Economics", Topic(title="Demand and supply", points=["demand supply market price"]), "demand supply market price", ["需求曲线", "均衡"]),
+        ("Accounting", Topic(title="Bank reconciliation", points=["trial balance bank reconciliation"]), "trial balance bank reconciliation", ["银行调节表", "现金簿"]),
+        ("Mathematics", Topic(title="G1 - Geometry", points=["triangle geometry"]), "triangle geometry", ["直角三角形", "斜边"]),
+        ("Unmapped", Topic(title="Unknown", points=["source detail"]), "source detail", ["原创练习", "最终答案"]),
+    ]
+
+    for subject, topic, focus, expected_terms in cases:
+        text = combined_text(concrete_example_zh(topic, focus, 0, subject))
+        for expected in expected_terms:
+            assert expected in text
+
+
+def test_command_words_and_difficulty_rotate_by_level_and_language():
+    assert [choose_command_word(i, "international_gcse") for i in range(4)] == [
+        "state",
+        "describe",
+        "explain",
+        "suggest",
+    ]
+    assert [choose_command_word(i, "international_as_a_level") for i in range(4)] == [
+        "explain",
+        "analyse",
+        "compare",
+        "evaluate",
+    ]
+    assert [choose_command_word(i, "international_gcse", "zh-CN") for i in range(4)] == [
+        "写出",
+        "描述",
+        "解释",
+        "提出",
+    ]
+    assert [choose_difficulty(i) for i in range(3)] == ["core", "standard", "stretch"]
+    assert [choose_difficulty(i, "zh-CN") for i in range(3)] == ["基础", "标准", "挑战"]
 
 
 def test_chinese_practice_example_keeps_student_facing_text_chinese():

@@ -259,6 +259,10 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   longer display AQA branding, anti-template wording detection covers more
   English and Chinese AI-style phrases, and direct tests now cover infographic
   rendering branches plus Mathematics/Biology/Economics practice examples.
+- **v0.2.20:** closes the sixth-round audit loop by centralizing rendered icons,
+  blocking stale ignored `outputs/` from being used as release evidence,
+  tightening the practice-generator architecture guard, and expanding direct
+  tests for multi-subject practice generation plus PDF export branches.
 
 ## Developer Quick Start
 

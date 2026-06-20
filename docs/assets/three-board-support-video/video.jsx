@@ -98,7 +98,7 @@ function IntroScene() {
   return (
     <SceneFrame start={0} end={5.2}>
       <div className="orbit" style={{ transform: `rotate(${orbit}deg) scale(${1 + Math.sin(time * 0.7) * 0.025})` }}></div>
-      <div className="kicker">v0.2.11 · 三大考试局支持</div>
+      <div className="kicker">v0.2.17 · 三大考试局支持</div>
       <h1 className="headline">三大常用国际考试局，现在都能跑。</h1>
       <p className="lead">
         AQA、Edexcel、CAIE：同一套复习手册框架，但每个考试局都按自己的官方来源读取大纲。
@@ -446,7 +446,7 @@ function Footer() {
   const p = `${Math.min(100, (time / TOTAL_DURATION) * 100)}%`;
   return (
     <div className="footer-mark">
-      <span>IGCSE & A-Level AI 复习手册 Skill · v0.2.11</span>
+      <span>IGCSE & A-Level AI 复习手册 Skill · v0.2.17</span>
       <div className="progress-line" style={{ "--p": p }}><span></span></div>
       <span>{Math.floor(time).toString().padStart(2, "0")} / {TOTAL_DURATION}s</span>
     </div>

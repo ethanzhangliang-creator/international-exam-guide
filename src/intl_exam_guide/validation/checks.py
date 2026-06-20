@@ -7,6 +7,7 @@ from pathlib import Path
 import re
 
 from intl_exam_guide.models import GuidePlan, PracticeItem, VisualBrief
+from intl_exam_guide.planning.anti_ai_language import has_ai_language_smell
 from intl_exam_guide.rendering.visual_assets import (
     PENDING_ASSET_STATUSES,
     has_renderable_infographic,
@@ -212,6 +213,24 @@ def validate_guides(plan: GuidePlan) -> list[ValidationIssue]:
             )
         if len(guide.checklist) < 3:
             issues.append(ValidationIssue("warning", f"Checklist is too short: {guide.topic_title}"))
+        if has_ai_language_smell(
+            [
+                guide.essence,
+                guide.analogy,
+                guide.mini_worked_example,
+                guide.pitfall,
+                guide.diagram_brief,
+                *guide.worked_solution_steps,
+                *guide.checklist,
+            ],
+            plan.run_options.output_language,
+        ):
+            issues.append(
+                ValidationIssue(
+                    "warning",
+                    f"Topic guide contains formulaic AI-style wording: {guide.topic_title}",
+                )
+            )
         if plan.run_options.output_language == "zh-CN" and has_zh_placeholder_text(
             [
                 guide.essence,
@@ -273,6 +292,21 @@ def validate_practice_item(plan: GuidePlan, item: PracticeItem) -> list[Validati
             ValidationIssue(
                 "error",
                 f"Practice item appears to borrow a different subject template: {topic_title}",
+            )
+        )
+    if has_ai_language_smell(
+        [
+            item.question,
+            *item.answer_frame,
+            *item.public_solution_steps,
+            *item.answer_checkpoints,
+        ],
+        plan.run_options.output_language,
+    ):
+        issues.append(
+            ValidationIssue(
+                "warning",
+                f"Practice item contains formulaic AI-style wording: {topic_title}",
             )
         )
     if plan.run_options.output_language == "zh-CN" and has_zh_placeholder_text(

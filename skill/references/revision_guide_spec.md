@@ -102,6 +102,10 @@ The tone should help teenagers stay awake and oriented:
 - use original adventure/anime-like framing for motivation when useful;
 - avoid copying protected characters, stories, or exam-paper artwork;
 - avoid long academic paragraphs and unsupported syllabus claims.
+- run the anti-template language pass before finalizing student-facing text:
+  remove safe formulaic transitions such as `In conclusion`, `Overall`, `总之`,
+  and `值得注意的是`; leave remaining suspicious AI-style phrasing as validation
+  warnings for review.
 
 ## Visual Workflow
 

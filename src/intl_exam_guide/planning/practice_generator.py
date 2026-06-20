@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from intl_exam_guide.models import PracticeItem, Topic
+from intl_exam_guide.planning.anti_ai_language import polish_ai_language, polish_texts
 from intl_exam_guide.planning.localization import zh_point_label
 from intl_exam_guide.planning.subject_profiles import resolve_subject_profile
 
@@ -31,6 +32,10 @@ def build_practice_item(
             if output_language == "en"
             else "检查最终答案是否回应题目要求。"
         )
+    question = polish_ai_language(question, output_language)
+    frame = polish_texts(frame, output_language)
+    steps = polish_texts(steps, output_language)
+    checkpoints = polish_texts(checkpoints, output_language)
     return PracticeItem(
         topic_title=topic.title,
         command_word=command_word,

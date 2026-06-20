@@ -227,10 +227,15 @@ The required generation logic is:
 4. Generate source-bound study notes and original worked examples for each unit.
    Each worked example must include a real question prompt, a solve-it-first
    frame, public solution steps, final answer/checkpoints, and source anchors.
-5. Run a second visual-needs pass over each knowledge unit and worked example.
+5. Run the anti-template language pass before finalizing student-facing
+   explanation and practice text. Remove safe formulaic transitions such as
+   `In conclusion`, `Overall`, `总之`, and `值得注意的是`; if a phrase still reads
+   like generic AI prose, keep it as a validation warning for review instead of
+   hiding it.
+6. Run a second visual-needs pass over each knowledge unit and worked example.
    Decide whether text is enough, a deterministic SVG is enough, or a richer
    infographic/image model is needed.
-6. Render the guide to HTML/PDF only after the content, examples, visual briefs,
+7. Render the guide to HTML/PDF only after the content, examples, visual briefs,
    and source checks are present.
 
 For student-facing guides, do not produce a text-only template. During visual
@@ -348,6 +353,8 @@ Use `--skip-pdf` only when no local browser or Playwright runtime is available.
   teaching diagrams.
 - Do not mix Chinese and English in student-facing handbook labels or topic
   bodies after the language lock is chosen.
+- Do not leave obvious AI-template transitions in student-facing explanations
+  or practice cards when a concrete sentence will do.
 
 ## Safety Rules
 

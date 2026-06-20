@@ -171,6 +171,17 @@ analogy, story-based teaching, detective reasoning, and adventure-style study
 missions. The default is original framing, not copied protected characters or
 worlds.
 
+The writing pass also includes a small anti-template-language gate adapted from
+the anti-AI-language ideas in `qiaomu-novel-generator`: it removes safe
+formulaic transitions and warns when a guide still sounds like generic AI prose.
+This is a design inspiration, not a runtime dependency.
+
+Design inspirations: the anti-template wording check is adapted from
+`qiaomu-novel-generator`; the scientific SVG fallback is inspired by the
+`nature-figure` figure-contract idea from
+[`Yuan1z0825/nature-skills`](https://github.com/Yuan1z0825/nature-skills).
+Both have been reshaped for revision handbooks.
+
 ## Language Policy
 
 The output language is chosen before generation:
@@ -236,6 +247,10 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   generation is not a manual file-moving step. If the user has a callable image
   Skill, API, script, or generated asset directory, the Agent should run or
   import that route automatically after the base handbook is generated.
+- **v0.2.17:** adds the anti-template language gate to generated explanations
+  and practice cards, plus validation warnings for remaining formulaic AI-style
+  wording. The homepage and README now credit the anti-AI-language and
+  nature-figure inspirations as design references, not runtime dependencies.
 
 ## Developer Quick Start
 

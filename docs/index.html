@@ -606,6 +606,14 @@
       font: 800 12px/1.35 var(--mono);
       color: var(--teal);
     }
+    .reference-note {
+      margin-top: 16px;
+      border-left: 4px solid var(--gold);
+      background: rgba(255,255,255,.72);
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
 
     .package {
       display: grid;
@@ -759,7 +767,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.16</div>
+          <div class="kicker">三大考试局支持 · v0.2.17</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1011,11 +1019,12 @@
             <div class="sample">配图需求清单 + SVG 草图</div>
           </article>
           <article>
-            <h3>讲解模板更生动</h3>
-            <p>同一知识点可以用生活场景、侦探推理、动漫闯关感等方式讲，但默认不复刻具体受保护 IP。</p>
-            <div class="sample">生活化、侦探推理、闯关式</div>
+            <h3>讲解要生动，也要少一点 AI 腔</h3>
+            <p>同一知识点可以用生活场景、侦探推理、闯关式讲解；生成后会清理“总之”“值得注意的是”这类模板化过渡语。</p>
+            <div class="sample">生活化、侦探推理、反模板腔</div>
           </article>
         </div>
+        <p class="reference-note">设计参考：反模板腔检查借鉴 qiaomu-novel-generator 的 anti-AI language gate 思路；科学矢量 SVG fallback 借鉴 Yuan1z0825/nature-skills 的 nature-figure 思路。两者都已改造成复习手册场景，不作为运行时依赖。</p>
       </div>
     </section>
 
@@ -1048,36 +1057,36 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.16：生图流程说明进一步收紧。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；项目不内置固定生图模型，但“外部生图”不是让用户手动搬文件。用户已有可调用 Skill/API/脚本或生成图片目录时，Agent 应在基础手册完成后自动调用或导入，并把复核后的复杂图挂接进手册。</p>
+          <h2>v0.2.17：讲解文字加入反模板腔检查。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次更新把讲解和例题生成后的语言复核接入生成器，安全清理常见 AI 腔过渡语，并把残留模板化表达写入验证 warning。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
             <div class="num">01 · 考试局</div>
             <div>
-              <h3>规划模块拆分</h3>
-              <p>把原本臃肿的 guide_plan.py 拆成 localization、explanation_styles、practice_generator 和 visual_routing，保留旧导入路径兼容 Agent。</p>
+              <h3>生成后清理</h3>
+              <p>Topic 讲解、步骤和例题会先经过轻量文本清理，再写入 guide-plan。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">02 · 语言</div>
             <div>
-              <h3>Provider 测试补强</h3>
-              <p>Pearson 和 CAIE 增加直接解析测试；Pearson 不再把 welcome guide、past paper 或 mark scheme 当成 specification。</p>
+              <h3>验证中提示</h3>
+              <p>残留模板腔不会直接阻断手册，但会在 validation.json 里作为 warning 暴露出来。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">03 · 图文</div>
             <div>
-              <h3>叙事化讲解更贴题</h3>
-              <p>生活场景、侦探推理和闯关讲解会按会计、经济、化学、数学等主题选择不同表达，不再只是固定轮换。</p>
+              <h3>保留讲解风格</h3>
+              <p>严谨、轻松、生活化、侦探推理和闯关式讲解仍然可选，只是减少套话。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">04 · 质量</div>
             <div>
-              <h3>CI 更像开源项目</h3>
-              <p>CI 加入 mypy 类型检查和 coverage XML / Codecov 上传；本地验证达到 101 个测试通过，覆盖率 70.68%。</p>
+              <h3>参考来源清楚</h3>
+              <p>主页和 README 明确说明 anti-AI language 与 nature-figure 是设计参考，不是项目运行依赖。</p>
             </div>
           </article>
         </div>

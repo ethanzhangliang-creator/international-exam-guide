@@ -11,6 +11,7 @@ from intl_exam_guide.models import (
     TopicGuide,
     VisualBrief,
 )
+from intl_exam_guide.planning.anti_ai_language import polish_ai_language, polish_texts
 from intl_exam_guide.planning.explanation_styles import (
     styled_explanation,
     styled_explanation_en,
@@ -227,6 +228,10 @@ def build_topic_guide(
         explanation_style=explanation_style,
         output_language=output_language,
     )
+    essence, analogy, mini_worked_example, pitfall = polish_texts(
+        [essence, analogy, mini_worked_example, pitfall],
+        output_language,
+    )
     worked_solution_steps = (
         [
             "Read the command word and circle the data or conditions in the question.",
@@ -242,25 +247,27 @@ def build_topic_guide(
             "检查：单位、精度、符号和最终句子是否回答了题问。",
         ]
     )
+    checklist = build_checklist(visible_points, output_language)
+    diagram_brief = (
+        (
+            f"Draw a clean concept map for '{topic.title}' with the central title in the middle, "
+            f"branches for {', '.join(points[:4])}, and one short exam-action label on each branch."
+        )
+        if output_language == "en"
+        else (
+            f"为“{zh_topic_reference(topic)}”绘制清晰概念图：中心放主题，分支覆盖 "
+            f"{'、'.join(visible_points[:4])}，每个分支加一个简短做题动作标签。"
+        )
+    )
     return TopicGuide(
         topic_title=topic.title,
         essence=essence,
         analogy=analogy,
         mini_worked_example=mini_worked_example,
-        worked_solution_steps=worked_solution_steps,
+        worked_solution_steps=polish_texts(worked_solution_steps, output_language),
         pitfall=pitfall,
-        checklist=build_checklist(visible_points, output_language),
-        diagram_brief=(
-            (
-                f"Draw a clean concept map for '{topic.title}' with the central title in the middle, "
-                f"branches for {', '.join(points[:4])}, and one short exam-action label on each branch."
-            )
-            if output_language == "en"
-            else (
-                f"为“{zh_topic_reference(topic)}”绘制清晰概念图：中心放主题，分支覆盖 "
-                f"{'、'.join(visible_points[:4])}，每个分支加一个简短做题动作标签。"
-            )
-        ),
+        checklist=polish_texts(checklist, output_language),
+        diagram_brief=polish_ai_language(diagram_brief, output_language),
         source_snippets=topic.source_snippets[:3],
     )
 

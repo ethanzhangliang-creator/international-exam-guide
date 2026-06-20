@@ -68,6 +68,10 @@ Documentation-only wording fixes do not require a package version bump. Any
 functional change to Skill behavior, validation, CLI, providers, rendering, or
 release assets should bump the patch version.
 
+v0.2.17 added the anti-template language gate. Future wording/tone changes that
+affect generated handbook text or validation warnings are functional changes and
+should bump the patch version.
+
 ## 4. Version And Release Rules
 
 Use GitHub Releases, not tags alone.
@@ -208,6 +212,11 @@ Important error cases:
 - downloaded official PDFs that only produce generic `Content unit` topics;
 - downloaded official PDFs that produce no assessment-paper structure;
 - missing manifest files or broken image references.
+
+Important warning cases:
+
+- remaining formulaic AI-style wording in student-facing topic guides or
+  practice cards after the anti-template language pass.
 
 PDF export should try Playwright first, then fall back to a local Chrome/Edge
 browser. If both routes fail, record a clear PDF export error instead of

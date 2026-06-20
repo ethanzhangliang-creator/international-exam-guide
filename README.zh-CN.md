@@ -154,6 +154,14 @@ outputs/chemistry-9202/
 讲解风格也可以选择：严谨备考、轻松愉快、生活场景、故事化、侦探推理、闯关式等。
 默认使用原创表达，不复刻受保护角色或世界观。
 
+生成链路里也加入了一个轻量“反模板腔”检查：会先清理“总之”“综上所述”“值得注意的是”
+这类安全可删的 AI 腔过渡语；如果仍然出现明显模板化表达，验证报告会给出 warning，方便后续复核。
+
+设计参考说明：讲解文字的反模板腔检查借鉴了 `qiaomu-novel-generator` 里的 anti-AI language gate 思路；
+科学矢量 SVG fallback 借鉴了
+[`Yuan1z0825/nature-skills`](https://github.com/Yuan1z0825/nature-skills)
+里 `nature-figure` 的 figure contract 思路。两者都已经改造成复习手册场景，不是运行时依赖。
+
 ## 语言策略
 
 生成前必须选择一种输出语言：
@@ -180,6 +188,7 @@ README 只保留会影响 Skill 实际生成流程的变化；完整历史统一
 - **v0.2.14：** 完成第三轮审计中可落地的剩余项：拆分 `guide_plan.py` 大文件，CI 加入 mypy 和 Codecov 覆盖率上传，补强 Pearson/CAIE 解析测试、加密 PDF 测试和 topic-aware 叙事化讲解；内置生图模型继续保持不做。
 - **v0.2.15：** 完成第三轮审计收尾清理：公开仓库移除本地生图 router 脚本，发布流程改为导入外部生成并复核过的信息图资产，并补上 guide-plan、provider PDF 选择、PDF 导出错误和按 topic 切换故事化讲解的直接回归测试。
 - **v0.2.16：** 修正生图流程说明：外部生图不等于让用户手动搬图。如果用户有可调用的生图 Skill、API、脚本或生成好的图片目录，Agent 应该在基础手册完成后自动调用或导入，并把复核后的图片挂接进手册。
+- **v0.2.17：** 生成器加入反模板腔语言门：讲解和例题会清理安全可删的 AI 腔过渡语，验证器会对残留模板化表达给出 warning；主页和 README 也补充 anti-AI language 与 nature-figure 的设计参考说明。
 
 ## 开发者快速开始
 

@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.2.17 - 2026-06-20
+
+### Changed
+
+- Added a deterministic anti-template language gate to the generation flow.
+  Topic explanations and practice items now remove safe formulaic transitions
+  such as "In conclusion", "Overall", "总之", and "值得注意的是" before they are
+  written into the guide plan.
+- Added validation warnings for remaining formulaic AI-style wording in topic
+  guides and practice cards, so suspicious phrasing can be reviewed without
+  blocking otherwise valid handbooks.
+- Documented the design inspirations clearly: the anti-template writing pass is
+  adapted from the anti-AI-language gate idea in `qiaomu-novel-generator`, and
+  the scientific SVG fallback is inspired by the `nature-figure` contract idea
+  in `Yuan1z0825/nature-skills`. Both are adapted into this project and are not
+  runtime dependencies.
+
+### Verified
+
+- `python -m pytest tests/test_anti_ai_language.py tests/test_guide_plan_units.py -q`
+  (`9 passed`)
+- `python -m ruff check src\intl_exam_guide\planning\anti_ai_language.py tests\test_anti_ai_language.py src\intl_exam_guide\planning\guide_plan.py src\intl_exam_guide\planning\practice_generator.py src\intl_exam_guide\validation\checks.py`
+- `python -m ruff check .`
+- `python -m mypy`
+- `python -m pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=60 -q`
+  (`120 passed`, coverage `71.45%`)
+- `python -m compileall -q src tests scripts`
+- `python scripts/scan_for_raw_keys.py .` (`raw_key_matches: 0`)
+- `git diff --check`
+- English and Chinese demo generation with `--skip-pdf` both completed with
+  `issues: []`; the English output scan found no common formulaic AI phrases.
+
 ## 0.2.16 - 2026-06-20
 
 ### Changed

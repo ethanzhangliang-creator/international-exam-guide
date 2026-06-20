@@ -725,9 +725,9 @@ def parse_assessments_from_pdf(pages: list[tuple[int, str]]) -> list[AssessmentP
                             )
                         ],
                         code=unit_code,
-                        duration=extract_first(r"\b\d+\s*(?:hour|hours|minutes)(?:\s+and\s+\d+\s*minutes)?\b", context),
+                        duration=extract_first(r"\b\d+\s*(?:hours?|minutes)(?:\s+(?:and\s+)?\d+\s*minutes)?\b", context),
                         marks=extract_first(r"\b\d+\s*marks?\b", context),
-                        weighting=extract_first(r"\b\d+(?:\.\d+)?%\b", context),
+                        weighting=extract_first(r"\b\d+(?:\.\d+)?%", context),
                         route_tags=route_tags_from_context(context),
                     )
                 )
@@ -750,9 +750,9 @@ def parse_assessments_from_pdf(pages: list[tuple[int, str]]) -> list[AssessmentP
                         )
                     ],
                     code=extract_component_code(" ".join(context)),
-                    duration=extract_first(r"\b\d+\s*(?:hour|hours|minutes)(?:\s+and\s+\d+\s*minutes)?\b", context),
+                    duration=extract_first(r"\b\d+\s*(?:hours?|minutes)(?:\s+(?:and\s+)?\d+\s*minutes)?\b", context),
                     marks=extract_first(r"\b\d+\s*marks?\b", context),
-                    weighting=extract_first(r"\b\d+(?:\.\d+)?%\b", context),
+                    weighting=extract_first(r"\b\d+(?:\.\d+)?%", context),
                     route_tags=route_tags_from_context(context),
                 )
                 papers.append(paper)
@@ -865,7 +865,7 @@ def is_assessment_detail(line: str) -> bool:
     lower = line.lower()
     return bool(
         re.search(
-            r"\b(hour|minute|marks?|%|externally assessed|written|multiple-choice|structured|practical|calculator|non-calculator|coursework|assessment|questions?)\b",
+            r"\b(hour|minute|marks?|externally assessed|written|multiple-choice|structured|practical|calculator|non-calculator|coursework|assessment|questions?)\b|\d+(?:\.\d+)?%",
             lower,
         )
     )

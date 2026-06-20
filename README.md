@@ -251,6 +251,10 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   and practice cards, plus validation warnings for remaining formulaic AI-style
   wording. The homepage and README now credit the anti-AI-language and
   nature-figure inspirations as design references, not runtime dependencies.
+- **v0.2.18:** completes the fourth-round audit hardening: infographic rendering
+  is split out of the main HTML renderer, practice generation reuses the shared
+  subject matcher, assessment duration/weighting parsing is fixed, direct
+  practice/parser tests are added, and CI now enforces 70% coverage.
 
 ## Developer Quick Start
 
@@ -275,7 +279,7 @@ python -m intl_exam_guide generate --query chemistry --level igcse --language en
 Checks:
 
 ```bash
-python -m pytest --cov --cov-report=term-missing --cov-fail-under=60 -q
+python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py .

@@ -1,11 +1,9 @@
 from __future__ import annotations
 
-import re
-
 from intl_exam_guide.models import PracticeItem, Topic
 from intl_exam_guide.planning.anti_ai_language import polish_ai_language, polish_texts
 from intl_exam_guide.planning.localization import zh_point_label
-from intl_exam_guide.planning.subject_profiles import resolve_subject_profile
+from intl_exam_guide.planning.subject_profiles import has_terms, resolve_subject_profile
 
 
 def build_practice_item(
@@ -262,7 +260,7 @@ def concrete_example_zh(
                 ["氯化钠形成巨型离子晶格。", "带相反电荷的离子之间有很强的静电吸引。", "克服这些吸引力需要大量能量。", "因此氯化钠具有很高的熔点。"],
                 ["要说离子，而不是分子。", "结构必须和性质相连。", "要解释为什么需要能量。"],
             )
-        if has_any_word_or_phrase(text, ["molar", "concentration"]):
+        if has_terms(text, ["molar", "concentration"]):
             return (
                 "某溶液在 0.25 dm3 体积中含有 0.50 mol 溶质。计算浓度，单位用 mol/dm3。",
                 ["使用浓度 = 物质的量 / 体积。", "代入数值。", "写出单位。"],
@@ -387,7 +385,7 @@ def accounting_example(
     focus: str,
     number: int,
 ) -> tuple[str, list[str], list[str], list[str]]:
-    if has_any_word_or_phrase(text, ["source document", "source documents", "prime entry", "ledger", "double entry", "recording of transactions"]):
+    if has_terms(text, ["source document", "source documents", "prime entry", "ledger", "double entry", "recording of transactions"]):
         if number % 2:
             return (
                 "A business receives a purchase invoice for goods bought on credit. State one source document, name the book of prime entry, and explain why the transaction is later posted to ledger accounts.",
@@ -401,7 +399,7 @@ def accounting_example(
             ["The sales invoice is the source document.", "The sale is first recorded in the sales journal.", "The amount is then posted to the receivables ledger and general ledger as part of the double entry system.", "So the original business event is supported by a document and recorded systematically."],
             ["The answer starts with a source document.", "Credit sale is not treated as immediate cash.", "Ledger posting follows the book of prime entry."],
         )
-    if has_any_word_or_phrase(text, ["trial balance", "control account", "bank reconciliation", "suspense account", "correction of errors", "verification"]):
+    if has_terms(text, ["trial balance", "control account", "bank reconciliation", "suspense account", "correction of errors", "verification"]):
         if number % 2:
             return (
                 "A cash book shows a different balance from the bank statement. Explain two reasons why the balances may differ and name the statement used to compare them.",
@@ -415,7 +413,7 @@ def accounting_example(
             ["A partial omission can cause the trial balance not to agree because only one side of the double entry is recorded.", "An error of principle may not be revealed if equal debit and credit amounts were still posted.", "Therefore the trial balance checks arithmetic equality, not every accounting error.", "It is a verification tool with limitations."],
             ["Mentions double entry equality.", "Includes one revealed and one unrevealed error.", "Explains the limitation, not just the name."],
         )
-    if has_any_word_or_phrase(text, ["depreciation", "non-current asset", "irrecoverable", "receivables", "payables", "accrual", "prudence", "going concern", "accounting concepts"]):
+    if has_terms(text, ["depreciation", "non-current asset", "irrecoverable", "receivables", "payables", "accrual", "prudence", "going concern", "accounting concepts"]):
         if number % 2:
             return (
                 "A machine costing $5,000 is depreciated by 20% per year using the straight-line method. Calculate the annual depreciation and explain why depreciation is recorded.",
@@ -429,7 +427,7 @@ def accounting_example(
             ["The irrecoverable debt is removed from trade receivables.", "It is recorded as an expense in the income statement.", "Expenses increase by $300, so profit decreases by $300.", "This applies prudence by not overstating receivables."],
             ["Receivables and expense are both mentioned.", "Profit effect direction is correct.", "The answer links to an accounting concept."],
         )
-    if has_any_word_or_phrase(text, ["financial statements", "income statement", "statement of financial position", "partnership", "sole trader", "limited company", "manufacturing account", "non-profit", "incomplete records"]):
+    if has_terms(text, ["financial statements", "income statement", "statement of financial position", "partnership", "sole trader", "limited company", "manufacturing account", "non-profit", "incomplete records"]):
         if number % 2:
             return (
                 "A sole trader has sales of $18,000, cost of sales of $11,000 and expenses of $3,200. Calculate gross profit and profit for the year.",
@@ -443,7 +441,7 @@ def accounting_example(
             ["The business is a partnership.", "Partner salary and interest on capital are recorded in the appropriation account.", "They show how profit is shared between partners after the income statement profit is calculated.", "They are not ordinary business expenses in the same way as rent or wages."],
             ["Names the appropriation account.", "Separates profit sharing from normal expenses.", "Uses partnership context."],
         )
-    if has_any_word_or_phrase(text, ["ratio", "profitability", "liquidity", "trade receivable days", "trade payable days", "appraising business performance"]):
+    if has_terms(text, ["ratio", "profitability", "liquidity", "trade receivable days", "trade payable days", "appraising business performance"]):
         if number % 2:
             return (
                 "A business has current assets of $12,000 and current liabilities of $8,000. Calculate the current ratio and comment briefly on liquidity.",
@@ -469,21 +467,21 @@ def accounting_example_zh(
     visible_focus: str,
     number: int,
 ) -> tuple[str, list[str], list[str], list[str]]:
-    if has_any_word_or_phrase(text, ["source document", "prime entry", "ledger", "double entry", "recording"]):
+    if has_terms(text, ["source document", "prime entry", "ledger", "double entry", "recording"]):
         return (
             "一家企业赊购商品并收到购货发票。说明这张原始凭证如何进入会计记录。",
             ["先指出原始凭证。", "再指出首次记录的账簿。", "最后说明如何进入分类账。"],
             ["购货发票是原始凭证。", "赊购交易先记录在购货日记账。", "之后再过账到相关分类账账户。", "这样交易就能从凭证追踪到初始记录和分类账。"],
             ["要有原始凭证。", "要区分初始记录账簿和分类账。", "不能把赊购当作现金交易。"],
         )
-    if has_any_word_or_phrase(text, ["trial balance", "bank reconciliation", "control account", "verification", "error"]):
+    if has_terms(text, ["trial balance", "bank reconciliation", "control account", "verification", "error"]):
         return (
             "现金簿余额和银行对账单余额不同。说明两个可能原因，并说出用于核对的报表。",
             ["找出时间差或错误。", "说出银行调节表。", "区分现金簿和银行对账单。"],
             ["可能原因之一是未兑现支票。", "另一个可能原因是在途存款。", "企业会编制银行调节表来解释差异。", "这可以用外部银行资料核对现金簿。"],
             ["原因要具体。", "要说出银行调节。", "不能默认某一方一定错。"],
         )
-    if has_any_word_or_phrase(text, ["financial statements", "income statement", "profit", "ratio", "liquidity"]):
+    if has_terms(text, ["financial statements", "income statement", "profit", "ratio", "liquidity"]):
         return (
             "某企业销售收入为 $18,000，销售成本为 $11,000，费用为 $3,200。计算毛利和本年利润。",
             ["先算毛利。", "再扣除费用。", "保留货币单位。"],
@@ -497,15 +495,6 @@ def accounting_example_zh(
         ["使用会计记录或报表。", "说明影响，而不是只背词。", "没有借用其他科目的题型。"],
     )
 
-def has_any_word_or_phrase(text: str, terms: list[str]) -> bool:
-    tokens = set(re.findall(r"[a-z0-9]+", text))
-    for term in terms:
-        if " " in term or "-" in term:
-            if term in text:
-                return True
-        elif term in tokens:
-            return True
-    return False
 
 def chemistry_example(
     text: str,
@@ -526,7 +515,7 @@ def chemistry_example(
             ["Nanoparticles are very small pieces of material.", "For the same amount of material, they have a larger surface area to volume ratio.", "More surface is available for reacting particles to contact.", "So the catalyst can provide more active surface for the reaction."],
             ["Mentions surface area to volume ratio.", "Does not claim the substance becomes a different element.", "Links structure to reaction usefulness."],
         )
-    if "structure and bonding of carbon" in text or has_any_word_or_phrase(text, ["diamond", "graphite", "graphene"]):
+    if "structure and bonding of carbon" in text or has_terms(text, ["diamond", "graphite", "graphene"]):
         if number % 2:
             return (
                 "Graphite can conduct electricity but diamond cannot. Explain this difference using the arrangement of electrons in their structures.",
@@ -582,7 +571,7 @@ def chemistry_example(
             ["Atomic number = 11.", "Mass number = 11 + 12 = 23.", "Protons = electrons, so the atom has no overall charge.", "Answer: atomic number 11, mass number 23, neutral atom."],
             ["Protons, not neutrons, decide atomic number.", "Mass number includes protons and neutrons.", "Neutral means proton count equals electron count."],
         )
-    if has_any_word_or_phrase(text, ["molar", "concentration"]):
+    if has_terms(text, ["molar", "concentration"]):
         if number % 2:
             return (
                 "A 0.20 mol/dm3 solution has a volume of 0.15 dm3. Calculate the amount of solute in moles.",
@@ -596,7 +585,7 @@ def chemistry_example(
             ["Concentration = 0.50 / 0.25.", "0.50 / 0.25 = 2.0.", "The unit is mol/dm3.", "Answer: 2.0 mol/dm3."],
             ["Volume is in dm3.", "Moles are divided by volume, not multiplied.", "The answer includes mol/dm3."],
         )
-    if has_any_word_or_phrase(text, ["mole", "moles", "quantitative", "mass", "conservation"]):
+    if has_terms(text, ["mole", "moles", "quantitative", "mass", "conservation"]):
         if number % 2:
             return (
                 "Calcium carbonate thermally decomposes to make 5.6 g of calcium oxide and 4.4 g of carbon dioxide. Calculate the mass of calcium carbonate that decomposed.",
@@ -610,8 +599,8 @@ def chemistry_example(
             ["In a closed reaction, total mass is conserved.", "Mass of magnesium oxide = 2.4 g + 1.6 g.", "Mass of magnesium oxide = 4.0 g.", "Answer: 4.0 g."],
             ["Only reacting masses are added.", "The answer keeps grams.", "The calculation uses conservation of mass."],
         )
-    if has_any_word_or_phrase(text, ["chromatography", "analysis", "purity", "identification", "ion", "ions", "gas", "gases"]):
-        if has_any_word_or_phrase(text, ["gas", "gases"]) and not has_any_word_or_phrase(text, ["chromatography", "purity"]):
+    if has_terms(text, ["chromatography", "analysis", "purity", "identification", "ion", "ions", "gas", "gases"]):
+        if has_terms(text, ["gas", "gases"]) and not has_terms(text, ["chromatography", "purity"]):
             if number % 2:
                 return (
                     "A gas turns limewater milky. Identify the gas and state the positive test result.",

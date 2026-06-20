@@ -17,6 +17,7 @@ def test_svg_and_styles_are_split_out_of_html_renderer():
 
     assert (rendering_dir / "svg_templates.py").exists()
     assert (rendering_dir / "styles.py").exists()
+    assert (rendering_dir / "infographics.py").exists()
 
 
 def test_guide_plan_responsibilities_stay_split_out():
@@ -30,3 +31,13 @@ def test_guide_plan_responsibilities_stay_split_out():
     assert (planning_dir / "practice_generator.py").exists()
     assert (planning_dir / "explanation_styles.py").exists()
     assert (planning_dir / "localization.py").exists()
+
+
+def test_practice_generator_stays_below_monolith_limit():
+    practice_generator = (
+        REPO_ROOT / "src" / "intl_exam_guide" / "planning" / "practice_generator.py"
+    )
+
+    line_count = len(practice_generator.read_text(encoding="utf-8").splitlines())
+
+    assert line_count <= 1000

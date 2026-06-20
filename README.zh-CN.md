@@ -189,6 +189,7 @@ README 只保留会影响 Skill 实际生成流程的变化；完整历史统一
 - **v0.2.15：** 完成第三轮审计收尾清理：公开仓库移除本地生图 router 脚本，发布流程改为导入外部生成并复核过的信息图资产，并补上 guide-plan、provider PDF 选择、PDF 导出错误和按 topic 切换故事化讲解的直接回归测试。
 - **v0.2.16：** 修正生图流程说明：外部生图不等于让用户手动搬图。如果用户有可调用的生图 Skill、API、脚本或生成好的图片目录，Agent 应该在基础手册完成后自动调用或导入，并把复核后的图片挂接进手册。
 - **v0.2.17：** 生成器加入反模板腔语言门：讲解和例题会清理安全可删的 AI 腔过渡语，验证器会对残留模板化表达给出 warning；主页和 README 也补充 anti-AI language 与 nature-figure 的设计参考说明。
+- **v0.2.18：** 完成第四轮审计加固：信息图渲染从主 HTML 渲染器拆出，例题生成复用统一学科匹配逻辑，修复考试时长和百分比权重解析，补充例题与公共解析器单元测试，并把 CI 覆盖率门槛提升到 70%。
 
 ## 开发者快速开始
 
@@ -213,7 +214,7 @@ python -m intl_exam_guide generate --query chemistry --level igcse --language zh
 常用检查：
 
 ```bash
-python -m pytest --cov --cov-report=term-missing --cov-fail-under=60 -q
+python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py .

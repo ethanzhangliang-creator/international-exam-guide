@@ -10,6 +10,9 @@ from intl_exam_guide.providers.cambridge import select_syllabus_link
 from intl_exam_guide.providers.common import (
     TextNode,
     find_pdf_link,
+    parse_assessment_objectives_from_pdf,
+    parse_assessments_from_pdf,
+    parse_command_words_from_pdf,
     parse_generic_topics_from_pdf,
     parse_pearson_subsection_line,
     parse_pearson_topic_tables,
@@ -509,6 +512,64 @@ def test_find_pdf_link_scores_include_terms_and_excludes_noise():
         include_terms=("specification", "download"),
         exclude_terms=("past paper", "past-paper", "welcome"),
     ) == "https://example.test/specification.pdf"
+
+
+def test_common_pdf_parser_extracts_assessments_command_words_and_objectives():
+    pages = [
+        (
+            31,
+            """
+            Details of assessment
+            Paper 1: Introduction to Bookkeeping and Accounting
+            1 hour 30 minutes
+            80 marks
+            50%
+            Written examination with structured questions.
+            Paper 2: Financial Statements
+            1 hour 45 minutes
+            90 marks
+            50%
+            Written examination with questions based on accounting statements.
+            """,
+        ),
+        (
+            42,
+            """
+            Command words
+            Calculate - Work out from given facts, figures or information.
+            Explain - Set out purposes or reasons.
+            Analyse - Examine in detail to show meaning.
+            3 Appendix
+            """,
+        ),
+        (
+            44,
+            """
+            Assessment objectives
+            AO1 Knowledge and understanding of accounting terms
+            AO2 Application and analysis of accounting information
+            AO3 Evaluation and judgement
+            """,
+        ),
+    ]
+
+    assessments = parse_assessments_from_pdf(pages)
+    command_words = parse_command_words_from_pdf(pages)
+    objectives = parse_assessment_objectives_from_pdf(pages)
+
+    assert [paper.title for paper in assessments[:2]] == [
+        "Paper 1: Introduction to Bookkeeping and Accounting",
+        "Paper 2: Financial Statements",
+    ]
+    assert assessments[0].duration == "1 hour 30 minutes"
+    assert assessments[0].marks == "80 marks"
+    assert assessments[0].weighting == "50%"
+    assert command_words[:3] == ["Calculate", "Explain", "Analyse"]
+    assert objectives == [
+        "AO1 Knowledge and understanding of accounting terms",
+        "AO2 Application and analysis of accounting information",
+        "AO3 Evaluation and judgement",
+    ]
 
 
 def test_cambridge_parse_qualification_uses_exam_year_to_choose_syllabus(monkeypatch):

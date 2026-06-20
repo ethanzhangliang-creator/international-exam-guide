@@ -72,6 +72,10 @@ v0.2.17 added the anti-template language gate. Future wording/tone changes that
 affect generated handbook text or validation warnings are functional changes and
 should bump the patch version.
 
+v0.2.18 raised the CI coverage gate to 70% and split infographic rendering out
+of `rendering/html.py`. Keep parser, renderer, and practice-generator guard
+tests updated whenever those areas change.
+
 ## 4. Version And Release Rules
 
 Use GitHub Releases, not tags alone.
@@ -79,7 +83,7 @@ Use GitHub Releases, not tags alone.
 Standard flow for a functional release:
 
 ```powershell
-python -m pytest --cov --cov-report=term-missing --cov-fail-under=60 -q
+python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
 python scripts/scan_for_raw_keys.py .
@@ -274,7 +278,7 @@ When moving the repository:
 2. copy or move the entire repository directory;
 3. run `git status --short` in the new location;
 4. run a smoke test or at least
-   `python -m pytest --cov --cov-report=term-missing --cov-fail-under=60 -q`;
+   `python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q`;
 5. synchronize the installed Skill copy if `skill/` changed;
 6. remove old duplicate clones and ignored outputs after confirming the new
    location works.

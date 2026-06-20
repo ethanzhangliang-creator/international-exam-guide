@@ -24,7 +24,7 @@ jobs:
       - name: Type check
         run: python -m mypy
       - name: Test
-        run: python -m pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=60
+        run: python -m pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=70
       - name: Upload coverage
         uses: codecov/codecov-action@v4
         with:

@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.2.18 - 2026-06-20
+
+### Changed
+
+- Split infographic HTML rendering out of `rendering/html.py` into
+  `rendering/infographics.py`, keeping the generated handbook behavior the
+  same while reducing the main renderer's responsibility.
+- Reused the shared `subject_profiles.has_terms` matcher in
+  `practice_generator.py` instead of carrying a duplicate local token/phrase
+  matcher.
+- Raised the CI coverage gate from 60% to 70% after the project consistently
+  exceeded that level.
+
+### Fixed
+
+- Fixed common PDF assessment parsing so durations such as
+  `1 hour 30 minutes` and standalone weighting lines such as `50%` are captured
+  correctly.
+- Added architecture guards for `practice_generator.py` and the new infographic
+  renderer split.
+
+### Tests
+
+- Added direct `practice_generator` unit tests for styled practice cards,
+  Accounting/Chemistry routing, and Chinese student-facing example text.
+- Added common provider parser tests for assessment papers, command words, and
+  assessment objectives.
+
+### Verified
+
+- `python -m ruff check .`
+- `python -m mypy`
+- `python -m pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=70 -q`
+  (`125 passed`, coverage `73.30%`)
+- `python -m compileall -q src tests scripts`
+- `python scripts/scan_for_raw_keys.py .` (`raw_key_matches: 0`)
+- `git diff --check`
+- `python -m intl_exam_guide demo --out outputs/_fourth-review-check --language en --explanation-style friendly --image-provider deterministic-svg --skip-pdf`
+  completed with `issues: []`.
+
 ## 0.2.17 - 2026-06-20
 
 ### Changed

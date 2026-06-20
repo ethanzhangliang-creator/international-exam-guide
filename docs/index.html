@@ -767,7 +767,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.17</div>
+          <div class="kicker">三大考试局支持 · v0.2.18</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1057,36 +1057,36 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.17：讲解文字加入反模板腔检查。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；本次更新把讲解和例题生成后的语言复核接入生成器，安全清理常见 AI 腔过渡语，并把残留模板化表达写入验证 warning。</p>
+          <h2>v0.2.18：第四轮审计后的结构与测试加固。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次更新拆出信息图渲染模块，修复考试时长和权重解析，补充例题与公共解析器单元测试，并把 CI 覆盖率门槛提升到 70%。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
             <div class="num">01 · 考试局</div>
             <div>
-              <h3>生成后清理</h3>
-              <p>Topic 讲解、步骤和例题会先经过轻量文本清理，再写入 guide-plan。</p>
+              <h3>结构拆分</h3>
+              <p>复杂信息图渲染从主 HTML 渲染器拆出，后续调整配图展示时更清晰。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">02 · 语言</div>
             <div>
-              <h3>验证中提示</h3>
-              <p>残留模板腔不会直接阻断手册，但会在 validation.json 里作为 warning 暴露出来。</p>
+              <h3>解析修复</h3>
+              <p>公共 PDF 解析器能正确读取 1 hour 30 minutes 和 50% 这类考试信息。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">03 · 图文</div>
             <div>
-              <h3>保留讲解风格</h3>
-              <p>严谨、轻松、生活化、侦探推理和闯关式讲解仍然可选，只是减少套话。</p>
+              <h3>例题测试</h3>
+              <p>新增直接单元测试，覆盖会计、化学和中文学生版例题生成路径。</p>
             </div>
           </article>
           <article class="flow-item">
             <div class="num">04 · 质量</div>
             <div>
-              <h3>参考来源清楚</h3>
-              <p>主页和 README 明确说明 anti-AI language 与 nature-figure 是设计参考，不是项目运行依赖。</p>
+              <h3>质量门槛</h3>
+              <p>新增架构守卫和 70% 覆盖率门槛，防止渲染器和例题生成器继续膨胀。</p>
             </div>
           </article>
         </div>

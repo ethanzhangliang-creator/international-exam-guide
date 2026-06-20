@@ -260,6 +260,27 @@ def test_command_words_and_difficulty_rotate_by_level_and_language():
     assert [choose_difficulty(i, "zh-CN") for i in range(3)] == ["基础", "标准", "挑战"]
 
 
+def test_major_example_branches_have_distinct_even_and_odd_variants():
+    cases = [
+        ("Mathematics", Topic(title="N1 - Ratio", points=["Ratio and percentage calculations."]), "ratio", ["350 ml", "1.5 km"]),
+        ("Mathematics", Topic(title="A3 - Functions", points=["Functions and graphs."]), "function graph", ["x = -3 or x = 3", "y = 11"]),
+        ("Mathematics", Topic(title="A4 - Sequences", points=["Sequences and nth term."]), "sequence nth term", ["4n + 1", "31 is in the sequence"]),
+        ("Mathematics", Topic(title="G1 - Angles", points=["Angles around a point."]), "angles", ["112 degrees", "135 degrees"]),
+        ("Mathematics", Topic(title="S1 - Probability", points=["Probability outcomes."]), "probability", ["blue counters", "even outcomes"]),
+        ("Chemistry", Topic(title="Organic", points=["Hydrocarbon polymer crude."]), "hydrocarbon polymer crude", ["co2 and h2o", "poly(ethene)"]),
+        ("Accounting", Topic(title="Ratios", points=["Ratio profitability liquidity."]), "ratio profitability liquidity", ["gross profit margin", "current ratio"]),
+        ("Economics", Topic(title="Market", points=["Demand supply price equilibrium."]), "demand supply price equilibrium", ["demand shifts to the right", "supply curve shifts left"]),
+    ]
+
+    for subject, topic, focus, expected_terms in cases:
+        even_text = combined_text(concrete_example(topic, focus, 0, subject))
+        odd_text = combined_text(concrete_example(topic, focus, 1, subject))
+
+        assert even_text != odd_text
+        assert expected_terms[0].lower() in even_text
+        assert expected_terms[1].lower() in odd_text
+
+
 def test_chinese_practice_example_keeps_student_facing_text_chinese():
     question, frame, steps, checkpoints = concrete_example_zh(
         Topic(

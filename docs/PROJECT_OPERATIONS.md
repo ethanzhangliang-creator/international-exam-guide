@@ -1,6 +1,6 @@
 # Project Operations Guide / 项目维护说明
 
-Last updated: 2026-06-20
+Last updated: 2026-06-21
 
 This file is the operational memory for future sessions and agents. Update it
 whenever release flow, validation rules, animation assets, repository hygiene, or
@@ -85,6 +85,18 @@ generator coverage. Release evidence must come from fresh outputs produced by
 the current code; ignored `outputs/` folders and old `validation.json` files are
 not valid proof. Keep `rendering/icons.py` tracked whenever renderer icon usage
 changes.
+
+The seventh-round audit follow-up raised coverage evidence past 80% and added a
+fresh offline demo evidence requirement. When preparing the next release, record
+the fresh demo/generate command plus the `validation.json` summary in
+`CHANGELOG.md` or the GitHub Release notes, but keep the generated `outputs/`
+folder ignored and untracked.
+
+v0.2.21 closed the eighth-round testing-coverage gap by adding direct renderer
+contract tests for cover identity, stylesheet/print layout, visual manifests,
+generated raster reuse, SVG fallback assets, modular handbook packaging, and the
+Playwright Chrome-to-Edge PDF fallback route. Future rendering changes should
+update these contract tests instead of relying only on end-to-end demo coverage.
 
 ## 4. Version And Release Rules
 

@@ -263,6 +263,10 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   blocking stale ignored `outputs/` from being used as release evidence,
   tightening the practice-generator architecture guard, and expanding direct
   tests for multi-subject practice generation plus PDF export branches.
+- **v0.2.21:** closes the eighth-round testing-coverage gap: direct renderer
+  contract tests now cover handbook cover identity, stylesheet/print layout,
+  visual manifest handling, generated raster reuse, SVG fallback assets, modular
+  package output, and the Playwright Chrome-to-Edge PDF fallback path.
 
 ## Developer Quick Start
 

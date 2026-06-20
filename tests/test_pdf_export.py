@@ -1,6 +1,7 @@
 from pathlib import Path
 import builtins
 import sys
+import types
 
 from intl_exam_guide.rendering import pdf
 
@@ -68,6 +69,171 @@ def test_export_pdf_with_playwright_reports_missing_package(monkeypatch, tmp_pat
         assert "Playwright is not installed" in str(exc)
     else:
         raise AssertionError("Expected PdfExportError")
+
+
+def test_export_pdf_with_playwright_success_closes_browser(monkeypatch, tmp_path):
+    html_path = tmp_path / "guide.html"
+    pdf_path = tmp_path / "guide.pdf"
+    html_path.write_text("<html><body>guide</body></html>", encoding="utf-8")
+    events: list[tuple[str, object]] = []
+
+    class FakePlaywrightError(Exception):
+        pass
+
+    class FakePage:
+        def goto(self, uri: str, wait_until: str) -> None:
+            events.append(("goto", (uri, wait_until)))
+
+        def pdf(self, **kwargs) -> None:
+            events.append(("pdf", kwargs))
+            Path(kwargs["path"]).write_bytes(b"%PDF-1.4\n")
+
+    class FakeBrowser:
+        def new_page(self) -> FakePage:
+            events.append(("new_page", None))
+            return FakePage()
+
+        def close(self) -> None:
+            events.append(("close", None))
+
+    class FakeChromium:
+        def launch(self, **kwargs) -> FakeBrowser:
+            events.append(("launch", kwargs))
+            return FakeBrowser()
+
+    class FakePlaywright:
+        chromium = FakeChromium()
+
+    class FakeSyncPlaywright:
+        def __enter__(self) -> FakePlaywright:
+            events.append(("enter", None))
+            return FakePlaywright()
+
+        def __exit__(self, *_args) -> None:
+            events.append(("exit", None))
+
+    sync_api = types.ModuleType("playwright.sync_api")
+    sync_api.Error = FakePlaywrightError
+    sync_api.sync_playwright = lambda: FakeSyncPlaywright()
+    package = types.ModuleType("playwright")
+    package.sync_api = sync_api
+    monkeypatch.setitem(sys.modules, "playwright", package)
+    monkeypatch.setitem(sys.modules, "playwright.sync_api", sync_api)
+
+    assert pdf.export_pdf_with_playwright(html_path, pdf_path) == pdf_path
+
+    assert pdf_path.read_bytes().startswith(b"%PDF")
+    assert ("launch", {"headless": True, "channel": "chrome"}) in events
+    assert ("goto", (html_path.resolve().as_uri(), "load")) in events
+    assert ("close", None) in events
+    pdf_events = [event for event in events if event[0] == "pdf"]
+    assert pdf_events
+    assert pdf_events[0][1]["print_background"] is True
+    assert pdf_events[0][1]["prefer_css_page_size"] is True
+
+
+def test_export_pdf_with_playwright_reports_launch_failures(monkeypatch, tmp_path):
+    html_path = tmp_path / "guide.html"
+    pdf_path = tmp_path / "guide.pdf"
+    html_path.write_text("<html><body>guide</body></html>", encoding="utf-8")
+    launches: list[dict[str, object]] = []
+
+    class FakePlaywrightError(Exception):
+        pass
+
+    class FakeChromium:
+        def launch(self, **kwargs):
+            launches.append(kwargs)
+            channel = kwargs.get("channel", "bundled chromium")
+            raise FakePlaywrightError(f"{channel} unavailable")
+
+    class FakePlaywright:
+        chromium = FakeChromium()
+
+    class FakeSyncPlaywright:
+        def __enter__(self) -> FakePlaywright:
+            return FakePlaywright()
+
+        def __exit__(self, *_args) -> None:
+            return None
+
+    sync_api = types.ModuleType("playwright.sync_api")
+    sync_api.Error = FakePlaywrightError
+    sync_api.sync_playwright = lambda: FakeSyncPlaywright()
+    package = types.ModuleType("playwright")
+    package.sync_api = sync_api
+    monkeypatch.setitem(sys.modules, "playwright", package)
+    monkeypatch.setitem(sys.modules, "playwright.sync_api", sync_api)
+
+    try:
+        pdf.export_pdf_with_playwright(html_path, pdf_path)
+    except pdf.PdfExportError as exc:
+        message = str(exc)
+    else:
+        raise AssertionError("Expected PdfExportError")
+
+    assert len(launches) == 3
+    assert "chrome:" in message
+    assert "msedge:" in message
+    assert "bundled chromium:" in message
+
+
+def test_export_pdf_with_playwright_falls_back_from_chrome_to_edge(monkeypatch, tmp_path):
+    html_path = tmp_path / "guide.html"
+    pdf_path = tmp_path / "guide.pdf"
+    html_path.write_text("<html><body>guide</body></html>", encoding="utf-8")
+    launches: list[dict[str, object]] = []
+
+    class FakePlaywrightError(Exception):
+        pass
+
+    class FakePage:
+        def goto(self, uri: str, wait_until: str) -> None:
+            assert uri == html_path.resolve().as_uri()
+            assert wait_until == "load"
+
+        def pdf(self, **kwargs) -> None:
+            Path(kwargs["path"]).write_bytes(b"%PDF-1.4\n")
+
+    class FakeBrowser:
+        def new_page(self) -> FakePage:
+            return FakePage()
+
+        def close(self) -> None:
+            return None
+
+    class FakeChromium:
+        def launch(self, **kwargs):
+            launches.append(kwargs)
+            if kwargs.get("channel") == "chrome":
+                raise FakePlaywrightError("chrome unavailable")
+            return FakeBrowser()
+
+    class FakePlaywright:
+        chromium = FakeChromium()
+
+    class FakeSyncPlaywright:
+        def __enter__(self) -> FakePlaywright:
+            return FakePlaywright()
+
+        def __exit__(self, *_args) -> None:
+            return None
+
+    sync_api = types.ModuleType("playwright.sync_api")
+    sync_api.Error = FakePlaywrightError
+    sync_api.sync_playwright = lambda: FakeSyncPlaywright()
+    package = types.ModuleType("playwright")
+    package.sync_api = sync_api
+    monkeypatch.setitem(sys.modules, "playwright", package)
+    monkeypatch.setitem(sys.modules, "playwright.sync_api", sync_api)
+
+    assert pdf.export_pdf_with_playwright(html_path, pdf_path) == pdf_path
+
+    assert pdf_path.read_bytes().startswith(b"%PDF")
+    assert launches == [
+        {"headless": True, "channel": "chrome"},
+        {"headless": True, "channel": "msedge"},
+    ]
 
 
 def test_find_browser_uses_cross_platform_path_names(monkeypatch):

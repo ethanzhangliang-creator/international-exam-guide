@@ -1,5 +1,6 @@
 import pytest
 
+from intl_exam_guide.models import Topic
 from intl_exam_guide.providers import get_provider
 from intl_exam_guide.providers.base import Link
 from intl_exam_guide.providers import cambridge as cambridge_module
@@ -9,13 +10,31 @@ from intl_exam_guide.providers.cambridge import parse_exam_year
 from intl_exam_guide.providers.cambridge import select_syllabus_link
 from intl_exam_guide.providers.common import (
     TextNode,
+    chunk_informative_lines,
+    code_from_text,
+    dedupe_links,
+    dedupe_topics,
     find_pdf_link,
+    first_assessment_from_nodes,
+    first_teaching_from_nodes,
+    format_candidate_choices,
+    infer_qualification_type,
+    is_pdf_url,
+    is_url,
+    normalize_level,
+    parse_content_overview_topics,
     parse_assessment_objectives_from_pdf,
     parse_assessments_from_pdf,
     parse_command_words_from_pdf,
     parse_generic_topics_from_pdf,
     parse_pearson_subsection_line,
     parse_pearson_topic_tables,
+    parse_page,
+    qualification_family,
+    safe_url,
+    subject_slug_from_query,
+    subject_terms_from_query,
+    title_from_url,
 )
 from intl_exam_guide.providers.pearson import (
     PearsonEdexcelProvider,
@@ -38,6 +57,134 @@ def test_url_first_providers_are_registered():
     assert get_provider("edexcel").name == "pearson"
     assert get_provider("cambridge").name == "cambridge"
     assert get_provider("caie").name == "cambridge"
+
+
+def test_common_parser_helpers_normalize_urls_titles_queries_and_candidates():
+    assert safe_url("https://example.test/spec folder/数学 syllabus.pdf?q=A level") == (
+        "https://example.test/spec%20folder/%E6%95%B0%E5%AD%A6%20syllabus.pdf?q=A%20level"
+    )
+    assert is_url("https://example.test/spec.pdf")
+    assert not is_url("example.test/spec.pdf")
+    assert is_pdf_url("https://example.test/download?id=1&file=spec.PDF") is False
+    assert is_pdf_url("https://example.test/spec.PDF?download=1")
+    assert code_from_text("Cambridge IGCSE Accounting (0452)") == "0452"
+    assert code_from_text("Syllabus 9706 for AS Level") == "9706"
+    assert title_from_url("https://example.test/igcse-accounting-specification.pdf") == (
+        "Igcse Accounting"
+    )
+    assert normalize_level("International_GCSE") == "international-gcse"
+    assert subject_terms_from_query(
+        "CAIE International GCSE Accounting 0452 2027 syllabus guide"
+    ) == ["accounting"]
+    assert subject_slug_from_query("Edexcel International GCSE Mathematics A") == "mathematics"
+
+    candidates = [
+        Link(text="Accounting - 0452", href="https://example.test/0452", qualification_type="igcse"),
+        Link(text="Accounting", href="https://example.test/no-code"),
+    ]
+    message = format_candidate_choices("CAIE", "Accounting", candidates)
+
+    assert "cannot choose safely" in message
+    assert "0452, igcse" in message
+    assert "no-code, unknown-level" in message
+
+
+def test_common_parser_html_and_metadata_helpers(monkeypatch):
+    html = """
+    <title>Sample Qualification</title>
+    <h1>Accounting</h1>
+    <a href="/spec.pdf">Download specification</a>
+    <a href="/empty.pdf"></a>
+    """
+
+    from intl_exam_guide.providers import common as common_module
+
+    monkeypatch.setattr(common_module, "fetch_bytes", lambda _url, timeout=45: html.encode())
+    parser = parse_page("https://example.test/course/")
+
+    assert parser.title == "Sample Qualification"
+    assert parser.nodes[0] == TextNode(tag="title", text="Sample Qualification")
+    assert parser.links[0].href == "https://example.test/spec.pdf"
+    assert parser.links[0].text == "Download specification"
+    assert parser.links[1].text == "empty.pdf"
+    assert first_teaching_from_nodes(
+        [TextNode("p", "First teaching:"), TextNode("p", "September 2026")]
+    ) == "September 2026"
+    assert first_assessment_from_nodes(
+        [TextNode("p", "First external assessment: June 2028")]
+    ) == "June 2028"
+    assert first_assessment_from_nodes([TextNode("p", "First assessment"), TextNode("p", "")]) is None
+
+
+def test_common_link_level_and_family_helpers_cover_fallbacks():
+    links = [
+        Link(text="A", href="https://example.test/a"),
+        Link(text="A duplicate", href="https://example.test/A"),
+        Link(text="B", href="https://example.test/b"),
+    ]
+
+    assert [link.text for link in dedupe_links(links)] == ["A", "B"]
+    assert infer_qualification_type("International Advanced Level Biology") == (
+        "international_as_a_level"
+    )
+    assert infer_qualification_type("AS & A Level Chemistry") == "international_as_a_level"
+    assert infer_qualification_type("International GCSE Accounting") == "international_gcse"
+    assert infer_qualification_type("Biology", level="igcse") == "international_gcse"
+    assert infer_qualification_type("Unknown course") == "unknown"
+    assert qualification_family("pearson", "international_gcse") == (
+        "Pearson Edexcel International GCSE"
+    )
+    assert qualification_family("cambridge", "international_as_a_level") == (
+        "Cambridge International AS & A Level"
+    )
+    assert qualification_family("oxfordaqa", "international_gcse") == "oxfordaqa"
+
+
+def test_common_pdf_overview_chunking_and_dedupe_helpers():
+    overview = parse_content_overview_topics(
+        [
+            (
+                8,
+                """
+                Candidates study the following topics
+                1.1 The purpose of accounting
+                1.2 The accounting equation
+                AO1 Knowledge and understanding
+                """,
+            )
+        ]
+    )
+
+    assert [topic.title for topic in overview] == [
+        "1.1 - The purpose of accounting",
+        "1.2 - The accounting equation",
+    ]
+    assert overview[0].source_snippets[0].page == 8
+
+    chunks = chunk_informative_lines(
+        [
+            (
+                11,
+                "\n".join(
+                    [
+                        "Candidates should understand business documents.",
+                        "Prepare purchase invoices from given data.",
+                        "Record transactions in books of prime entry.",
+                        "Post totals to ledger accounts.",
+                        "Balance the account at the period end.",
+                        "Explain the purpose of a trial balance.",
+                    ]
+                ),
+            )
+        ]
+    )
+
+    assert chunks[0].title.startswith("Content unit 1 - Candidates should understand")
+    assert len(chunks[0].points) == 5
+    assert [topic.title for topic in dedupe_topics([Topic("A"), Topic("A"), Topic("B")])] == [
+        "A",
+        "B",
+    ]
 
 
 def test_generic_pdf_parser_handles_pearson_split_topic_codes():

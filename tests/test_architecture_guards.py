@@ -1,5 +1,8 @@
 from pathlib import Path
+import re
 import subprocess
+
+from intl_exam_guide.rendering.icons import ICON_PATHS, render_icon
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -67,3 +70,17 @@ def test_outputs_are_ignored_and_not_tracked():
 
     assert ignored.returncode == 0
     assert tracked.stdout.strip() == ""
+
+
+def test_rendered_icon_names_are_registered():
+    rendering_dir = REPO_ROOT / "src" / "intl_exam_guide" / "rendering"
+    used_names: set[str] = set()
+    for path in [rendering_dir / "html.py", rendering_dir / "infographics.py"]:
+        used_names.update(re.findall(r'render_icon\("([^"]+)"\)', path.read_text(encoding="utf-8")))
+
+    assert used_names
+    assert used_names <= set(ICON_PATHS)
+
+
+def test_unknown_render_icon_falls_back_to_target_icon():
+    assert render_icon("missing-icon") == render_icon("target")

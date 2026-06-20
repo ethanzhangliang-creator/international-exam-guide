@@ -97,6 +97,11 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
 - [ ] `python -m compileall -q src tests scripts` passes.
 - [ ] Skill smoke validation passes through at least one local demo/generate
   command and `validation.json` review.
+- [ ] Release notes or changelog include fresh end-to-end evidence from the
+  current working copy: command, output directory, `issues` count, topic count,
+  practice-card count, visual-brief count, section-file count, image-file count,
+  and whether HTML/PDF were produced. Do not commit the generated `outputs/`
+  folder used for this evidence.
 - [ ] A raw-key scan across the repository and release outputs reports
   `raw_key_matches=0`:
 

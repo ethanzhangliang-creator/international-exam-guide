@@ -767,7 +767,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.20</div>
+          <div class="kicker">三大考试局支持 · v0.2.21</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1057,36 +1057,36 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.20：第六轮审计后的发布流程与回归测试闭环。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；本次更新防止旧本地 outputs 误导发布验证，共享渲染图标，收紧例题生成器守卫，并补强多学科例题与 PDF 导出分支测试。</p>
+          <h2>v0.2.21：第八轮审计后的测试覆盖闭环。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次更新补齐直接渲染契约测试，覆盖封面身份信息、样式与打印布局、视觉资产 manifest、SVG 兜底和模块化手册打包，并补强 PDF 导出降级路径。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
-            <div class="num">01 · 考试局</div>
+            <div class="num">01 · 封面</div>
             <div>
-              <h3>发布证据</h3>
-              <p>发布检查要求使用当前代码新生成的输出，不再把旧 ignored outputs 当作有效证据。</p>
+              <h3>封面与版式</h3>
+              <p>手册封面只保留考试局、课程、科目、代码、大纲版本和考试年份；样式、响应式和打印规则都有直接测试守住。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">02 · 语言</div>
+            <div class="num">02 · 视觉</div>
             <div>
-              <h3>结构收敛</h3>
-              <p>HTML 与信息图渲染共用同一套图标模块，减少重复定义和漏改风险。</p>
+              <h3>视觉资产</h3>
+              <p>视觉 manifest、外部生成位图复用、SVG 草图和复杂信息图兜底状态都纳入回归测试。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">03 · 图文</div>
+            <div class="num">03 · 打包</div>
             <div>
-              <h3>例题覆盖</h3>
-              <p>数学、化学、会计、经济、生物和中文分支都有更多真实路径回归测试。</p>
+              <h3>手册打包</h3>
+              <p>模块化 sections、images、handbook-package.json 和最终手册结构都有契约测试，避免输出包缺页或漏文件。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">04 · 质量</div>
+            <div class="num">04 · PDF</div>
             <div>
-              <h3>PDF 分支</h3>
-              <p>浏览器导出 PDF 的缺包、超时、失败和成功命令路径都被单元测试覆盖。</p>
+              <h3>PDF 降级</h3>
+              <p>Playwright 的 Chrome 成功、Chrome 失败后降级 Edge、全部失败报错，以及浏览器 CLI 路径都被单元测试覆盖。</p>
             </div>
           </article>
         </div>

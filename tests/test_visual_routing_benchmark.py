@@ -50,6 +50,25 @@ def test_complex_subject_visuals_are_routed_to_infographic_queue():
         assert expected_phrase.lower() in visual_type.lower()
 
 
+def test_additional_complex_visual_routes_cover_all_major_subject_branches():
+    cases = [
+        ("Accounting", "Adjustments", ["depreciation, receivables, payables and prudence"], "adjustment"),
+        ("Accounting", "Financial statements", ["income statement, statement of financial position and ratio analysis"], "financial-statement"),
+        ("Economics", "Sectors", ["primary, secondary and tertiary sectors"], "sectors"),
+        ("Economics", "Banking", ["money, banks, financial markets and interest rates"], "banking"),
+        ("Chemistry", "Rates", ["rate of reaction, equilibrium and reversible reactions"], "reaction-rate"),
+        ("Chemistry", "Organic", ["organic chemistry, hydrocarbons, polymers and crude oil"], "organic"),
+        ("Mathematics", "Matrices", ["vectors, matrices and transformations"], "matrix"),
+        ("Mathematics", "Sampling", ["histograms, cumulative frequency, sampling and population"], "statistics method"),
+    ]
+
+    for subject, title, points, expected_phrase in cases:
+        visual_type, complexity, trigger = route(title, points, subject)
+
+        assert complexity == "infographic", (subject, visual_type, trigger)
+        assert expected_phrase.lower() in visual_type.lower()
+
+
 def test_simple_svg_routes_stay_subject_specific():
     cases = [
         (
@@ -101,6 +120,22 @@ def test_simple_svg_routes_stay_subject_specific():
         assert complexity == "svg-basic", (subject, visual_type)
         assert visual_phrase.lower() in visual_type.lower()
         assert svg_title in svg
+
+
+def test_additional_simple_svg_routes_use_deterministic_diagrams():
+    cases = [
+        ("Chemistry", "States", ["solid liquid particles atoms"], "particle model"),
+        ("Chemistry", "Energy", ["exothermic and endothermic energy profiles"], "energy profile"),
+        ("Mathematics", "Algebra", ["algebra equations functions and sequences"], "function graph"),
+        ("Mathematics", "Probability", ["probability statistics charts and data"], "statistics chart"),
+        ("Generic", "Data skills", ["measurements, tables and graphs"], "data table"),
+    ]
+
+    for subject, title, points, expected_phrase in cases:
+        visual_type, complexity, _ = route(title, points, subject)
+
+        assert complexity == "svg-basic", (subject, visual_type)
+        assert expected_phrase.lower() in visual_type.lower()
 
 
 def test_statistics_is_not_used_as_generic_fallback_for_unrelated_topics():

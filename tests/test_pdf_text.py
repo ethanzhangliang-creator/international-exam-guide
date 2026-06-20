@@ -1,6 +1,7 @@
 from pypdf import PdfWriter
 
 from intl_exam_guide.parsing.pdf_text import PdfTextExtractionError, extract_pdf_pages
+from intl_exam_guide.parsing.pdf_text import extract_pdf_text
 
 
 def test_extract_pdf_pages_reads_blank_pdf(tmp_path):
@@ -11,6 +12,20 @@ def test_extract_pdf_pages_reads_blank_pdf(tmp_path):
         writer.write(handle)
 
     assert extract_pdf_pages(pdf_path) == [(1, "")]
+
+
+def test_extract_pdf_text_adds_page_separators_and_respects_max_pages(tmp_path):
+    pdf_path = tmp_path / "two-pages.pdf"
+    writer = PdfWriter()
+    writer.add_blank_page(width=72, height=72)
+    writer.add_blank_page(width=72, height=72)
+    with pdf_path.open("wb") as handle:
+        writer.write(handle)
+
+    text = extract_pdf_text(pdf_path, max_pages=1)
+
+    assert "--- Page 1 ---" in text
+    assert "--- Page 2 ---" not in text
 
 
 def test_extract_pdf_pages_reports_missing_file(tmp_path):

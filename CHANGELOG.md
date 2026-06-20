@@ -1,5 +1,43 @@
 # Changelog
 
+## 0.2.21 - 2026-06-21
+
+### Tests
+
+- Added Playwright PDF export success and launch-failure tests so both the
+  preferred browser path and fallback error reporting stay covered.
+- Added a Playwright channel fallback test for the Chrome-fails / Edge-succeeds
+  route.
+- Added architecture guards for shared icon registration and unknown icon
+  fallback behavior.
+- Expanded practice-generator regression coverage for even/odd variants across
+  major Mathematics, Chemistry, Accounting, and Economics example branches.
+- Expanded visual-routing tests for additional Accounting, Economics,
+  Chemistry, Mathematics, Physics, and generic SVG/infographic routes.
+- Added common provider parser helper tests for URL normalization, candidate
+  choice messages, qualification type inference, metadata extraction, overview
+  topics, chunk fallback behavior, link deduplication, and topic deduplication.
+- Added a PDF text extraction test for page separators and `max_pages`.
+- Added direct rendering contract tests for the handbook stylesheet, course
+  identity cover, source/setup copy, visual manifest loading, generated raster
+  asset reuse, SVG fallback assets, and modular handbook package output.
+
+### Verified
+
+- Fresh offline demo evidence was regenerated from the current working copy:
+  `python -m intl_exam_guide demo --out ./outputs/_fresh-v021-demo --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf`.
+  The resulting `validation.json` reported `issues: []`, 3 topics, 6 practice
+  cards, 3 visual briefs, 3 image files, 7 section files, and a generated HTML
+  guide. The ignored output folder is validation evidence only and is not
+  committed.
+- `python -m pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=70 -q`
+  (`169 passed`, coverage `81.26%`).
+- `python -m ruff check .`
+- `python -m mypy`
+- `python -m compileall -q src tests scripts`
+- `python scripts/scan_for_raw_keys.py .` (`raw_key_matches: 0`)
+- `git diff --check`
+
 ## 0.2.20 - 2026-06-20
 
 ### Changed

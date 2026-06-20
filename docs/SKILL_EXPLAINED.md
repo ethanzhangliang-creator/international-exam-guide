@@ -6,13 +6,14 @@
 
 ## English
 
-The repository includes a AI Agent skill wrapper in `skill/`. The skill is designed
+The repository includes an AI Agent skill wrapper in `skill/`. The skill is designed
 with progressive disclosure:
 
 - `skill/SKILL.md` stays short and tells an agent when to use the tool.
 - `skill/references/revision_guide_spec.md` stores the handbook output
   contract inherited from the original revision-guide Skill.
-- `skill/references/oxfordaqa.md` stores provider-specific quality gates.
+- `skill/references/oxfordaqa.md` stores AQA-specific provider notes; Edexcel
+  and CAIE use the shared provider workflow and candidate-selection gates.
 - The Python package performs deterministic work: discovery, PDF download,
   parsing, guide planning, visual-brief planning, rendering, packaging, and
   validation.
@@ -48,7 +49,8 @@ The skill treats a guide as incomplete unless all of these are true:
 7. HTML exists and contains required guide sections.
 8. `sections/` and `images/` exist.
 9. `run-options.json` records the confirmed subject, output language, optional
-   image route, and explanation style.
+   image-provider metadata, and explanation style. The user is not asked to
+   choose an image model before the base handbook exists.
 10. PDF exists unless `--skip-pdf` was intentionally used.
 11. `validation.json.review_summary` shows topic, diagram, practice-card, and
    source-snippet coverage.
@@ -66,7 +68,8 @@ python -m intl_exam_guide demo --out ./outputs/demo-science --language en --imag
 - `skill/SKILL.md` 保持简洁，只告诉 agent 什么时候使用、怎么运行。
 - `skill/references/revision_guide_spec.md` 存放从原复习册 Skill 继承下来的
   手册交付标准。
-- `skill/references/oxfordaqa.md` 存放 OxfordAQA 专属质量门槛。
+- `skill/references/oxfordaqa.md` 存放 AQA 路线说明；Edexcel 和 CAIE 走共享
+  provider 流程与候选确认门槛。
 - Python 包负责稳定且容易出错的部分：发现页面、下载 PDF、解析、规划、
   图文需求分析、渲染、打包、校验。
 
@@ -78,7 +81,7 @@ python -m intl_exam_guide demo --out ./outputs/demo-science --language en --imag
 ```mermaid
 flowchart LR
   A["用户要求生成 International GCSE 或 International AS-A-level 指南"] --> B["AI Agent 加载 skill/SKILL.md"]
-  B --> C["确认科目、输出语言、生图路线和讲解风格"]
+  B --> C["确认考试局、科目、必要考试年份、输出语言和讲解风格"]
   C --> D["读取手册规范和 provider reference"]
   D --> E["运行 intl_exam_guide generate"]
   E --> F["检查 run-options.json、handbook-package.json 与 validation.json"]
@@ -99,7 +102,8 @@ flowchart LR
 6. 每个 topic 都有练习卡片，并包含指令词、解题步骤和答案检查点。
 7. HTML 存在，并包含必要 sections。
 8. `sections/` 和 `images/` 存在。
-9. `run-options.json` 记录用户确认的科目、输出语言、生图路线和讲解风格。
+9. `run-options.json` 记录用户确认的科目、输出语言、讲解风格，以及可选的
+   生图 provider 元数据；基础手册生成前不要求用户选择生图模型。
 10. 除非明确使用 `--skip-pdf`，否则 PDF 必须存在。
 11. `validation.json.review_summary` 显示 topic、diagram、practice card 和
    source snippet 覆盖度。

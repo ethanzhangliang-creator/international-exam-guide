@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.2.12 - 2026-06-20
+
+### Fixed
+
+- Clarified the Skill and project documentation so image generation is no
+  longer presented as a required preflight choice. Agents should first generate
+  the source-bound base handbook, then report pending complex infographic
+  briefs and only use external image generation after a callable route or
+  reviewed assets are provided.
+- Generalized Skill explanation diagrams, release checks, and image prompt
+  templates from AQA/OxfordAQA-only wording to the supported AQA, Edexcel, and
+  CAIE workflow.
+- Updated release validation wording so all official specification/syllabus
+  PDFs are treated consistently and no board-specific PDF language misleads
+  future agents.
+
+### Verified
+
+- `python scripts/scan_for_raw_keys.py .` (`raw_key_matches: 0`)
+- `git diff --check`
+- Documentation phrase scan for the removed AQA-only and preflight image-route
+  wording.
+
 ## 0.2.11 - 2026-06-19
 
 ### Fixed

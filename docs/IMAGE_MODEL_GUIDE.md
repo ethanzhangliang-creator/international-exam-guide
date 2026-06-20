@@ -177,9 +177,11 @@ python scripts/verify_release_samples.py --outputs-root ./outputs
 ## Prompt Template
 
 ```text
-Create an educational illustration for an OxfordAQA International GCSE revision
-guide.
+Create an educational illustration for an International GCSE or International
+AS-A-level revision guide.
 
+Exam board: {exam_board}
+Qualification: {qualification_title}
 Topic: {topic_title}
 Source-bound learning point: {source_point}
 Visual type: {visual_type}
@@ -210,7 +212,8 @@ the source point.
 例题，再分析哪些知识点或例题需要图文结合讲解。简单图用 SVG；复杂信息图默认
 进入 source-bound visual brief 和 prompt queue。
 
-基础手册生成不要求用户先提供生图服务。可选视觉路线包括：
+基础手册生成不要求用户先提供生图服务。不要把下面这些选项做成生成前的
+用户菜单；它们只是基础手册完成后、发现复杂信息图需求时可考虑的外部路线：
 
 - GPT Image 2.0 外部工作流
 - Qwen Image 2.0 Pro 外部工作流

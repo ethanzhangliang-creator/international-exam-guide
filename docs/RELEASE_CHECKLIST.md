@@ -12,7 +12,7 @@
 
 ## Source and Copyright
 
-- [ ] No downloaded OxfordAQA PDFs are committed.
+- [ ] No downloaded official specification/syllabus PDFs are committed.
 - [ ] No past-paper questions or mark schemes are committed.
 - [ ] `outputs/` is ignored.
 - [ ] Source policy is clear in README and docs.
@@ -86,7 +86,8 @@ python -m intl_exam_guide generate --provider cambridge --query "Chemistry 9701"
 
 - [ ] `python -m pytest -q` passes.
 - [ ] `python -m compileall -q src tests scripts` passes.
-- [ ] Skill validation passes with the system `quick_validate.py` script.
+- [ ] Skill smoke validation passes through at least one local demo/generate
+  command and `validation.json` review.
 - [ ] A raw-key scan across the repository and release outputs reports
   `raw_key_matches=0`:
 

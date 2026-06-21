@@ -195,6 +195,7 @@ README 只保留会影响 Skill 实际生成流程的变化；完整历史统一
 - **v0.2.21：** 闭环第八轮测试覆盖缺口：新增生成手册渲染契约测试，覆盖封面身份信息、样式与打印布局、视觉 manifest、外部生成位图复用、SVG 兜底、模块化手册打包，以及 Playwright 从 Chrome 降级到 Edge 的 PDF 导出路径。
 - **v0.2.22：** 闭环第九轮渲染覆盖缺口：给 `html.py` 增加直接契约测试，覆盖完整 HTML 入口、`render_topics()`、知识点卡片、概念图、故事化讲解、例题卡、视觉例题路由、来源附录、考试结构兜底、导航和 topic 标题本地化。
 - **v0.2.23：** 闭环第十轮 P3 审计项：弱断言改为精确等值，补齐中文渲染路径直接测试，恢复发布所需的新鲜 demo 证据，并为 `svg_templates.py` 与 `text.py` 增加专用测试。
+- **v0.2.24：** 闭环第十一轮 P3 建议：为讲解风格和本地化 helper 增加专用测试，补齐中文 HTML helper 与 `render_html()` 中文入口直接覆盖，覆盖 SVG 斜杠换行和超长文本截断，raw-key 扫描命令与发布清单对齐，并移除英文概念 fallback SVG 中不会被生产路径调用的中文分支。
 
 ## 开发者快速开始
 
@@ -222,7 +223,7 @@ python -m intl_exam_guide generate --query chemistry --level igcse --language zh
 python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
-python scripts/scan_for_raw_keys.py .
+python scripts/scan_for_raw_keys.py . ./outputs
 ```
 
 ## 目录结构

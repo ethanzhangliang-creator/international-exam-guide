@@ -767,7 +767,7 @@
     <section class="hero">
       <div class="shell hero-grid">
         <div>
-          <div class="kicker">三大考试局支持 · v0.2.23</div>
+          <div class="kicker">三大考试局支持 · v0.2.24</div>
           <h1>三大考试局复习手册，一句话生成。</h1>
           <p class="lead">支持 AQA、Edexcel、CAIE。把 Skill 链接交给你的 OpenClaw、Hermes 或其他 Agent，说一句“帮我生成某个科目的复习手册”，确认考试局、科目、语言和讲解风格后，它会生成知识点讲解、例题、图文学习单元和可打印 PDF。</p>
           <div class="action-row">
@@ -1057,36 +1057,36 @@
     <section class="band">
       <div class="shell">
         <div class="section-head">
-          <h2>v0.2.23：第十轮审计后的 P3 收尾。</h2>
-          <p>主流程仍然围绕“如何生成复习手册”；本次更新补齐发布流程和测试质量尾巴：恢复新鲜 demo 证据，把弱断言改成精确断言，补上中文渲染分支直接测试，并为 SVG 模板和文本工具增加专用测试。</p>
+          <h2>v0.2.24：第十一轮审计后的 P3 收尾。</h2>
+          <p>主流程仍然围绕“如何生成复习手册”；本次更新把第十一轮审计剩下的测试和发布细节收干净：讲解风格、本地化、中文 HTML helper、SVG 文本边角、raw-key 扫描命令和未使用 fallback 分支都已闭环。</p>
         </div>
         <div class="flow">
           <article class="flow-item">
-            <div class="num">01 · 封面</div>
+            <div class="num">01 · 证据</div>
             <div>
-              <h3>封面与版式</h3>
-              <p>发布说明重新包含当前代码生成的新鲜 demo 证据，包含 issues、topic、例题、图文单元和输出文件计数。</p>
+              <h3>发布证据</h3>
+              <p>发布说明会明确写出 HTML guide generated; PDF skipped (--skip-pdf)，避免 demo 证据含糊。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">02 · 视觉</div>
+            <div class="num">02 · SVG</div>
             <div>
-              <h3>视觉资产</h3>
-              <p>SVG 模板新增专用测试，覆盖英文和中文路由、兜底图、标题转义和文字换行。</p>
+              <h3>SVG 文本</h3>
+              <p>SVG 模板补齐斜杠换行和超长文本截断测试，英文 fallback 删除永远走不到的中文分支。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">03 · 打包</div>
+            <div class="num">03 · 中文</div>
             <div>
               <h3>中文渲染</h3>
-              <p>中文手册的次页、摘要、考试结构、知识点章节、例题、图文例题和来源附录都有直接契约测试。</p>
+              <p>中文手册入口、中文 helper、本地化标签和讲解风格分支都有直接契约测试。</p>
             </div>
           </article>
           <article class="flow-item">
-            <div class="num">04 · PDF</div>
+            <div class="num">04 · 验证</div>
             <div>
-              <h3>断言质量</h3>
-              <p>第十轮指出的 truthy 弱断言已改为精确等值，文本工具也有独立测试守住科目名和 HTML 转义。</p>
+              <h3>检查命令</h3>
+              <p>剩余 truthy 弱断言改为精确 lookup，raw-key scan 命令与发布清单字面对齐，并忽略本地 uv.lock。</p>
             </div>
           </article>
         </div>

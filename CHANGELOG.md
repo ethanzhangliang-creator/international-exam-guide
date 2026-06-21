@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.2.24 - 2026-06-21
+
+### Tests
+
+- Closed the eleventh-round P3 follow-up by adding dedicated
+  `explanation_styles.py` tests for formal, life-scene, story, detective,
+  adventure, and friendly/default explanation branches.
+- Added dedicated `localization.py` tests for `zh_topic_reference()`,
+  `zh_point_labels()`, and `zh_visual_trigger()`.
+- Added direct `zh-CN` rendering tests for HTML helpers that were previously
+  covered only indirectly: style labels, image-provider labels, source notes,
+  listing notes, revision stages, missing links, and the full `render_html()`
+  Chinese entry path.
+- Replaced the remaining weak `build_visual_asset_lookup()` truthy assertion
+  with an exact lookup assertion.
+- Added SVG text edge-case tests for slash token wrapping and three-line
+  truncation in `svg_multiline_text()`.
+
+### Changed
+
+- Removed the unused `zh-CN` branch from `render_concept_fallback_svg()`. The
+  production Chinese path already uses `render_zh_visual_svg()`, so the concept
+  fallback is now an English-only fallback with a simpler signature.
+- Added `uv.lock` to `.gitignore` so local package-manager lockfiles do not
+  appear as stray release artifacts.
+- Aligned raw-key scan examples in the README and operations guide with the
+  release checklist command: `python scripts/scan_for_raw_keys.py . ./outputs`.
+
+### Verified
+
+- Fresh offline demo evidence was regenerated from the current working copy:
+  `python -m intl_exam_guide demo --out ./outputs/_fresh-v024-demo --language en --image-provider deterministic-svg --explanation-style friendly --skip-pdf`.
+  HTML guide generated; PDF skipped (--skip-pdf). The resulting validation
+  output reported `issues: []`, 3 topics, 6 practice cards, 3 topic guides,
+  3 visual briefs, 3 SVG-safe visuals, 3 topic diagrams in HTML, 3 visual
+  examples in HTML, 7 section files, 3 image files, and both visual/package
+  manifests. The ignored output folder was removed after collecting release
+  evidence and is not committed.
+- `python -m pytest tests/test_explanation_styles.py tests/test_localization.py tests/test_rendering_contracts.py tests/test_svg_templates.py -q`
+  (`28 passed`).
+- `python -m pytest --cov --cov-report=term-missing --cov-report=xml --cov-fail-under=70 -q`
+  (`190 passed`, coverage `83.35%`).
+- `python -m ruff check .`
+- `python -m mypy`
+- `python -m compileall -q src tests scripts`
+- `python scripts/scan_for_raw_keys.py . ./outputs` (`raw_key_matches: 0`)
+- `git diff --check`
+
 ## 0.2.23 - 2026-06-21
 
 ### Tests

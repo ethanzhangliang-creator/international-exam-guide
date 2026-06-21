@@ -276,6 +276,11 @@ See [CHANGELOG.md](CHANGELOG.md) for the complete history.
   now exact-value checks, `zh-CN` rendering paths have direct contracts, fresh
   demo evidence is restored for the release, and `svg_templates.py` plus
   `text.py` now have dedicated tests.
+- **v0.2.24:** closes the eleventh-round P3 follow-up: explanation-style and
+  localization helpers now have dedicated tests, `zh-CN` HTML helper branches
+  and `render_html()` have direct coverage, SVG text edge cases are covered,
+  raw-key release scans match the checklist, and the unused Chinese branch in
+  the English concept fallback SVG was removed.
 
 ## Developer Quick Start
 
@@ -303,7 +308,7 @@ Checks:
 python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
-python scripts/scan_for_raw_keys.py .
+python scripts/scan_for_raw_keys.py . ./outputs
 ```
 
 ## Repository Layout

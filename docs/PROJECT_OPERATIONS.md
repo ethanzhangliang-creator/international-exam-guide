@@ -113,6 +113,13 @@ notes. Future test-only releases still need fresh demo evidence unless this
 operations document and `docs/RELEASE_CHECKLIST.md` explicitly define an
 exemption.
 
+v0.2.24 closed the eleventh-round P3 follow-up: dedicated tests now cover
+explanation-style branches, localization helpers, `zh-CN` HTML helpers, the
+`render_html()` Chinese entry path, SVG slash wrapping, and long-text truncation.
+The concept fallback SVG is English-only because Chinese visuals already use
+`render_zh_visual_svg()`. Raw-key release scans must use the same command as
+`docs/RELEASE_CHECKLIST.md`: `python scripts/scan_for_raw_keys.py . ./outputs`.
+
 ## 4. Version And Release Rules
 
 Use GitHub Releases, not tags alone.
@@ -123,7 +130,7 @@ Standard flow for a functional release:
 python -m pytest --cov --cov-report=term-missing --cov-fail-under=70 -q
 python -m ruff check .
 python -m compileall -q src tests scripts
-python scripts/scan_for_raw_keys.py .
+python scripts/scan_for_raw_keys.py . ./outputs
 git diff --check
 git status --short
 ```
@@ -297,7 +304,7 @@ Before committing:
 
 ```powershell
 git clean -fdX -n
-python scripts/scan_for_raw_keys.py .
+python scripts/scan_for_raw_keys.py . ./outputs
 rg -n "local-private-path-pattern" . -S -g "!outputs/**" -g "!.git/**"
 ```
 

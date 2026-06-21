@@ -59,7 +59,7 @@ def render_topic_visual_svg(visual: VisualBrief, index: int, language: str = "en
         return render_triangle_svg(index)
     if any(word in text for word in ["data table", "graph interpretation"]):
         return render_statistics_svg(index)
-    return render_concept_fallback_svg(index, "en", visual.visual_type or "Study visual")
+    return render_concept_fallback_svg(index, visual.visual_type or "Study visual")
 
 
 def render_number_svg(index: int) -> str:
@@ -558,14 +558,9 @@ def render_flow_svg(
 """
 
 
-def render_concept_fallback_svg(index: int, language: str, title: str) -> str:
-    zh = language == "zh-CN"
-    heading = title if not zh else title or "图文结合学习图"
-    labels = (
-        ("核心概念", "例题信息", "检查结论")
-        if zh
-        else ("Key idea", "Question evidence", "Checked answer")
-    )
+def render_concept_fallback_svg(index: int, title: str) -> str:
+    heading = title or "Study visual"
+    labels = ("Key idea", "Question evidence", "Checked answer")
     return f"""
 <svg class="visual-svg" viewBox="0 0 720 360" role="img" aria-labelledby="visual-title-{index}">
   <title id="visual-title-{index}">{html_escape(heading)}</title>

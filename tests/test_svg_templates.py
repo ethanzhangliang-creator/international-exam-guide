@@ -134,14 +134,16 @@ def test_direct_svg_helpers_escape_titles_and_keep_core_labels():
         "#222222",
     )
 
-    escaped = render_concept_fallback_svg(2, "en", "A&B <topic>")
+    escaped = render_concept_fallback_svg(2, "A&B <topic>")
     assert "A&amp;B &lt;topic&gt;" in escaped
+    assert "Key idea" in escaped
     assert html_escape('"quoted" & <tag>') == "&quot;quoted&quot; &amp; &lt;tag&gt;"
 
 
 def test_svg_text_wrapping_helpers_are_deterministic():
     assert wrap_words("alpha beta gamma", max_chars=10) == ["alpha beta", "gamma"]
     assert wrap_words("abcdefghijkl", max_chars=5) == ["abcde"]
+    assert wrap_words("alpha/beta gamma", max_chars=10) == ["alpha /", "beta gamma"]
     assert wrap_words("", max_chars=5) == [""]
 
     text = svg_multiline_text(
@@ -158,3 +160,14 @@ def test_svg_text_wrapping_helpers_are_deterministic():
     assert '<text x="10" y="20" fill="#000000" font-size="14" font-weight="600">' in text
     assert '<tspan x="10" dy="0">alpha beta</tspan>' in text
     assert '<tspan x="10" dy="12">gamma delta</tspan>' in text
+
+    truncated = svg_multiline_text(
+        "one two three four five six seven eight nine ten",
+        x=10,
+        y=20,
+        max_chars=8,
+        line_height=12,
+    )
+
+    assert truncated.count("<tspan") == 3
+    assert "seven" not in truncated

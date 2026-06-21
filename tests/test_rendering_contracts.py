@@ -372,6 +372,90 @@ def test_html_helpers_keep_source_policy_and_setup_copy_readable():
     assert topic_anchor(12) == "topic-12"
 
 
+def test_chinese_html_helpers_have_direct_contracts():
+    qualification = sample_rendering_qualification()
+    qualification.source.listing_subject = "Accounting"
+    qualification.source.listing_group_label = "AQA International GCSE"
+    qualification.source.listing_style_class = "subject-card"
+    custom_options = GuideRunOptions(
+        requested_subject="Accounting",
+        image_provider="custom",
+        image_model="SenseNova U1 Fast",
+        explanation_style="friendly",
+        output_language="zh-CN",
+    )
+    prompt_options = GuideRunOptions(
+        requested_subject="Accounting",
+        image_provider="prompt-queue",
+        explanation_style="friendly",
+        output_language="zh-CN",
+    )
+    svg_options = GuideRunOptions(
+        requested_subject="Accounting",
+        image_provider="deterministic-svg",
+        explanation_style="friendly",
+        output_language="zh-CN",
+    )
+
+    assert style_display("friendly", "zh-CN") != "Friendly"
+    assert style_display("unknown-style", "zh-CN") == "unknown-style"
+    assert "SenseNova U1 Fast" in image_provider_display(custom_options, "zh-CN")
+    assert "custom illustration model" not in image_provider_display(custom_options, "zh-CN")
+    assert "infographic prompts prepared" not in image_provider_display(prompt_options, "zh-CN")
+    assert "simple diagrams are included" not in image_provider_display(svg_options, "zh-CN")
+
+    listing_note = render_listing_note(qualification, "zh-CN")
+    source_note = render_source_note(qualification, "zh-CN")
+    revision_stages = render_revision_stages(["第一轮通读", "第二轮做题"], "zh-CN")
+
+    assert "Subject group" not in listing_note
+    assert "Accounting" in listing_note
+    assert "AQA International GCSE" in listing_note
+    assert "Audience and Sources" not in source_note
+    assert "Qualification page" not in source_note
+    assert "https://example.test/accounting/" in source_note
+    assert "PDF SHA-256" in source_note
+    assert "Three-Stage Revision" not in revision_stages
+    assert "第一轮通读" in revision_stages
+    assert "第二轮做题" in revision_stages
+    assert "missing" not in link_or_missing(None, "zh-CN")
+    assert "warning" in link_or_missing(None, "zh-CN")
+
+
+def test_render_html_writes_chinese_handbook_directly(tmp_path):
+    qualification = sample_rendering_qualification()
+    guide = sample_topic_guide()
+    practice = sample_practice_item()
+    visual = sample_visual_brief()
+    plan = GuidePlan(
+        qualification=qualification,
+        run_options=GuideRunOptions(
+            requested_subject="Accounting",
+            image_provider="deterministic-svg",
+            explanation_style="friendly",
+            output_language="zh-CN",
+            exam_year="2028",
+        ),
+        topic_guides=[guide],
+        practice_items=[practice],
+        visual_briefs=[visual],
+        diagram_briefs=[],
+        revision_stages=["第一轮通读", "第二轮做题"],
+    )
+
+    output_path = render_html(plan, tmp_path / "guide-zh.html")
+    html = output_path.read_text(encoding="utf-8")
+
+    assert output_path.exists()
+    assert '<html lang="zh-CN">' in html
+    assert "How to Study" not in html
+    assert "Study Roadmap" not in html
+    assert "Quick Navigation" not in html
+    assert "Source Appendix" not in html
+    assert "guide.html" not in html
+    assert "deterministic-svg" not in html
+
+
 def test_topic_renderers_cover_guides_practice_story_and_visual_blocks():
     qualification = sample_rendering_qualification()
     topic = qualification.topics[0]
@@ -597,7 +681,9 @@ def test_visual_manifest_loading_and_asset_classification_edges(tmp_path):
     entries = load_visual_manifest(tmp_path)
     assert len(entries) == 1
     assert visual_asset_key_from_entry(entries[0]) == "bonding||ionic||chart||svg-basic"
-    assert build_visual_asset_lookup(entries)
+    assert build_visual_asset_lookup(entries) == {
+        "bonding||ionic||chart||svg-basic": entries[0]
+    }
 
     assert is_raster_asset("diagram.PNG")
     assert not is_raster_asset("diagram.svg")
